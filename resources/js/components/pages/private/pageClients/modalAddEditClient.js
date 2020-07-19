@@ -22,14 +22,15 @@ import Text from "antd/lib/typography/Text";
 import moment from "moment";
 import { fetchData } from "../../../../axios";
 import { notificationErrors } from "../../../notificationErrors";
+import FormBasicInfo from "./formBasicInfo";
+import UploadClientLogo from "./uploadClientLogo";
+import FormOtherInfo from "./formOtherInfo";
 
 const ModalAddEditClient = ({
     showModalAddEditClient,
     toggleShowModalAddEditClient
 }) => {
-    const [loadingUpload, setLoadingUpload] = useState(false);
     const [formSaveLoading, setFormSaveLoading] = useState(false);
-    const [imageUrl, setImageUrl] = useState();
     const [clientInformation, setClientInformation] = useState({
         name: "",
         address: "",
@@ -42,56 +43,6 @@ const ModalAddEditClient = ({
     const layout = {
         labelCol: { span: 8 },
         wrapperCol: { span: 16 }
-    };
-
-    function getBase64(img, callback) {
-        const reader = new FileReader();
-        reader.addEventListener("load", () => callback(reader.result));
-        reader.readAsDataURL(img);
-    }
-
-    function beforeUpload(file) {
-        const isJpgOrPng =
-            file.type === "image/jpeg" || file.type === "image/png";
-        if (!isJpgOrPng) {
-            message.error("You can only upload JPG/PNG file!");
-        }
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isLt2M) {
-            message.error("Image must smaller than 2MB!");
-        }
-        return isJpgOrPng && isLt2M;
-    }
-
-    const handleChange = info => {
-        if (info.file.status === "uploading") {
-            setLoadingUpload(true);
-            return;
-        }
-        if (info.file.status === "done") {
-            // Get this url from response in real world.
-            getBase64(info.file.originFileObj, imageUrl => {
-                setImageUrl(imageUrl);
-                setLoadingUpload(false);
-                setClientInformation({
-                    ...clientInformation,
-                    photo: imageUrl
-                });
-            });
-        }
-    };
-
-    const uploadButton = (
-        <div>
-            {loadingUpload ? <LoadingOutlined /> : <PlusOutlined />}
-            <div className="ant-upload-text">Upload</div>
-        </div>
-    );
-
-    const dummyRequest = ({ file, onSuccess }) => {
-        setTimeout(() => {
-            onSuccess("ok");
-        }, 0);
     };
 
     const submitForm = e => {
@@ -139,81 +90,15 @@ const ModalAddEditClient = ({
             >
                 <Row>
                     <Col xs={24} md={4}>
-                        <Text>Client Logo</Text>
-
-                        <Upload
-                            name="photo"
-                            listType="picture-card"
-                            className="avatar-uploader"
-                            showUploadList={false}
-                            customRequest={dummyRequest}
-                            beforeUpload={beforeUpload}
-                            onChange={e => handleChange(e)}
-                        >
-                            {imageUrl ? (
-                                <img
-                                    src={imageUrl}
-                                    alt="avatar"
-                                    style={{ width: "100%" }}
-                                />
-                            ) : (
-                                uploadButton
-                            )}
-                        </Upload>
+                        <UploadClientLogo
+                            setClientInformation={setClientInformation}
+                        />
                     </Col>
                     <Col xs={24} md={8}>
-                        <Text>Basic Information</Text>
-                        <Form.Item
-                            label="Client Name"
-                            name="name"
-                            rules={[
-                                {
-                                    required: true,
-                                    min: 3,
-                                    message: "Please input Client Name"
-                                }
-                            ]}
-                            className="mb-15"
-                        >
-                            <Input name="name" />
-                        </Form.Item>
-                        <Form.Item
-                            label="Address"
-                            name="address"
-                            className="mb-15"
-                        >
-                            <Input name="address" />
-                        </Form.Item>
-                        <Form.Item
-                            label="Contact Number"
-                            name="contact_number"
-                            className="mb-15"
-                        >
-                            <Input name="contact_number" />
-                        </Form.Item>
-                        <Form.Item
-                            label="Client Since"
-                            name="client_since"
-                            className="mb-15"
-                        >
-                            <DatePicker
-                                style={{ width: "100%" }}
-                                format="YYYY-MM-DD"
-                            />
-                        </Form.Item>
+                        <FormBasicInfo />
                     </Col>
                     <Col xs={24} md={12}>
-                        <div>
-                            <Text>
-                                Other Information{" "}
-                                <Button
-                                    size="small"
-                                    type="link"
-                                    shape="circle"
-                                    icon={<PlusCircleOutlined />}
-                                />
-                            </Text>
-                        </div>
+                        <FormOtherInfo />
                     </Col>
                 </Row>
             </Form>

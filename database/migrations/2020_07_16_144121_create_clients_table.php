@@ -17,7 +17,7 @@ class CreateClientsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('address')->nullable();
-            $table->longText('photo')->nullable();
+            $table->string('photo')->nullable();
             $table->string('contact_number')->nullable();
             $table->datetime('client_since')->nullable();
             $table->timestamps();

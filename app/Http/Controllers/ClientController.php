@@ -35,12 +35,12 @@ class ClientController extends Controller
             // 'contact_number' => 'required|min:11|max:11',
         ]);
 
-        
+        $photo = $request->photo ? $this->saveImage($request->photo) : '/assets/images/building.jpg';
 
         $client = Client::create([
             'name' => $request->name,
             'address' => $request->address,
-            'photo' => $this->saveImage($request->photo),
+            'photo' => $photo,
             'contact_number' => $request->contact_number,
             'client_since' => $request->client_since,
         ]);
