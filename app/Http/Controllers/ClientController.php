@@ -12,13 +12,13 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $clients = Client::paginate(20);
+        $clients = Client::where('name','like',isset($request->search) ? '%'.$request->search.'%' : '%%')->orderBy('name',$request->sort)->get();
 
         return response()->json([
             'success' => true,
-            'data' => $clients
+            'data' => $clients->toArray()
         ],200);
     }
 
@@ -35,7 +35,7 @@ class ClientController extends Controller
             // 'contact_number' => 'required|min:11|max:11',
         ]);
 
-        $photo = $request->photo ? $this->saveImage($request->photo) : '/assets/images/building.jpg';
+        $photo = $request->photo ? $this->saveImage($request->photo) : 'assets/images/building.jpg';
 
         $client = Client::create([
             'name' => $request->name,
@@ -53,12 +53,15 @@ class ClientController extends Controller
                     $existing->description = $other_info['description'];
                     $existing->save();
                 } else {
-                    $client->other_infos()->create(
-                        [
-                            'title' => $other_info['title'],
-                            'description' => $other_info['description'],
-                        ]
-                    );
+                    if($other_info['title']) {
+                        $client->other_infos()->create(
+                            [
+                                'title' => $other_info['title'],
+                                'description' => $other_info['description'],
+                            ]
+                        );
+                    }
+                    
                 }
                 
             }

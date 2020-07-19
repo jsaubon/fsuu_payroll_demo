@@ -28,7 +28,8 @@ import FormOtherInfo from "./formOtherInfo";
 
 const ModalAddEditClient = ({
     showModalAddEditClient,
-    toggleShowModalAddEditClient
+    toggleShowModalAddEditClient,
+    getClients
 }) => {
     const [formSaveLoading, setFormSaveLoading] = useState(false);
     const [clientInformation, setClientInformation] = useState({
@@ -38,12 +39,7 @@ const ModalAddEditClient = ({
         contact_number: "",
         client_since: ""
     });
-    const [otherInfos, setOtherInfos] = useState([
-        {
-            title: "",
-            description: ""
-        }
-    ]);
+    const [otherInfos, setOtherInfos] = useState([]);
 
     let formAddEditClient;
 
@@ -62,12 +58,13 @@ const ModalAddEditClient = ({
         data["other_infos"] = otherInfos;
         fetchData("POST", "api/client", data)
             .then(res => {
-                console.log(res);
                 if (res.success) {
                     notification.success({
                         message: "Client Saved Successfully"
                     });
                     setFormSaveLoading(false);
+                    toggleShowModalAddEditClient();
+                    getClients();
                 }
             })
             .catch(err => {

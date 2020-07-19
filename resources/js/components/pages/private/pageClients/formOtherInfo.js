@@ -27,7 +27,7 @@ const FormOtherInfo = ({ otherInfos, setOtherInfos }) => {
     };
 
     useEffect(() => {
-        console.log(otherInfos);
+        // console.log(otherInfos);
         return () => {};
     }, [otherInfos]);
 
