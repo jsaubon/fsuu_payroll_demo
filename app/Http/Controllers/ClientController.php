@@ -45,10 +45,28 @@ class ClientController extends Controller
             'client_since' => $request->client_since,
         ]);
 
+        if($request->other_infos) {
+            foreach ($request->other_infos as $key => $other_info) {
+                if(isset($other_info->id)) {
+                    $existing = $client->other_infos()->find($other_info->id);
+                    $existing->title = $other_info['title'];
+                    $existing->description = $other_info['description'];
+                    $existing->save();
+                } else {
+                    $client->other_infos()->create(
+                        [
+                            'title' => $other_info['title'],
+                            'description' => $other_info['description'],
+                        ]
+                    );
+                }
+                
+            }
+        }
+
         return response()->json([
             'success' => true,
-            'data' => $client,
-            'request' => $request->all()
+            'client' => $client,
         ],200);
     }
 

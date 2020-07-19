@@ -38,6 +38,13 @@ const ModalAddEditClient = ({
         contact_number: "",
         client_since: ""
     });
+    const [otherInfos, setOtherInfos] = useState([
+        {
+            title: "",
+            description: ""
+        }
+    ]);
+
     let formAddEditClient;
 
     const layout = {
@@ -52,7 +59,7 @@ const ModalAddEditClient = ({
             : "";
         setFormSaveLoading(true);
         data["photo"] = clientInformation.photo;
-        console.log(data);
+        data["other_infos"] = otherInfos;
         fetchData("POST", "api/client", data)
             .then(res => {
                 console.log(res);
@@ -98,7 +105,10 @@ const ModalAddEditClient = ({
                         <FormBasicInfo />
                     </Col>
                     <Col xs={24} md={12}>
-                        <FormOtherInfo />
+                        <FormOtherInfo
+                            otherInfos={otherInfos}
+                            setOtherInfos={setOtherInfos}
+                        />
                     </Col>
                 </Row>
             </Form>

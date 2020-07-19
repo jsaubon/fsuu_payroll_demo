@@ -18,7 +18,7 @@ const PageClients = () => {
             <div>
                 <Title level={3}>Clients List</Title>
             </div>
-            <Row>
+            <Row style={{ marginLeft: "-10px", marginRight: "-10px" }}>
                 <Col xs={24} md={18}>
                     <Button
                         type="primary"
@@ -36,8 +36,8 @@ const PageClients = () => {
                     />
                 </Col>
             </Row>
-            <Row className="mt-10">
-                <Col xs={24} md={4} className="p-10">
+            <Row style={{ marginLeft: "-10px", marginRight: "-10px" }}>
+                <Col xs={24} md={4} className="p-10 mt-10">
                     <Card
                         hoverable
                         // style={{ width: 240 }}
@@ -55,7 +55,7 @@ const PageClients = () => {
                         />
                     </Card>
                 </Col>
-                <Col xs={24} md={4} className="p-10">
+                <Col xs={24} md={4} className="p-10 mt-10">
                     <Card
                         hoverable
                         // style={{ width: 240 }}
@@ -73,7 +73,7 @@ const PageClients = () => {
                         />
                     </Card>
                 </Col>
-                <Col xs={24} md={4} className="p-10">
+                <Col xs={24} md={4} className="p-10 mt-10">
                     <Card
                         hoverable
                         // style={{ width: 240 }}
@@ -91,7 +91,7 @@ const PageClients = () => {
                         />
                     </Card>
                 </Col>
-                <Col xs={24} md={4} className="p-10">
+                <Col xs={24} md={4} className="p-10 mt-10">
                     <Card
                         hoverable
                         // style={{ width: 240 }}
@@ -109,7 +109,7 @@ const PageClients = () => {
                         />
                     </Card>
                 </Col>
-                <Col xs={24} md={4} className="p-10">
+                <Col xs={24} md={4} className="p-10 mt-10">
                     <Card
                         hoverable
                         // style={{ width: 240 }}
@@ -127,7 +127,7 @@ const PageClients = () => {
                         />
                     </Card>
                 </Col>
-                <Col xs={24} md={4} className="p-10">
+                <Col xs={24} md={4} className="p-10 mt-10">
                     <Card
                         hoverable
                         // style={{ width: 240 }}
@@ -145,7 +145,7 @@ const PageClients = () => {
                         />
                     </Card>
                 </Col>
-                <Col xs={24} md={4} className="p-10">
+                <Col xs={24} md={4} className="p-10 mt-10">
                     <Card
                         hoverable
                         // style={{ width: 240 }}

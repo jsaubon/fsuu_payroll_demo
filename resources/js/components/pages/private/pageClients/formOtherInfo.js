@@ -1,22 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Text from "antd/lib/typography/Text";
 import { Button, Form, Space, Input, Row, Col } from "antd";
-import {
-    PlusCircleOutlined,
-    MinusCircleOutlined,
-    PlusOutlined,
-    UserOutlined,
-    LockOutlined
-} from "@ant-design/icons";
+import { PlusCircleOutlined } from "@ant-design/icons";
 
-const FormOtherInfo = () => {
-    const [otherInfos, setOtherInfos] = useState([
-        {
-            title: "",
-            description: ""
-        }
-    ]);
-
+const FormOtherInfo = ({ otherInfos, setOtherInfos }) => {
     const addOtherInfo = () => {
         setOtherInfos([
             ...otherInfos,
@@ -29,8 +16,6 @@ const FormOtherInfo = () => {
 
     const removeOtherInfo = key => {
         let _otherInfos = [...otherInfos];
-        // delete _otherInfos[key];
-        console.log(_otherInfos, key);
         _otherInfos.splice(key, 1);
         setOtherInfos([..._otherInfos]);
     };

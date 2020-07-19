@@ -8,7 +8,7 @@ class Client extends Model
 {
     protected $guarded = [];
 
-    public function other_info()
+    public function other_infos()
     {
         return $this->morphMany('App\OtherInfo', 'other_infoable');
     }
