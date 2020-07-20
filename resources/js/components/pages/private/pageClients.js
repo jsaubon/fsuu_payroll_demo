@@ -14,22 +14,14 @@ import {
     SortDescendingOutlined
 } from "@ant-design/icons";
 import moment from "moment";
+import CardClientInfo from "./pageClients/cardClientInfo";
+import { getClients } from "./pageClients/getClients";
 
-const PageClients = () => {
+const PageClients = ({ history }) => {
     const { stateClients, dispatchClients } = useContext(ClientsContext);
     const [sortClient, setSortClient] = useState("asc");
     const [searchClient, setSearchClient] = useState("");
-    const getClients = () => {
-        fetchData(
-            "GET",
-            "api/client?search=" + searchClient + "&sort=" + sortClient
-        ).then(res => {
-            if (res.success) {
-                console.log(res);
-                dispatchClients({ type: "SAVE_CLIENTS", payload: res.data });
-            }
-        });
-    };
+
     useEffect(() => {
         // console.log(stateClients.clients);
         return () => {};
@@ -40,7 +32,7 @@ const PageClients = () => {
     };
 
     useEffect(() => {
-        getClients();
+        getClients(dispatchClients);
         return () => {};
     }, [sortClient, searchClient]);
     const toggleShowModalAddEditClient = () => {
@@ -57,9 +49,7 @@ const PageClients = () => {
 
     return (
         <>
-            <div>
-                <Title level={3}>Clients List</Title>
-            </div>
+            <Title level={3}>Clients List</Title>
             <Row style={{ marginLeft: "-10px", marginRight: "-10px" }}>
                 <Col xs={24} md={18}>
                     <Button
@@ -96,54 +86,11 @@ const PageClients = () => {
                 {stateClients &&
                     stateClients.clients.map((client, key) => {
                         return (
-                            <Col
+                            <CardClientInfo
+                                history={history}
                                 key={key}
-                                xs={24}
-                                md={4}
-                                className="p-10 mt-10"
-                            >
-                                <Card
-                                    hoverable
-                                    // style={{ width: 240 }}
-                                    cover={
-                                        <img
-                                            alt="example"
-                                            src={`${location.origin}/${client.photo}`}
-                                            height={170}
-                                        />
-                                    }
-                                >
-                                    {/* <Meta
-                                        title={client.name}
-                                        description={`${client.address} <br/> ${client.contact_number}`}
-                                    /> */}
-                                    <Title level={4}>{client.name}</Title>
-                                    {client.address && (
-                                        <>
-                                            <Text>{client.address}</Text>
-                                            <br></br>
-                                        </>
-                                    )}
-
-                                    {client.contact_number && (
-                                        <>
-                                            <Text>
-                                                <PhoneOutlined />{" "}
-                                                {client.contact_number}
-                                            </Text>
-                                            <br></br>
-                                        </>
-                                    )}
-                                    {client.client_since && (
-                                        <Text>
-                                            <CalendarOutlined />{" "}
-                                            {moment(client.client_since).format(
-                                                "YYYY-MM-DD"
-                                            )}
-                                        </Text>
-                                    )}
-                                </Card>
-                            </Col>
+                                client={client}
+                            />
                         );
                     })}
             </Row>
@@ -152,7 +99,6 @@ const PageClients = () => {
                 <ModalAddEditClient
                     showModalAddEditClient={showModalAddEditClient}
                     toggleShowModalAddEditClient={toggleShowModalAddEditClient}
-                    getClients={getClients}
                 />
             )}
         </>

@@ -53,7 +53,7 @@ const FormOtherInfo = ({ otherInfos, setOtherInfos }) => {
                                 marginTop: key == 0 && "-2px"
                             }}
                         >
-                            <Col xs={24} md={10}>
+                            <Col xs={24} md={10} className="px-0">
                                 <Input
                                     placeholder="Title"
                                     value={otherInfo.title}

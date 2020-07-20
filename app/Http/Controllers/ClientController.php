@@ -32,44 +32,55 @@ class ClientController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|min:3',
-            // 'contact_number' => 'required|min:11|max:11',
         ]);
-
-        $photo = $request->photo ? $this->saveImage($request->photo) : 'assets/images/building.jpg';
-
-        $client = Client::create([
-            'name' => $request->name,
-            'address' => $request->address,
-            'photo' => $photo,
-            'contact_number' => $request->contact_number,
-            'client_since' => $request->client_since,
-        ]);
+        
+        $photo = 'assets/images/building.jpg';
+        
+        if($request->photo) {
+            if(strpos($request->photo, 'data:image') === 0) {
+                $photo = $this->saveImage($request->photo);
+            } else {
+                $photo = $request->photo;
+            }
+        } 
+        
+        if($request->id) {
+            $client = Client::find($request->id);
+            $client->name = $request->name;
+            $client->address = $request->address;
+            $client->photo = $photo;
+            $client->contact_number = $request->contact_number;
+            $client->client_since = $request->client_since;
+            $client->save();
+        } else {
+            $client = new Client();
+            $client->name = $request->name;
+            $client->address = $request->address;
+            $client->photo = $photo;
+            $client->contact_number = $request->contact_number;
+            $client->client_since = $request->client_since;
+            $client->save();
+        }
+        
+       
 
         if($request->other_infos) {
+            $client->other_infos()->delete();
             foreach ($request->other_infos as $key => $other_info) {
-                if(isset($other_info->id)) {
-                    $existing = $client->other_infos()->find($other_info->id);
-                    $existing->title = $other_info['title'];
-                    $existing->description = $other_info['description'];
-                    $existing->save();
-                } else {
-                    if($other_info['title']) {
-                        $client->other_infos()->create(
-                            [
-                                'title' => $other_info['title'],
-                                'description' => $other_info['description'],
-                            ]
-                        );
-                    }
-                    
-                }
-                
+                $client->other_infos()->create(
+                    [
+                        'title' => $other_info['title'],
+                        'description' => $other_info['description'],
+                    ]
+                );
             }
         }
 
         return response()->json([
             'success' => true,
             'client' => $client,
+            'request' => $request->all(),
+            'id' => $request->id
         ],200);
     }
 
@@ -95,14 +106,17 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        $client = Client::find($id);
+        $client = Client::where('id',$id)->with('other_infos')->get();
+ 
 
 
-        if (!$client) {
+        if ($client->isEmpty()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Client with id ' . $id . ' not found'
             ], 400);
+        } else {
+            $client = $client->first()->toArray();
         }
 
         return response()->json([

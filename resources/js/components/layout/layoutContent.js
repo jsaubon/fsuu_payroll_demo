@@ -4,6 +4,7 @@ import { Layout, Breadcrumb } from "antd";
 import LayoutHeader from "./LayoutHeader";
 import LayoutFooter from "./LayoutFooter";
 import PageClients from "../pages/private/PageClients";
+import pageClientInfo from "../pages/private/pageClientInfo";
 
 const LayoutContent = () => {
     const { Content } = Layout;
@@ -21,6 +22,11 @@ const LayoutContent = () => {
                 >
                     <Switch>
                         <Route exact path="/clients" component={PageClients} />
+                        <Route
+                            exact
+                            path="/clients/:id"
+                            component={pageClientInfo}
+                        />
                         <Route path="/" exact>
                             <Redirect to="/clients" />
                         </Route>

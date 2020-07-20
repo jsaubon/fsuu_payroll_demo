@@ -1,37 +1,20 @@
-import React, { useState, useEffect } from "react";
-import {
-    Modal,
-    Form,
-    Input,
-    Upload,
-    Row,
-    Col,
-    Anchor,
-    Button,
-    DatePicker,
-    notification
-} from "antd";
-import {
-    LoadingOutlined,
-    PlusOutlined,
-    PlayCircleOutlined,
-    PlusCircleOutlined
-} from "@ant-design/icons";
-import Title from "antd/lib/typography/Title";
-import Text from "antd/lib/typography/Text";
-import moment from "moment";
+import React, { useState, useContext, useEffect } from "react";
+import { Modal, Form, Row, Col, notification } from "antd";
 import { fetchData } from "../../../../axios";
 import { notificationErrors } from "../../../notificationErrors";
 import FormBasicInfo from "./formBasicInfo";
 import UploadClientLogo from "./uploadClientLogo";
 import FormOtherInfo from "./formOtherInfo";
-
+import ClientsContext from "../../../../contexts/clientsContext";
+import { getClients } from "./getClients";
+import moment from "moment";
 const ModalAddEditClient = ({
     showModalAddEditClient,
     toggleShowModalAddEditClient,
-    getClients
+    _clientInformation
 }) => {
     const [formSaveLoading, setFormSaveLoading] = useState(false);
+    const [imageUrl, setImageUrl] = useState();
     const [clientInformation, setClientInformation] = useState({
         name: "",
         address: "",
@@ -40,6 +23,7 @@ const ModalAddEditClient = ({
         client_since: ""
     });
     const [otherInfos, setOtherInfos] = useState([]);
+    const { dispatchClients } = useContext(ClientsContext);
 
     let formAddEditClient;
 
@@ -56,15 +40,17 @@ const ModalAddEditClient = ({
         setFormSaveLoading(true);
         data["photo"] = clientInformation.photo;
         data["other_infos"] = otherInfos;
+        data["id"] = _clientInformation ? _clientInformation.id : null;
         fetchData("POST", "api/client", data)
             .then(res => {
+                console.log(res);
                 if (res.success) {
                     notification.success({
                         message: "Client Saved Successfully"
                     });
                     setFormSaveLoading(false);
                     toggleShowModalAddEditClient();
-                    getClients();
+                    getClients(dispatchClients);
                 }
             })
             .catch(err => {
@@ -72,6 +58,19 @@ const ModalAddEditClient = ({
                 notificationErrors(err);
             });
     };
+
+    useEffect(() => {
+        // console.log(_clientInformation);
+        if (_clientInformation) {
+            _clientInformation.client_since = _clientInformation.client_since
+                ? moment(_clientInformation.client_since, "YYYY-MM-DD")
+                : "";
+            setClientInformation(_clientInformation);
+            setOtherInfos(_clientInformation.other_infos);
+            setImageUrl(_clientInformation.photo);
+        }
+        return () => {};
+    }, [_clientInformation]);
 
     return (
         <Modal
@@ -96,12 +95,14 @@ const ModalAddEditClient = ({
                     <Col xs={24} md={4}>
                         <UploadClientLogo
                             setClientInformation={setClientInformation}
+                            imageUrl={imageUrl}
+                            setImageUrl={setImageUrl}
                         />
                     </Col>
-                    <Col xs={24} md={8}>
+                    <Col xs={24} md={10}>
                         <FormBasicInfo />
                     </Col>
-                    <Col xs={24} md={12}>
+                    <Col xs={24} md={10}>
                         <FormOtherInfo
                             otherInfos={otherInfos}
                             setOtherInfos={setOtherInfos}

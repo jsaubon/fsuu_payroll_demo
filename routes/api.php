@@ -33,3 +33,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('client/logo','ClientController@uploadLogo');
 });
+
+Route::get('testing', function() {
+    dd(strpos('assets/images/asdasda.png', 'assets'));
+    // dd($client);
+});

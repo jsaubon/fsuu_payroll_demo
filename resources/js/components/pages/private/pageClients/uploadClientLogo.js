@@ -3,8 +3,7 @@ import Text from "antd/lib/typography/Text";
 import { Upload } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 
-const UploadClientLogo = ({ setClientInformation }) => {
-    const [imageUrl, setImageUrl] = useState();
+const UploadClientLogo = ({ setClientInformation, imageUrl, setImageUrl }) => {
     const [loadingUpload, setLoadingUpload] = useState(false);
     const dummyRequest = ({ file, onSuccess }) => {
         setTimeout(() => {
@@ -70,9 +69,13 @@ const UploadClientLogo = ({ setClientInformation }) => {
             >
                 {imageUrl ? (
                     <img
-                        src={imageUrl}
+                        src={
+                            imageUrl.indexOf("assets/images") !== -1
+                                ? location.origin + "/" + imageUrl
+                                : imageUrl
+                        }
                         alt="avatar"
-                        style={{ width: "100%" }}
+                        style={{ width: "170px", height: "170px" }}
                     />
                 ) : (
                     uploadButton
