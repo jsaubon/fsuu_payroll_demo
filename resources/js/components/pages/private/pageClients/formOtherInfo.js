@@ -43,7 +43,8 @@ const FormOtherInfo = ({ otherInfos, setOtherInfos }) => {
                     onClick={e => addOtherInfo()}
                 />
             </Text>
-            {otherInfos.length > 0 &&
+            {otherInfos &&
+                otherInfos.length > 0 &&
                 otherInfos.map((otherInfo, key) => {
                     return (
                         <Row

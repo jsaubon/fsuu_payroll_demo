@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Modal, Form, Row, Col, notification } from "antd";
 import { fetchData } from "../../../../axios";
 import { notificationErrors } from "../../../notificationErrors";
-import FormBasicInfo from "./formBasicInfo";
+import FormBasicInfo from "./formClientBasicInfo";
 import UploadClientLogo from "./uploadClientLogo";
 import FormOtherInfo from "./formOtherInfo";
 import ClientsContext from "../../../../contexts/clientsContext";
@@ -43,7 +43,7 @@ const ModalAddEditClient = ({
         data["id"] = _clientInformation ? _clientInformation.id : null;
         fetchData("POST", "api/client", data)
             .then(res => {
-                console.log(res);
+                // console.log(res);
                 if (res.success) {
                     notification.success({
                         message: "Client Saved Successfully"
