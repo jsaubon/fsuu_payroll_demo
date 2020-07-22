@@ -2,7 +2,7 @@ import React from "react";
 
 import { Space, Popconfirm, Input, notification } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { fetchData } from "../../../../axios";
+import { fetchData } from "../../../../../../axios";
 import Text from "antd/lib/typography/Text";
 
 export const clientEmployeesTableColumns = (

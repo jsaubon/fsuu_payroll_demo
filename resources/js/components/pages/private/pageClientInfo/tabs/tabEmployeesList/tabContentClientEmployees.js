@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Button, Input, Table } from "antd";
-import { fetchData } from "../../../../axios";
+import { fetchData } from "../../../../../../axios";
 import { clientEmployeesTableColumns } from "./clientEmployeesTableColumns";
 import ModalAddEditEmployee from "./modalAddEditEmployee";
 

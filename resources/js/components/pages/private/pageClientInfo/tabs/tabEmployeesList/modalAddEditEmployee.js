@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Modal, Form, Row, Col, notification } from "antd";
-import { fetchData } from "../../../../axios";
-import { notificationErrors } from "../../../notificationErrors";
+import { fetchData } from "../../../../../../axios";
+import { notificationErrors } from "../../../../../notificationErrors";
 import FormEmployeeBasicInfo from "./formEmployeeBasicInfo";
-import FormOtherInfo from "../pageClients/formOtherInfo";
+import FormOtherInfo from "../../../pageClients/formOtherInfo";
 import moment from "moment";
 const ModalAddEditEmployee = ({
     showClientEmployeesModal,

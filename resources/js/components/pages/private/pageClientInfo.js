@@ -23,8 +23,8 @@ import { fetchData } from "../../../axios";
 import moment from "moment";
 import ModalAddEditClient from "./pageClients/modalAddEditClient";
 import CardClientDetails from "./pageClientInfo/cardClientDetails";
-import { clientEmployeesTableColumns } from "./pageClientInfo/clientEmployeesTableColumns";
-import TabContentClientEmployees from "./pageClientInfo/tabContentClientEmployees";
+import { clientEmployeesTableColumns } from "./pageClientInfo/tabs/tabEmployeesList/clientEmployeesTableColumns";
+import TabContentClientEmployees from "./pageClientInfo/tabs/tabEmployeesList/tabContentClientEmployees";
 const pageClientInfo = ({ match, history }) => {
     const client_id = match.params.id;
     const [clientInfo, setClientInfo] = useState();
