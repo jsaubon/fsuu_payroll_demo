@@ -25,6 +25,7 @@ import ModalAddEditClient from "./pageClients/modalAddEditClient";
 import CardClientDetails from "./pageClientInfo/cardClientDetails";
 import { clientEmployeesTableColumns } from "./pageClientInfo/tabs/tabEmployeesList/clientEmployeesTableColumns";
 import TabContentClientEmployees from "./pageClientInfo/tabs/tabEmployeesList/tabContentClientEmployees";
+import TabContentClientAccountingEntries from "./pageClientInfo/tabs/tabDebitCreditSettings/tabContentClientAccountingEntries";
 const pageClientInfo = ({ match, history }) => {
     const client_id = match.params.id;
     const [clientInfo, setClientInfo] = useState();
@@ -95,7 +96,9 @@ const pageClientInfo = ({ match, history }) => {
                                 />
                             </Tabs.TabPane>
                             <Tabs.TabPane tab="Debit/Credit Settings" key="2">
-                                Content of Tab Pane 2
+                                <TabContentClientAccountingEntries
+                                    client_id={client_id}
+                                />
                             </Tabs.TabPane>
                         </Tabs>
                     </Card>

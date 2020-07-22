@@ -19,11 +19,6 @@ export const clientEmployeesTableColumns = (
 
     return [
         {
-            title: "#",
-            dataIndex: "id",
-            key: "id"
-        },
-        {
             title: "Name",
             dataIndex: "name",
             key: "name"
