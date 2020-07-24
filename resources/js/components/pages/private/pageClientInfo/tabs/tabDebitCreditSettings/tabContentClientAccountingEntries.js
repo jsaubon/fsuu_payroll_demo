@@ -12,10 +12,7 @@ import {
     notification
 } from "antd";
 import { fetchData } from "../../../../../../axios";
-import { clientDebitSettingsTableColumns } from "./clientDebitSettingsTableColumns";
-import { clientCreditSettingsTableColumns } from "./clientCreditSettingsTableColumns";
 import Title from "antd/lib/typography/Title";
-import FormAddDebitCredit from "./formAddDebitCredit";
 import TableAccountingEntries from "./tableAccountingEntries";
 
 const TabContentClientAccountingEntries = ({ client_id }) => {
