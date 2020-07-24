@@ -28,11 +28,6 @@ export const clientCreditSettingsTableColumns = getClientAccountingEntry => {
             key: "amount"
         },
         {
-            title: "Report Visibility",
-            dataIndex: "report_visibility",
-            key: "report_visibility"
-        },
-        {
             title: "Action",
             key: "action",
             width: "20%",

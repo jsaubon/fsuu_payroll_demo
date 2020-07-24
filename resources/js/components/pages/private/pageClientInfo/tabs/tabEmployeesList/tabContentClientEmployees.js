@@ -108,6 +108,15 @@ const TabContentClientEmployees = ({ client_id }) => {
                         handleOnPageSizeChange(current, size),
                     total: clientEmployees.length
                 }}
+                onChange={(pagination, filters, sorter) => {
+                    setEmployeesTableSettings({
+                        ...employeesTableSettings,
+                        order: sorter.columnKey ? sorter.columnKey : "name",
+                        sort: sorter.order
+                            ? sorter.order.replace("end", "")
+                            : "asc"
+                    });
+                }}
             />
             {showClientEmployeesModal && (
                 <ModalAddEditEmployee

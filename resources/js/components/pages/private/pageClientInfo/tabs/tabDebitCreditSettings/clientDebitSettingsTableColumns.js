@@ -28,14 +28,6 @@ export const clientDebitSettingsTableColumns = getClientAccountingEntry => {
             key: "amount"
         },
         {
-            title: "Report Visibility",
-            dataIndex: "report_visibility",
-            key: "report_visibility",
-            render: (text, record) => {
-                return record.report_visibility == 1 ? "Yes" : "No";
-            }
-        },
-        {
             title: "Action",
             key: "action",
             width: "20%",

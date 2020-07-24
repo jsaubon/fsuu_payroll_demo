@@ -19,7 +19,6 @@ class CreateClientAccountingEntriesTable extends Migration
             $table->string('type');
             $table->string('title');
             $table->double('amount');
-            $table->boolean('report_visibility')->default(true);
             $table->timestamps();
         });
     }

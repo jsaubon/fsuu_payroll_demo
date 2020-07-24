@@ -21,17 +21,20 @@ export const clientEmployeesTableColumns = (
         {
             title: "Name",
             dataIndex: "name",
-            key: "name"
+            key: "name",
+            sorter: true
         },
         {
             title: "Email",
             dataIndex: "email_address",
-            key: "email_address"
+            key: "email_address",
+            sorter: true
         },
         {
             title: "Phone",
             dataIndex: "contact_number",
-            key: "contact_number"
+            key: "contact_number",
+            sorter: true
         },
         {
             title: "Other Info",
@@ -57,6 +60,14 @@ export const clientEmployeesTableColumns = (
             render: (text, record) => {
                 return (
                     <Space size="middle" key={record.id}>
+                        <a
+                            onClick={e =>
+                                // toggleShowAddEditClientEmployeesModal(record)
+                                alert(record.id)
+                            }
+                        >
+                            Profile
+                        </a>
                         <a
                             onClick={e =>
                                 toggleShowAddEditClientEmployeesModal(record)

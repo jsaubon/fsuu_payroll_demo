@@ -36,25 +36,39 @@ class ClientAccountingEntryController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'client_id' => 'required',
-            'type' => 'required',
-            'title' => 'required',
-            'amount' => 'required',
-            'report_visibility' => 'required',
-        ]);
+        // $this->validate($request, [
+        //     'client_id' => 'required',
+        //     'type' => 'required',
+        //     'title' => 'required',
+        //     'amount' => 'required',
+        // ]);
+        if($request->debit) {
+            $type = 'debit';
+            $accounting_entries = $request->debit;
+        } else {
+            $type = 'credit';
+            $accounting_entries = $request->credit;
+        }
+        
+        
+        foreach ($accounting_entries as $key => $accounting_entry) {
+            $data = new ClientAccountingEntry();
+            if(isset($accounting_entry['id'])){
+                $data = $data->find($accounting_entry['id']);
+            } 
+            $data->type = $type;
+            $data->title = $accounting_entry['title'];
+            $data->amount = $accounting_entry['amount'];
+            $data->client_id = $request->client_id;
+            $data->save();
+            // $accounting_entry = $doc->toArray();
 
-        $accounting_entry = ClientAccountingEntry::create([
-            'client_id' => $request->client_id,
-            'type' => $request->type,
-            'title' => $request->title,
-            'amount' => $request->amount,
-            'report_visibility' => $request->report_visibility
-        ]);
+        }
+        
+
 
         return response()->json([
             'success' => true,
-            'data' => $accounting_entry
         ],200);
     }
 

@@ -9,7 +9,6 @@ const FormAddDebitCredit = ({ client_id, getClientAccountingEntry, type }) => {
             client_id,
             type
         };
-        console.log(e);
 
         fetchData("POST", "api/accounting_entry", data).then(res => {
             console.log(res);
@@ -35,7 +34,7 @@ const FormAddDebitCredit = ({ client_id, getClientAccountingEntry, type }) => {
                 ref={e => (formAddDebitCredit = e)}
             >
                 <Row>
-                    <Col xs={24} md={10} className="px-0">
+                    <Col xs={24} md={16} className="px-0">
                         <Form.Item
                             className="px-0"
                             name="title"
@@ -65,26 +64,6 @@ const FormAddDebitCredit = ({ client_id, getClientAccountingEntry, type }) => {
                                 placeholder="Amount"
                                 min={0}
                             />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} md={6} className="px-0">
-                        <Form.Item
-                            className="px-0"
-                            name="report_visibility"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please select Report Visibility"
-                                }
-                            ]}
-                        >
-                            <Select
-                                style={{ width: "100%" }}
-                                placeholder="Show on Report?"
-                            >
-                                <Select.Option value={1}>Yes</Select.Option>
-                                <Select.Option value={0}>No</Select.Option>
-                            </Select>
                         </Form.Item>
                     </Col>
                     <Col xs={24} md={4} className="px-0">

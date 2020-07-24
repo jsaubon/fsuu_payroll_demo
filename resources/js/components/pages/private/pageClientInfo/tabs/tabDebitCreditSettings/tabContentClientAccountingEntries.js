@@ -7,23 +7,90 @@ import {
     Table,
     Divider,
     Form,
-    InputNumber
+    InputNumber,
+    Space,
+    notification
 } from "antd";
 import { fetchData } from "../../../../../../axios";
 import { clientDebitSettingsTableColumns } from "./clientDebitSettingsTableColumns";
 import { clientCreditSettingsTableColumns } from "./clientCreditSettingsTableColumns";
 import Title from "antd/lib/typography/Title";
 import FormAddDebitCredit from "./formAddDebitCredit";
+import TableAccountingEntries from "./tableAccountingEntries";
 
 const TabContentClientAccountingEntries = ({ client_id }) => {
-    const [
-        clientAccountingEntryDebits,
-        setClientAccountingEntryDebits
-    ] = useState([]);
-    const [
-        clientAccountingEntryCredits,
-        setClientAccountingEntryCredits
-    ] = useState([]);
+    const [creditList, setCreditList] = useState([
+        {
+            title: "SSS",
+            amount: 0
+        },
+        {
+            title: "PhilHealth",
+            amount: 0
+        },
+        {
+            title: "Pag-IBIG",
+            amount: 0
+        },
+        {
+            title: "Band",
+            amount: 0
+        },
+        {
+            title: "LOANS SSS",
+            amount: 0
+        },
+        {
+            title: "LOANS Pag-IBIG",
+            amount: 0
+        },
+        {
+            title: "OTHERS C/A",
+            amount: 0
+        },
+        {
+            title: "OTHERS Canteen",
+            amount: 0
+        },
+        {
+            title: "OTHERS Ammos & Accessories",
+            amount: 0
+        },
+        {
+            title: "OTHERS Misc.",
+            amount: 0
+        }
+    ]);
+    const [debitList, setDebitList] = useState([
+        {
+            title: "Basic Pay",
+            amount: 0
+        },
+        {
+            title: "Night Premium Pay",
+            amount: 0
+        },
+        {
+            title: "13th-Month Pay",
+            amount: 0
+        },
+        {
+            title: "5-Day Service Leave",
+            amount: 0
+        },
+        {
+            title: "COLA",
+            amount: 0
+        },
+        {
+            title: "Overtime Pay",
+            amount: 0
+        },
+        {
+            title: "Others",
+            amount: 0
+        }
+    ]);
 
     useEffect(() => {
         getClientAccountingEntry();
@@ -33,59 +100,80 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
         fetchData("GET", "api/accounting_entry?client_id=" + client_id).then(
             res => {
                 console.log(res);
-                setClientAccountingEntryDebits(res.debit);
-                setClientAccountingEntryCredits(res.credit);
+                if (res.credit.length) {
+                    setCreditList(res.credit);
+                }
+                if (res.debit.length) {
+                    setDebitList(res.debit);
+                }
+                // setClientAccountingEntryDebits(res.debit);
+                // setClientAccountingEntryCredits(res.credit);
             }
         );
     };
+
+    const saveCreditSettings = () => {
+        fetchData("POST", "api/accounting_entry", {
+            credit: creditList,
+            client_id
+        }).then(res => {
+            if (res.success) {
+                notification.success({
+                    message: "Credit Settings Successfully Saved"
+                });
+            }
+        });
+    };
+
+    const saveDebitSettings = () => {
+        fetchData("POST", "api/accounting_entry", {
+            debit: debitList,
+            client_id
+        }).then(res => {
+            if (res.success) {
+                notification.success({
+                    message: "Debit Settings Successfully Saved"
+                });
+            }
+        });
+    };
+
     return (
         <>
             <Row>
-                <Col xs={24} md={24}>
+                <Col xs={24} md={12}>
                     <Title level={3}>Debits</Title>
-                    <FormAddDebitCredit
-                        client_id={client_id}
-                        getClientAccountingEntry={getClientAccountingEntry}
-                        type="debit"
-                    />
 
-                    <Table
-                        dataSource={clientAccountingEntryDebits}
-                        columns={clientDebitSettingsTableColumns(
-                            getClientAccountingEntry
-                        )}
-                        pagination={false}
-                        // pagination={{
-                        //     onChange: (page, pageSize) =>
-                        //         handleOnPageChange(page, pageSize),
-                        //     onShowSizeChange: (current, size) =>
-                        //         handleOnPageSizeChange(current, size),
-                        //     total: clientDebitSettings.length
-                        // }}
+                    <TableAccountingEntries
+                        accountingEntries={debitList}
+                        setAccountingEntries={setDebitList}
                     />
-                    <Divider />
+                    <div className="mt-10">
+                        <Button
+                            type="primary"
+                            block
+                            onClick={e => saveDebitSettings()}
+                        >
+                            Save Debit Settings
+                        </Button>
+                    </div>
+                </Col>
+                <Col xs={24} md={12}>
                     <Title level={3}>Credits</Title>
 
-                    <FormAddDebitCredit
-                        client_id={client_id}
-                        getClientAccountingEntry={getClientAccountingEntry}
-                        type="credit"
+                    <TableAccountingEntries
+                        accountingEntries={creditList}
+                        setAccountingEntries={setCreditList}
                     />
-
-                    <Table
-                        dataSource={clientAccountingEntryCredits}
-                        columns={clientCreditSettingsTableColumns(
-                            getClientAccountingEntry
-                        )}
-                        pagination={false}
-                        // pagination={{
-                        //     onChange: (page, pageSize) =>
-                        //         handleOnPageChange(page, pageSize),
-                        //     onShowSizeChange: (current, size) =>
-                        //         handleOnPageSizeChange(current, size),
-                        //     total: clientDebitSettings.length
-                        // }}
-                    />
+                    <div className="mt-10">
+                        <Button
+                            type="primary"
+                            block
+                            onClick={e => saveCreditSettings()}
+                        >
+                            Save Credit Settings
+                        </Button>
+                    </div>
                 </Col>
             </Row>
         </>
