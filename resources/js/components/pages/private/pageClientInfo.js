@@ -79,7 +79,7 @@ const pageClientInfo = ({ match, history }) => {
                 <Col xs={24} md={6}></Col>
             </Row>
             <Row>
-                <Col xs={24} md={8} className="px-0 ">
+                <Col xs={24} md={6} className="px-0 ">
                     <CardClientDetails
                         toggleShowModalAddEditClient={
                             toggleShowModalAddEditClient
@@ -87,7 +87,7 @@ const pageClientInfo = ({ match, history }) => {
                         clientInfo={clientInfo}
                     />
                 </Col>
-                <Col xs={24} md={16}>
+                <Col xs={24} md={18}>
                     <Card className="pt-0">
                         <Tabs defaultActiveKey="1" onChange={changeTabCallback}>
                             <Tabs.TabPane tab="Employees List" key="1">
