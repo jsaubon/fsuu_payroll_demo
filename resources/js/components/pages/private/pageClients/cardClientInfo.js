@@ -4,6 +4,7 @@ import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { PhoneOutlined, CalendarOutlined } from "@ant-design/icons";
 import moment from "moment";
+import Paragraph from "antd/lib/typography/Paragraph";
 
 const CardClientInfo = ({ history, client }) => {
     const goToClient = id => {
@@ -23,32 +24,26 @@ const CardClientInfo = ({ history, client }) => {
                         />
                     }
                 >
-                    {/* <Meta
-                                        title={client.name}
-                                        description={`${client.address} <br/> ${client.contact_number}`}
-                                    /> */}
                     <Title level={4}>{client.name}</Title>
-                    {client.address && (
-                        <>
-                            <Text>{client.address}</Text>
-                            <br></br>
-                        </>
-                    )}
-
-                    {client.contact_number && (
-                        <>
-                            <Text>
-                                <PhoneOutlined /> {client.contact_number}
-                            </Text>
-                            <br></br>
-                        </>
-                    )}
-                    {client.client_since && (
-                        <Text>
-                            <CalendarOutlined />{" "}
-                            {moment(client.client_since).format("YYYY-MM-DD")}
-                        </Text>
-                    )}
+                    <Paragraph
+                        ellipsis={{
+                            rows: 1
+                        }}
+                        title={`${client.address}`}
+                        className="mb-0"
+                    >
+                        {client.address || "-"}
+                    </Paragraph>
+                    <Text>
+                        <PhoneOutlined /> {client.contact_number || "-"}
+                    </Text>
+                    <br></br>
+                    <Text>
+                        <CalendarOutlined />{" "}
+                        {client.client_since
+                            ? moment(client.client_since).format("YYYY-MM-DD")
+                            : "-"}
+                    </Text>
                 </Card>
             </Col>
         </>

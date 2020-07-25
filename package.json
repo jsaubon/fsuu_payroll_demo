@@ -28,6 +28,7 @@
         "@ant-design/icons": "^4.2.1",
         "antd": "^4.4.2",
         "moment": "^2.27.0",
+        "react-easy-print": "^0.6.0",
         "react-router-dom": "^5.2.0"
     }
 }

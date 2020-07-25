@@ -26,7 +26,7 @@ import CardClientDetails from "./pageClientInfo/cardClientDetails";
 import { clientEmployeesTableColumns } from "./pageClientInfo/tabs/tabEmployeesList/clientEmployeesTableColumns";
 import TabContentClientEmployees from "./pageClientInfo/tabs/tabEmployeesList/tabContentClientEmployees";
 import TabContentClientAccountingEntries from "./pageClientInfo/tabs/tabDebitCreditSettings/tabContentClientAccountingEntries";
-const pageClientInfo = ({ match, history }) => {
+const PageClientInfo = ({ match, history }) => {
     const client_id = match.params.id;
     const [clientInfo, setClientInfo] = useState();
     const [showModalAddEditClient, setShowModalAddEditClient] = useState(false);
@@ -114,4 +114,4 @@ const pageClientInfo = ({ match, history }) => {
     );
 };
 
-export default pageClientInfo;
+export default PageClientInfo;

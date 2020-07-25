@@ -14,17 +14,23 @@ class ClientEmployeeController extends Controller
      */
     public function index(Request $request)
     {
-        $client_employees = ClientEmployee::where('client_id',$request->client_id)
-                                    ->where(function($query) use ($request) {
-                                        $query->where('name','like',isset($request->search) ? '%'.$request->search.'%' : '%%')
-                                        ->orWhere('email_address','like',isset($request->search) ? '%'.$request->search.'%' : '%%')
-                                        ->orWhere('contact_number','like',isset($request->search) ? '%'.$request->search.'%' : '%%');
-                                    })
-                                    ->orderBy($request->order,$request->sort)
-                                    ->limit($request->size)
-                                    ->offset($request->size * ($request->page -1))
-                                    ->with('other_infos')
-                                    ->get();
+        $client_employees = ClientEmployee::where('client_id',$request->client_id);
+
+        if(isset($request->order)) {
+            $client_employees = $client_employees->where(function($query) use ($request) {
+                $query->where('name','like',isset($request->search) ? '%'.$request->search.'%' : '%%')
+                ->orWhere('email_address','like',isset($request->search) ? '%'.$request->search.'%' : '%%')
+                ->orWhere('contact_number','like',isset($request->search) ? '%'.$request->search.'%' : '%%');
+            })
+            ->orderBy($request->order,$request->sort)
+            ->limit($request->size)
+            ->offset($request->size * ($request->page -1))
+            ->with('other_infos');
+        } else {
+            $client_employees = $client_employees->orderBy('name','asc');   
+        }
+                                    
+        $client_employees = $client_employees->get();
 
         return response()->json([
             'success' => true,

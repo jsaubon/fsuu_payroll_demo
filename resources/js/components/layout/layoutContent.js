@@ -4,7 +4,8 @@ import { Layout, Breadcrumb } from "antd";
 import LayoutHeader from "./LayoutHeader";
 import LayoutFooter from "./LayoutFooter";
 import PageClients from "../pages/private/PageClients";
-import pageClientInfo from "../pages/private/pageClientInfo";
+import PageClientInfo from "../pages/private/pageClientInfo";
+import PagePayrolls from "../pages/private/pagePayrolls";
 
 const LayoutContent = () => {
     const { Content } = Layout;
@@ -24,8 +25,13 @@ const LayoutContent = () => {
                         <Route exact path="/clients" component={PageClients} />
                         <Route
                             exact
+                            path="/payrolls"
+                            component={PagePayrolls}
+                        />
+                        <Route
+                            exact
                             path="/clients/:id"
-                            component={pageClientInfo}
+                            component={PageClientInfo}
                         />
                         <Route path="/" exact>
                             <Redirect to="/clients" />
