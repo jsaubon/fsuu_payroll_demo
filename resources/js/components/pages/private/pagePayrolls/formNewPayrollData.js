@@ -14,19 +14,14 @@ import {
 } from "antd";
 import { fetchData } from "../../../../axios";
 
-const FormNewPayrollData = ({ payrollDetails, setPayrollDetails }) => {
-    const [form] = Form.useForm();
+const FormNewPayrollData = ({
+    payrollDetails,
+    setPayrollDetails,
+    accountingEntries,
+    setAccountingEntries
+}) => {
     const [employeesList, setEmployeesList] = useState([]);
     const [showLoading, setShowLoading] = useState(false);
-
-    const submitForm = e => {
-        console.log(e);
-        let _employeeList = payrollDetails.employeeList;
-        _employeeList.push(e);
-        setPayrollDetails({ ...payrollDetails, employeeList: _employeeList });
-        form.resetFields();
-        notification.success({ message: e.employee_id + " Payroll Added" });
-    };
 
     useEffect(() => {
         setShowLoading(true);
@@ -34,102 +29,221 @@ const FormNewPayrollData = ({ payrollDetails, setPayrollDetails }) => {
             "GET",
             "api/employee?client_id=" + payrollDetails.client_id
         ).then(res => {
-            console.log(res);
             if (res.success) {
                 setShowLoading(false);
-                setEmployeesList(res.data);
+                // setEmployeesList(res.data);
+                // console.log(res.data);
+                let _employeeList = [];
+                res.data.map((employee, key) => {
+                    _employeeList.push({
+                        id: employee.id,
+                        name: employee.name,
+                        days_of_work: 0,
+                        hours_overtime: 0
+                    });
+                });
+
+                setEmployeesList(_employeeList);
             }
         });
 
         return () => {};
     }, [payrollDetails.client_id]);
 
+    useEffect(() => {
+        // console.log(payrollDetails);
+        if (payrollDetails.client_id != "") {
+            fetchData(
+                "GET",
+                "api/accounting_entry?client_id=" + payrollDetails.client_id
+            ).then(res => {
+                if (res.success) {
+                    setAccountingEntries({
+                        debit: res.debit,
+                        credit: res.credit
+                    });
+                }
+            });
+        }
+        return () => {};
+    }, [payrollDetails]);
+
+    const handleUpdateEmployee = (index, key, value) => {
+        let _employeeList = [...employeesList];
+        _employeeList[index][key] = value;
+        setEmployeesList([..._employeeList]);
+    };
+
+    useEffect(() => {
+        let _payrollData = [];
+        employeesList.map((employee, key) => {
+            let _employeePayroll = {
+                name: employee.name,
+                days_of_work: employee.days_of_work,
+                debit: [],
+                credit: [],
+                neyPay: 0
+            };
+
+            let grossPay = 0;
+            accountingEntries.debit.map((debit, key) => {
+                let amount =
+                    debit.title != "Overtime Pay"
+                        ? debit.amount * employee.days_of_work
+                        : debit.amount * employee.hours_overtime;
+
+                grossPay += amount;
+
+                _employeePayroll.debit.push({
+                    title: debit.title,
+                    amount: amount
+                });
+            });
+            _employeePayroll.debit.push({
+                title: "GROSS PAY",
+                amount: grossPay
+            });
+
+            let netPay = 0;
+            accountingEntries.credit.map((credit, key) => {
+                _employeePayroll.credit.push({
+                    title: credit.title,
+                    amount: credit.amount
+                });
+
+                netPay += credit.amount;
+            });
+            _employeePayroll.netPay =
+                _employeePayroll.debit[_employeePayroll.debit.length - 1]
+                    .amount - netPay;
+            _payrollData.push(_employeePayroll);
+        });
+        setPayrollDetails({
+            ...payrollDetails,
+            employeePayroll: [..._payrollData]
+        });
+        return () => {};
+    }, [employeesList]);
+
     return (
         <>
-            <Title level={4}>New Payroll Data</Title>
-            <Form
-                // {...layout}
-                // layout="inline"
-                form={form}
-                name="basic"
-                onFinish={e => submitForm(e)}
-                onFinishFailed={e => console.log(e)}
-                // initialValues={payrollData}
-            >
-                <Row>
-                    <Col xs={24} md={12} className="p-0">
-                        <Form.Item
-                            name="employee_id"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please select Employee"
-                                }
-                            ]}
-                        >
-                            <Select
-                                placeholder="Select Employee"
-                                name="employee_id"
-                                style={{ width: "100%" }}
-                                allowClear
-                                showSearch
-                                loading={showLoading}
-                            >
-                                {employeesList.map((employee, key) => {
-                                    return (
-                                        <Select.Option
-                                            key={key}
-                                            value={employee.name}
-                                        >
-                                            {employee.name}
-                                        </Select.Option>
-                                    );
-                                })}
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} md={5} className="p-0">
-                        <Form.Item
-                            name="days_present"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please input Days Present"
-                                }
-                            ]}
-                        >
-                            <InputNumber
-                                style={{ width: "100%" }}
-                                name="days_present"
-                                placeholder="Days Present"
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} md={5} className="p-0">
-                        <Form.Item
-                            name="hours_overtime"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please input Hours Overtime"
-                                }
-                            ]}
-                        >
-                            <InputNumber
-                                style={{ width: "100%" }}
-                                name="hours_overtime"
-                                placeholder="Hours Overtime"
-                            />
-                        </Form.Item>
-                    </Col>
-
-                    <Col xs={24} md={2}>
-                        <Button type="primary" block htmlType="submit">
-                            Add
-                        </Button>
-                    </Col>
-                </Row>
-            </Form>
+            <Row>
+                <Col xs={{ span: 24, offset: 0 }} md={{ span: 12, offset: 6 }}>
+                    <div className="ant-table ant-table-bordered ant-table-responsive">
+                        <div className="ant-table-container">
+                            <div className="ant-table-content">
+                                <table style={{ tableLayout: "auto" }}>
+                                    <thead className="ant-table-thead">
+                                        <tr>
+                                            <th
+                                                className="ant-table-cell text-center"
+                                                colSpan={4}
+                                            >
+                                                Employees
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th
+                                                className="ant-table-cell"
+                                                style={{ width: 50 }}
+                                            >
+                                                #
+                                            </th>
+                                            <th className="ant-table-cell">
+                                                Name
+                                            </th>
+                                            <th
+                                                className="ant-table-cell text-center"
+                                                style={{ width: 150 }}
+                                            >
+                                                # of Days Work
+                                            </th>
+                                            <th
+                                                className="ant-table-cell text-center"
+                                                style={{ width: 150 }}
+                                            >
+                                                Hours Overtime
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="ant-table-tbody">
+                                        {employeesList.length > 0 ? (
+                                            employeesList.map(
+                                                (employee, key) => {
+                                                    return (
+                                                        <tr
+                                                            key={key}
+                                                            className="ant-table-row ant-table-row-level-0"
+                                                        >
+                                                            <td className="ant-table-cell">
+                                                                {key + 1}
+                                                            </td>
+                                                            <td className="ant-table-cell">
+                                                                {employee.name}
+                                                            </td>
+                                                            <td className="ant-table-cell">
+                                                                <InputNumber
+                                                                    style={{
+                                                                        width:
+                                                                            "100%"
+                                                                    }}
+                                                                    value={
+                                                                        employee.days_of_work
+                                                                    }
+                                                                    onChange={value =>
+                                                                        handleUpdateEmployee(
+                                                                            key,
+                                                                            "days_of_work",
+                                                                            value
+                                                                        )
+                                                                    }
+                                                                    min={0}
+                                                                />
+                                                            </td>
+                                                            <td className="ant-table-cell">
+                                                                <InputNumber
+                                                                    style={{
+                                                                        width:
+                                                                            "100%"
+                                                                    }}
+                                                                    name="hours_overtime"
+                                                                    value={
+                                                                        employee.hours_overtime
+                                                                    }
+                                                                    onChange={value =>
+                                                                        handleUpdateEmployee(
+                                                                            key,
+                                                                            "hours_overtime",
+                                                                            value
+                                                                        )
+                                                                    }
+                                                                    min={0}
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                }
+                                            )
+                                        ) : (
+                                            <tr
+                                                className="ant-table-row
+                                            ant-table-row-level-0"
+                                            >
+                                                <td
+                                                    className="ant-table-cell text-center"
+                                                    colSpan={4}
+                                                >
+                                                    No Data Found
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </Col>
+            </Row>
         </>
     );
 };

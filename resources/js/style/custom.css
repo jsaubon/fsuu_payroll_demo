@@ -169,3 +169,23 @@ body {
     border-right: 0 !important;
     text-align: left;
 }
+
+.text-center {
+    text-align: center !important;
+}
+
+.fz-10 {
+    font-size: 10px;
+}
+
+.fz-12 {
+    font-size: 12px;
+}
+
+.br-1 {
+    border-right: 1px solid black !important;
+}
+
+.border-2 {
+    border: 1px solid black !important;
+}

@@ -17,6 +17,7 @@ import PrintProvider, { Print, NoPrint } from "react-easy-print";
 import { UserOutlined } from "@ant-design/icons";
 import FormNewPayrollData from "./formNewPayrollData";
 import { fetchData } from "../../../../axios";
+import TblPayrollData from "./tblPayrollData";
 
 const CardNewPayroll = () => {
     const [clientsList, setClientsList] = useState([]);
@@ -29,17 +30,18 @@ const CardNewPayroll = () => {
         });
         return () => {};
     }, []);
+
     const [payrollDetails, setPayrollDetails] = useState({
         client_id: "",
         date_start: "",
         date_end: "",
-        employeeList: []
+        employeePayroll: []
     });
 
-    useEffect(() => {
-        console.log(payrollDetails);
-        return () => {};
-    }, [payrollDetails]);
+    const [accountingEntries, setAccountingEntries] = useState({
+        debit: [],
+        credit: []
+    });
 
     return (
         <>
@@ -123,26 +125,23 @@ const CardNewPayroll = () => {
                             </div>
                         </Col>
                     </Row>
-                    <Card className="mt-10">
-                        <FormNewPayrollData
-                            setPayrollDetails={setPayrollDetails}
+                    <NoPrint>
+                        <Card className="mt-10">
+                            <FormNewPayrollData
+                                setPayrollDetails={setPayrollDetails}
+                                payrollDetails={payrollDetails}
+                                clientsList={clientsList}
+                                accountingEntries={accountingEntries}
+                                setAccountingEntries={setAccountingEntries}
+                            />
+                        </Card>
+                    </NoPrint>
+                    {payrollDetails.employeePayroll.length > 0 && (
+                        <TblPayrollData
                             payrollDetails={payrollDetails}
-                            clientsList={clientsList}
+                            accountingEntries={accountingEntries}
                         />
-                    </Card>
-                    <div className="ant-table ant-table-bordered">
-                        <div className="ant-table-container">
-                            <div className="ant-table-content">
-                                <table style={{ tableLayout: "auto" }}>
-                                    <thead className="ant-table-thead">
-                                        <tr>
-                                            <th className="ant-table-cell"></th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                    )}
                 </Print>
             </Card>
         </>
