@@ -140,6 +140,7 @@ const CardNewPayroll = () => {
                         <TblPayrollData
                             payrollDetails={payrollDetails}
                             accountingEntries={accountingEntries}
+                            setPayrollDetails={setPayrollDetails}
                         />
                     )}
                 </Print>

@@ -1,13 +1,73 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Modal, Popconfirm } from "antd";
+import { head } from "lodash";
 
-const TblPayrollData = ({ payrollDetails, accountingEntries }) => {
+const TblPayrollData = ({
+    payrollDetails,
+    setPayrollDetails,
+    accountingEntries
+}) => {
     useEffect(() => {
-        console.log(payrollDetails.employeePayroll);
+        //console.log("payrollDetails", payrollDetails);
+        return () => {};
+    }, [payrollDetails.employeePayroll]);
+
+    const [
+        showModalTblHeaderCalculation,
+        setShowModalTblHeaderCalculation
+    ] = useState(false);
+
+    const [selectedHeader, setSelectedHeader] = useState();
+    const toggleShowModalTblHeaderCalculation = header => {
+        setSelectedHeader(header);
+        setShowModalTblHeaderCalculation(!showModalTblHeaderCalculation);
+    };
+
+    const handleRemovePayrollCalculation = () => {
+        let _employeePayroll = payrollDetails.employeePayroll;
+
+        _employeePayroll.forEach(payrolls => {
+            let column = payrolls[selectedHeader.type].find(
+                p => p.id == selectedHeader.id
+            );
+            column.amount = "0.00";
+
+            let totalDebit = 0;
+            payrolls.debit.forEach(payroll => {
+                if (payroll.title != "13th-Month Pay") {
+                    totalDebit += parseFloat(payroll.amount);
+                } else {
+                    // payroll.amount = totalDebit.toFixed(2);
+                }
+            });
+            payrolls.grossPay = totalDebit.toFixed(2);
+
+            let totalCredit = 0;
+            payrolls.credit.forEach(payroll => {
+                totalCredit += parseFloat(payroll.amount);
+            });
+            //console.log(totalDebit, totalCredit, totalDebit - totalCredit);
+            payrolls.netPay = (totalDebit - totalCredit).toFixed(2);
+        });
+
+        setPayrollDetails({
+            ...payrollDetails,
+            employeePayroll: [..._employeePayroll]
+        });
+
+        toggleShowModalTblHeaderCalculation();
+    };
+
+    useEffect(() => {
+        // setPayrollDetails({
+        //     ...payrollDetails,
+        //     employeePayroll: [..._payrollData]
+        // });
         return () => {};
     }, [payrollDetails.employeePayroll]);
     return (
         <>
-            <div className="ant-table ant-table-bordered ant-table-responsive mt-10 ant-table-small">
+            <div className="ant-table ant-table-bordered ant-table-responsive mt-10 ant-table-small o-flow-x">
                 <div className="ant-table-container">
                     <div className="ant-table-content">
                         <table style={{ tableLayout: "auto" }}>
@@ -21,9 +81,7 @@ const TblPayrollData = ({ payrollDetails, accountingEntries }) => {
                                     </th>
                                     <th
                                         className="ant-table-cell text-center fz-12"
-                                        colSpan={
-                                            accountingEntries.debit.length + 1
-                                        }
+                                        colSpan={accountingEntries.debit.length}
                                     >
                                         DEBIT
                                     </th>
@@ -60,14 +118,21 @@ const TblPayrollData = ({ payrollDetails, accountingEntries }) => {
                                     </th>
                                     {accountingEntries.debit.map(
                                         (debit, key) => {
-                                            return (
-                                                <th
-                                                    className="ant-table-cell text-center fz-10"
-                                                    key={key}
-                                                >
-                                                    {debit.title}
-                                                </th>
-                                            );
+                                            if (debit.visible) {
+                                                return (
+                                                    <th
+                                                        className="ant-table-cell text-center fz-10 c-pointer"
+                                                        key={key}
+                                                        onClick={e =>
+                                                            toggleShowModalTblHeaderCalculation(
+                                                                debit
+                                                            )
+                                                        }
+                                                    >
+                                                        {debit.title}
+                                                    </th>
+                                                );
+                                            }
                                         }
                                     )}
                                     <th className="ant-table-cell text-center fz-10 ">
@@ -77,8 +142,13 @@ const TblPayrollData = ({ payrollDetails, accountingEntries }) => {
                                         (credit, key) => {
                                             return (
                                                 <th
-                                                    className="ant-table-cell text-center fz-10"
+                                                    className="ant-table-cell text-center fz-10 c-pointer"
                                                     key={key}
+                                                    onClick={e =>
+                                                        toggleShowModalTblHeaderCalculation(
+                                                            credit
+                                                        )
+                                                    }
                                                 >
                                                     {credit.title}
                                                 </th>
@@ -90,7 +160,16 @@ const TblPayrollData = ({ payrollDetails, accountingEntries }) => {
                             <tbody className="ant-table-tbody">
                                 {payrollDetails.employeePayroll.map(
                                     (employee, key) => {
-                                        if (employee.debit.length > 0) {
+                                        let row_number = 0;
+                                        let _debit_basic_pay = employee.debit.find(
+                                            p => p.title == "Basic Pay"
+                                        );
+
+                                        if (
+                                            _debit_basic_pay &&
+                                            _debit_basic_pay.amount > 0
+                                        ) {
+                                            row_number++;
                                             return (
                                                 <tr
                                                     key={key}
@@ -98,7 +177,7 @@ const TblPayrollData = ({ payrollDetails, accountingEntries }) => {
                                                 ant-table-row-level-0"
                                                 >
                                                     <td className="ant-table-cell text-center fz-10">
-                                                        {key}
+                                                        {row_number}
                                                     </td>
                                                     <td
                                                         className="ant-table-cell text-center fz-10"
@@ -106,34 +185,57 @@ const TblPayrollData = ({ payrollDetails, accountingEntries }) => {
                                                             whiteSpace: "nowrap"
                                                         }}
                                                     >
-                                                        {employee.name}
+                                                        <b>{employee.name}</b>
                                                     </td>
                                                     <td className="ant-table-cell text-center fz-10">
                                                         {employee.days_of_work}
                                                     </td>
                                                     {employee.debit.map(
                                                         (debit, debit_key) => {
+                                                            if (debit.visible) {
+                                                                return (
+                                                                    <td
+                                                                        key={
+                                                                            debit_key
+                                                                        }
+                                                                        className="ant-table-cell text-center fz-10"
+                                                                    >
+                                                                        {
+                                                                            debit.amount
+                                                                        }
+                                                                    </td>
+                                                                );
+                                                            }
+                                                        }
+                                                    )}
+                                                    <td className="ant-table-cell text-center fz-10">
+                                                        <b>
+                                                            {employee.grossPay}
+                                                        </b>
+                                                    </td>
+                                                    {employee.credit.map(
+                                                        (
+                                                            credit,
+                                                            credit_key
+                                                        ) => {
                                                             return (
                                                                 <td
                                                                     key={
-                                                                        debit_key
+                                                                        credit_key
                                                                     }
                                                                     className="ant-table-cell text-center fz-10"
                                                                 >
-                                                                    {debit.title ==
-                                                                    "GROSS PAY" ? (
-                                                                        <b>
-                                                                            {
-                                                                                debit.amount
-                                                                            }
-                                                                        </b>
-                                                                    ) : (
-                                                                        debit.amount
-                                                                    )}
+                                                                    {
+                                                                        credit.amount
+                                                                    }
                                                                 </td>
                                                             );
                                                         }
                                                     )}
+                                                    <td className="ant-table-cell text-center fz-10">
+                                                        <b>{employee.netPay}</b>
+                                                    </td>
+                                                    <td className="ant-table-cell text-center fz-10"></td>
                                                 </tr>
                                             );
                                         }
@@ -144,6 +246,21 @@ const TblPayrollData = ({ payrollDetails, accountingEntries }) => {
                     </div>
                 </div>
             </div>
+            <Modal
+                title="Confirmation"
+                okText="Yes"
+                cancelText="No"
+                visible={showModalTblHeaderCalculation}
+                onOk={e => {
+                    handleRemovePayrollCalculation();
+                }}
+                onCancel={toggleShowModalTblHeaderCalculation}
+            >
+                <p>
+                    Remove "{selectedHeader && selectedHeader.title}" from
+                    Payroll Calculation?
+                </p>
+            </Modal>
         </>
     );
 };

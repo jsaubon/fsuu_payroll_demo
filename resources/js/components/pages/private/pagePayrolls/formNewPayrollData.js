@@ -58,9 +58,18 @@ const FormNewPayrollData = ({
                 "api/accounting_entry?client_id=" + payrollDetails.client_id
             ).then(res => {
                 if (res.success) {
+                    let _debit = res.debit;
+                    _debit.forEach(debit => {
+                        debit["visible"] =
+                            debit.title == "13th-Month Pay" ? false : true;
+                    });
+                    let _credit = res.credit;
+                    _credit.forEach(credit => {
+                        credit["visible"] = true;
+                    });
                     setAccountingEntries({
-                        debit: res.debit,
-                        credit: res.credit
+                        debit: _debit,
+                        credit: _credit
                     });
                 }
             });
@@ -82,7 +91,8 @@ const FormNewPayrollData = ({
                 days_of_work: employee.days_of_work,
                 debit: [],
                 credit: [],
-                neyPay: 0
+                netPay: 0,
+                grossPay: 0
             };
 
             let grossPay = 0;
@@ -91,31 +101,42 @@ const FormNewPayrollData = ({
                     debit.title != "Overtime Pay"
                         ? debit.amount * employee.days_of_work
                         : debit.amount * employee.hours_overtime;
+                amount = amount.toFixed(2);
 
-                grossPay += amount;
+                if (debit.title != "13th-Month Pay") {
+                    grossPay += parseFloat(amount);
+                }
 
                 _employeePayroll.debit.push({
+                    id: debit.id,
                     title: debit.title,
-                    amount: amount
+                    amount: amount,
+                    visible: debit.title == "13th-Month Pay" ? false : true
                 });
             });
-            _employeePayroll.debit.push({
-                title: "GROSS PAY",
-                amount: grossPay
-            });
+
+            _employeePayroll.grossPay = grossPay.toFixed(2);
+
+            // _employeePayroll.debit.push({
+            //     title: "GROSS PAY",
+            //     amount: grossPay.toFixed(2),
+            //     visible: true
+            // });
 
             let netPay = 0;
             accountingEntries.credit.map((credit, key) => {
+                let amount = credit.amount;
+                amount = amount.toFixed(2);
                 _employeePayroll.credit.push({
+                    id: credit.id,
                     title: credit.title,
-                    amount: credit.amount
+                    amount: amount,
+                    visible: true
                 });
 
-                netPay += credit.amount;
+                netPay += parseFloat(amount);
             });
-            _employeePayroll.netPay =
-                _employeePayroll.debit[_employeePayroll.debit.length - 1]
-                    .amount - netPay;
+            _employeePayroll.netPay = (grossPay - netPay).toFixed(2);
             _payrollData.push(_employeePayroll);
         });
         setPayrollDetails({
