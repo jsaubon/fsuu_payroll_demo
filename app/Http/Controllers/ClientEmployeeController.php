@@ -27,7 +27,9 @@ class ClientEmployeeController extends Controller
             ->offset($request->size * ($request->page -1))
             ->with('other_infos');
         } else {
-            $client_employees = $client_employees->orderBy('name','asc');   
+            $client_employees = $client_employees->with(['client_employee_deductions' => function($query) use ($request) {
+                $query->where('date_applied','>=',$request->date_start)->where('date_applied','<=',$request->date_end);
+            }])->orderBy('name','asc');   
         }
                                     
         $client_employees = $client_employees->get();

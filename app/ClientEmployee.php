@@ -26,7 +26,7 @@ class ClientEmployee extends Model
     }
 
     public function client_employee_deductions() {
-        return $this->hasMany('App\ClientEmployeeDeductions','employee_id');
+        return $this->hasMany('App\ClientEmployeeDeduction','employee_id');
     }
 
     

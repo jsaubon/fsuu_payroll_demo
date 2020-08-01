@@ -25,31 +25,38 @@ const FormNewPayrollData = ({
     const [showLoading, setShowLoading] = useState(false);
 
     useEffect(() => {
-        setShowLoading(true);
-        fetchData(
-            "GET",
-            "api/employee?client_id=" + payrollDetails.client_id
-        ).then(res => {
-            if (res.success) {
-                setShowLoading(false);
-                // setEmployeesList(res.data);
-                // let row_number = 0;(res.data);
-                let _employeeList = [];
-                res.data.map((employee, key) => {
-                    _employeeList.push({
-                        id: employee.id,
-                        name: employee.name,
-                        days_of_work: 0,
-                        hours_overtime: 0
+        if (payrollDetails.date_start != "") {
+            setShowLoading(true);
+            fetchData(
+                "GET",
+                "api/employee?client_id=" +
+                    payrollDetails.client_id +
+                    "&date_start=" +
+                    payrollDetails.date_start +
+                    "&date_end=" +
+                    payrollDetails.date_end
+            ).then(res => {
+                console.log(res);
+                if (res.success) {
+                    setShowLoading(false);
+                    let _employeeList = [];
+                    res.data.map((employee, key) => {
+                        _employeeList.push({
+                            id: employee.id,
+                            name: employee.name,
+                            days_of_work: 0,
+                            hours_overtime: 0,
+                            deductions: employee.client_employee_deductions
+                        });
                     });
-                });
 
-                setEmployeesList(_employeeList);
-            }
-        });
+                    setEmployeesList(_employeeList);
+                }
+            });
+        }
 
         return () => {};
-    }, [payrollDetails.client_id]);
+    }, [payrollDetails.date_start]);
 
     useEffect(() => {
         // console.log(payrollDetails);
@@ -83,6 +90,9 @@ const FormNewPayrollData = ({
         _employeeList[index][key] = value;
         setEmployeesList([..._employeeList]);
     };
+
+    const arrayColumn = (arr, n) => arr.map(x => x[n]);
+    const arrSum = arr => arr.reduce((a, b) => a + b, 0);
 
     useEffect(() => {
         let _payrollData = [];
@@ -118,24 +128,25 @@ const FormNewPayrollData = ({
 
             _employeePayroll.grossPay = grossPay.toFixed(2);
 
-            // _employeePayroll.debit.push({
-            //     title: "GROSS PAY",
-            //     amount: grossPay.toFixed(2),
-            //     visible: true
-            // });
-
             let netPay = 0;
             accountingEntries.credit.map((credit, key) => {
                 let amount = credit.amount;
                 amount = amount.toFixed(2);
+
+                let _deduction = employee.deductions.filter(
+                    p => "OTHERS " + p.deduction == credit.title
+                );
+
+                let sum = arrSum(arrayColumn(_deduction, "amount"));
+                sum = sum.toFixed(2);
                 _employeePayroll.credit.push({
                     id: credit.id,
                     title: credit.title,
-                    amount: amount,
+                    amount: _deduction.length > 0 ? sum : amount,
                     visible: true
                 });
 
-                netPay += parseFloat(amount);
+                netPay += parseFloat(_deduction.length > 0 ? sum : amount);
             });
             _employeePayroll.netPay = (grossPay - netPay).toFixed(2);
             _payrollData.push(_employeePayroll);
@@ -144,6 +155,7 @@ const FormNewPayrollData = ({
             ...payrollDetails,
             employeePayroll: [..._payrollData]
         });
+
         return () => {};
     }, [employeesList]);
 
