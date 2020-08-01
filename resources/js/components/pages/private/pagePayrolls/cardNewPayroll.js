@@ -65,8 +65,19 @@ const CardNewPayroll = () => {
         }
     };
 
+    const [savePayrollLoading, setSavePayrollLoading] = useState(false);
+    const [payrollSaved, setPayrollSaved] = useState(false);
     const handleSavePayroll = () => {
-        console.log(payrollDetails);
+        setSavePayrollLoading(true);
+        fetchData("POST", "api/payroll", payrollDetails).then(res => {
+            setSavePayrollLoading(false);
+            if (res.success) {
+                setPayrollSaved(true);
+                notification.success({
+                    message: "Payroll Saved Successfully!"
+                });
+            }
+        });
     };
 
     return (
@@ -191,12 +202,13 @@ const CardNewPayroll = () => {
                             </Col>
                             <Col xs={0} md={18}></Col>
                             <Col xs={12} md={3}>
-                                {!showForm && (
+                                {!payrollSaved && !showForm && (
                                     <Button
                                         icon={<SaveOutlined />}
                                         type="primary"
                                         danger
                                         block
+                                        loading={savePayrollLoading}
                                         onClick={e => handleSavePayroll()}
                                     >
                                         Save

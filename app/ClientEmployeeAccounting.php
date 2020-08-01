@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ClientEmployeeAccounting extends Model
 {
-    protected $guared = [];
+    protected $guarded = [];
 
     public function client_payroll() {
         return $this->belongsTo('App\ClientPayroll','client_payroll_id');

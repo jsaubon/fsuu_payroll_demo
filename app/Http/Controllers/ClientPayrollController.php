@@ -25,7 +25,40 @@ class ClientPayrollController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        foreach ($data['employeePayroll'] as $key => $payroll) {
+            $client_payroll = ClientPayroll::create([
+                'client_id' => $data['client_id'],
+                'employee_id' => $payroll['employee_id'],
+                'days_present' => $payroll['days_of_work'],
+                'hours_overtime' => $payroll['hours_overtime'],
+                'date_start' => $data['date_start'],
+                'date_end' => $data['date_end'],
+            ]);
+
+            foreach ($payroll['debit'] as $key => $debit) {
+                $client_employee_accountings = \App\ClientEmployeeAccounting::create([
+                    'client_payroll_id' => $client_payroll->id,
+                    'client_accounting_entry_id' => $debit['id'],
+                    'employee_id' => $payroll['employee_id'],
+                    'amount' => $debit['amount']
+                ]);
+            }
+
+            foreach ($payroll['credit'] as $key => $credit) {
+                $client_employee_accountings = \App\ClientEmployeeAccounting::create([
+                    'client_payroll_id' => $client_payroll->id,
+                    'client_accounting_entry_id' => $credit['id'],
+                    'employee_id' => $payroll['employee_id'],
+                    'amount' => $credit['amount']
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'request' => $request->all()
+        ]);
     }
 
     /**

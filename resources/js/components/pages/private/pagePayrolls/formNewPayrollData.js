@@ -100,10 +100,12 @@ const FormNewPayrollData = ({
             let _employeePayroll = {
                 name: employee.name,
                 days_of_work: employee.days_of_work,
+                hours_overtime: employee.hours_overtime,
                 debit: [],
                 credit: [],
                 netPay: 0,
-                grossPay: 0
+                grossPay: 0,
+                employee_id: employee.id
             };
 
             let grossPay = 0;
