@@ -7,7 +7,8 @@ import Text from "antd/lib/typography/Text";
 
 export const clientEmployeesTableColumns = (
     getClientEmployees,
-    toggleShowAddEditClientEmployeesModal
+    toggleShowAddEditClientEmployeesModal,
+    toggleShowModalDeductionsList
 ) => {
     const deleteEmployee = record => {
         fetchData("DELETE", "api/employee/" + record.id).then(res => {
@@ -61,12 +62,12 @@ export const clientEmployeesTableColumns = (
                 return (
                     <Space size="middle" key={record.id}>
                         <a
-                            onClick={e =>
-                                // toggleShowAddEditClientEmployeesModal(record)
-                                alert(record.id)
+                            onClick={
+                                e => toggleShowModalDeductionsList(record)
+                                // alert(record.id)
                             }
                         >
-                            Profile
+                            Deductions
                         </a>
                         <a
                             onClick={e =>

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Popconfirm, InputNumber } from "antd";
+import { Modal, Popconfirm, InputNumber, Row, Col, Input } from "antd";
 import { head } from "lodash";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
+import PreviewFooter from "./previewFooter";
 
 const TblPayrollData = ({
     payrollDetails,
     setPayrollDetails,
-    accountingEntries
+    accountingEntries,
+    showForm
 }) => {
     useEffect(() => {
         //console.log("payrollDetails", payrollDetails);
@@ -141,7 +143,10 @@ const TblPayrollData = ({
 
     return (
         <>
-            <div className="ant-table ant-table-bordered ant-table-responsive mt-10 ant-table-small o-flow-x">
+            <div
+                className={`ant-table ant-table-bordered ant-table-responsive mt-10 ant-table-small ${showForm &&
+                    "hide"}`}
+            >
                 <div className="ant-table-container">
                     <div className="ant-table-content">
                         <table style={{ tableLayout: "auto" }}>
@@ -335,6 +340,10 @@ const TblPayrollData = ({
                     </div>
                 </div>
             </div>
+
+            <Row className={`mt-15 ${showForm && "hide"}`}>
+                <PreviewFooter />
+            </Row>
             <Modal
                 title="Confirmation"
                 okText="Yes"

@@ -9,12 +9,19 @@ import {
     Select,
     InputNumber,
     DatePicker,
-    Button
+    Button,
+    notification
 } from "antd";
 import FormItem from "antd/lib/form/FormItem";
 import Text from "antd/lib/typography/Text";
 import PrintProvider, { Print, NoPrint } from "react-easy-print";
-import { UserOutlined } from "@ant-design/icons";
+import {
+    UserOutlined,
+    EyeOutlined,
+    CaretLeftOutlined,
+    PrinterOutlined,
+    SaveOutlined
+} from "@ant-design/icons";
 import FormNewPayrollData from "./formNewPayrollData";
 import { fetchData } from "../../../../axios";
 import TblPayrollData from "./tblPayrollData";
@@ -42,6 +49,25 @@ const CardNewPayroll = () => {
         debit: [],
         credit: []
     });
+
+    const [showForm, setShowForm] = useState(true);
+
+    const handleShowForm = () => {
+        if (payrollDetails.client_id == "") {
+            notification.error({ message: "Select Name of Client" });
+            if (payrollDetails.date_start == "") {
+                notification.error({ message: "Select Salary Period" });
+            }
+        } else if (payrollDetails.date_start == "") {
+            notification.error({ message: "Select Salary Period" });
+        } else {
+            setShowForm(!showForm);
+        }
+    };
+
+    const handleSavePayroll = () => {
+        console.log(payrollDetails);
+    };
 
     return (
         <>
@@ -77,7 +103,6 @@ const CardNewPayroll = () => {
                                     allowClear
                                     showSearch
                                     showArrow={false}
-                                    // value={payrollDetails.nameOfClient}
                                     onChange={e =>
                                         setPayrollDetails({
                                             ...payrollDetails,
@@ -125,25 +150,62 @@ const CardNewPayroll = () => {
                             </div>
                         </Col>
                     </Row>
-                    <NoPrint>
-                        <Card className="mt-10">
-                            <FormNewPayrollData
-                                setPayrollDetails={setPayrollDetails}
-                                payrollDetails={payrollDetails}
-                                clientsList={clientsList}
-                                accountingEntries={accountingEntries}
-                                setAccountingEntries={setAccountingEntries}
-                            />
-                        </Card>
-                    </NoPrint>
+
+                    <FormNewPayrollData
+                        setPayrollDetails={setPayrollDetails}
+                        payrollDetails={payrollDetails}
+                        clientsList={clientsList}
+                        accountingEntries={accountingEntries}
+                        setAccountingEntries={setAccountingEntries}
+                        showForm={showForm}
+                    />
+
                     {payrollDetails.employeePayroll.length > 0 && (
                         <TblPayrollData
                             payrollDetails={payrollDetails}
                             accountingEntries={accountingEntries}
                             setPayrollDetails={setPayrollDetails}
+                            showForm={showForm}
                         />
                     )}
                 </Print>
+                <NoPrint>
+                    <div className="mt-10">
+                        <Row>
+                            <Col xs={12} md={3}>
+                                <Button
+                                    type="primary"
+                                    block
+                                    onClick={e => handleShowForm()}
+                                >
+                                    {showForm ? (
+                                        <>
+                                            <EyeOutlined /> Preview
+                                        </>
+                                    ) : (
+                                        <>
+                                            <CaretLeftOutlined /> Back
+                                        </>
+                                    )}
+                                </Button>
+                            </Col>
+                            <Col xs={0} md={18}></Col>
+                            <Col xs={12} md={3}>
+                                {!showForm && (
+                                    <Button
+                                        icon={<SaveOutlined />}
+                                        type="primary"
+                                        danger
+                                        block
+                                        onClick={e => handleSavePayroll()}
+                                    >
+                                        Save
+                                    </Button>
+                                )}
+                            </Col>
+                        </Row>
+                    </div>
+                </NoPrint>
             </Card>
         </>
     );

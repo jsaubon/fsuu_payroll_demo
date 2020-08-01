@@ -3,6 +3,7 @@ import { Row, Col, Button, Input, Table } from "antd";
 import { fetchData } from "../../../../../../axios";
 import { clientEmployeesTableColumns } from "./clientEmployeesTableColumns";
 import ModalAddEditEmployee from "./modalAddEditEmployee";
+import ModalDeductionsList from "./modalDeductionsList";
 
 const TabContentClientEmployees = ({ client_id }) => {
     const [clientEmployees, setClientEmployees] = useState([]);
@@ -72,6 +73,15 @@ const TabContentClientEmployees = ({ client_id }) => {
         return () => {};
     }, [employeesTableSettings]);
 
+    const [showModalDeductionsList, setShowModalDeductionsList] = useState(
+        false
+    );
+    const [selectedEmployee, setSelectedEmployee] = useState();
+    const toggleShowModalDeductionsList = record => {
+        setSelectedEmployee(record);
+        setShowModalDeductionsList(!showModalDeductionsList);
+    };
+
     return (
         <>
             <Row className="mb-10">
@@ -99,7 +109,8 @@ const TabContentClientEmployees = ({ client_id }) => {
                 dataSource={clientEmployees}
                 columns={clientEmployeesTableColumns(
                     getClientEmployees,
-                    toggleShowAddEditClientEmployeesModal
+                    toggleShowAddEditClientEmployeesModal,
+                    toggleShowModalDeductionsList
                 )}
                 pagination={{
                     onChange: (page, pageSize) =>
@@ -127,6 +138,15 @@ const TabContentClientEmployees = ({ client_id }) => {
                     _employeeInformation={employeeData}
                     getClientEmployees={getClientEmployees}
                     client_id={client_id}
+                />
+            )}
+            {showModalDeductionsList && (
+                <ModalDeductionsList
+                    showModalDeductionsList={showModalDeductionsList}
+                    toggleShowModalDeductionsList={
+                        toggleShowModalDeductionsList
+                    }
+                    employee={selectedEmployee}
                 />
             )}
         </>
