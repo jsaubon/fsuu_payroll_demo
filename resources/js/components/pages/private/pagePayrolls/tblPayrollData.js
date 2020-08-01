@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Popconfirm } from "antd";
+import { Modal, Popconfirm, InputNumber } from "antd";
 import { head } from "lodash";
+import Text from "antd/lib/typography/Text";
+import Title from "antd/lib/typography/Title";
 
 const TblPayrollData = ({
     payrollDetails,
@@ -16,6 +18,14 @@ const TblPayrollData = ({
         showModalTblHeaderCalculation,
         setShowModalTblHeaderCalculation
     ] = useState(false);
+
+    const [showModalEditAmount, setShowModalEditAmount] = useState(false);
+
+    const [selectedTD, setSelectedTD] = useState();
+    const toggleShowModalEditAmount = TD => {
+        setSelectedTD(TD);
+        setShowModalEditAmount(!showModalEditAmount);
+    };
 
     const [selectedHeader, setSelectedHeader] = useState();
     const toggleShowModalTblHeaderCalculation = header => {
@@ -65,6 +75,70 @@ const TblPayrollData = ({
         // });
         return () => {};
     }, [payrollDetails.employeePayroll]);
+
+    let row_number = 0;
+
+    const handleBtnEditAmount = (employee_key, type, entry_key, entry) => {
+        let data = {
+            employee_key,
+            type,
+            entry_key,
+            entry
+        };
+        toggleShowModalEditAmount(data);
+    };
+
+    const [triggerCalculate, setTriggerCalculate] = useState(false);
+    const handleModalEditAmount = () => {
+        let _employeePayroll = payrollDetails.employeePayroll;
+        _employeePayroll[selectedTD.employee_key][selectedTD.type][
+            selectedTD.entry_key
+        ] = selectedTD.entry;
+
+        setPayrollDetails({
+            ...payrollDetails,
+            employeePayroll: [..._employeePayroll]
+        });
+
+        toggleShowModalEditAmount();
+        setTriggerCalculate(true);
+    };
+
+    const reCalculate = () => {
+        let _employeePayroll = payrollDetails.employeePayroll;
+        _employeePayroll.forEach(payrolls => {
+            let totalDebit = 0;
+            payrolls.debit.forEach(payroll => {
+                if (payroll.title != "13th-Month Pay") {
+                    totalDebit += parseFloat(payroll.amount);
+                } else {
+                    // payroll.amount = totalDebit.toFixed(2);
+                }
+            });
+            payrolls.grossPay = totalDebit.toFixed(2);
+
+            let totalCredit = 0;
+            payrolls.credit.forEach(payroll => {
+                totalCredit += parseFloat(payroll.amount);
+            });
+            //console.log(totalDebit, totalCredit, totalDebit - totalCredit);
+            payrolls.netPay = (totalDebit - totalCredit).toFixed(2);
+        });
+
+        setPayrollDetails({
+            ...payrollDetails,
+            employeePayroll: [..._employeePayroll]
+        });
+        setTriggerCalculate(false);
+    };
+
+    useEffect(() => {
+        if (triggerCalculate) {
+            reCalculate();
+        }
+        return () => {};
+    }, [triggerCalculate]);
+
     return (
         <>
             <div className="ant-table ant-table-bordered ant-table-responsive mt-10 ant-table-small o-flow-x">
@@ -160,7 +234,6 @@ const TblPayrollData = ({
                             <tbody className="ant-table-tbody">
                                 {payrollDetails.employeePayroll.map(
                                     (employee, key) => {
-                                        let row_number = 0;
                                         let _debit_basic_pay = employee.debit.find(
                                             p => p.title == "Basic Pay"
                                         );
@@ -198,7 +271,15 @@ const TblPayrollData = ({
                                                                         key={
                                                                             debit_key
                                                                         }
-                                                                        className="ant-table-cell text-center fz-10"
+                                                                        className="ant-table-cell text-center fz-10 c-pointer"
+                                                                        onClick={e =>
+                                                                            handleBtnEditAmount(
+                                                                                key,
+                                                                                "debit",
+                                                                                debit_key,
+                                                                                debit
+                                                                            )
+                                                                        }
                                                                     >
                                                                         {
                                                                             debit.amount
@@ -223,7 +304,15 @@ const TblPayrollData = ({
                                                                     key={
                                                                         credit_key
                                                                     }
-                                                                    className="ant-table-cell text-center fz-10"
+                                                                    className="ant-table-cell text-center fz-10 c-pointer"
+                                                                    onClick={e =>
+                                                                        handleBtnEditAmount(
+                                                                            key,
+                                                                            "credit",
+                                                                            credit_key,
+                                                                            credit
+                                                                        )
+                                                                    }
                                                                 >
                                                                     {
                                                                         credit.amount
@@ -260,6 +349,37 @@ const TblPayrollData = ({
                     Remove "{selectedHeader && selectedHeader.title}" from
                     Payroll Calculation?
                 </p>
+            </Modal>
+
+            <Modal
+                title={selectedTD && selectedTD.entry.title}
+                okText="Re Calculate"
+                cancelText="Cancel"
+                visible={showModalEditAmount}
+                onOk={e => {
+                    handleModalEditAmount();
+                }}
+                onCancel={e => toggleShowModalEditAmount()}
+            >
+                {selectedTD && (
+                    <>
+                        <InputNumber
+                            value={parseFloat(selectedTD.entry.amount)}
+                            step="0.01"
+                            min={0}
+                            style={{ width: "100%" }}
+                            onChange={value =>
+                                setSelectedTD({
+                                    ...selectedTD,
+                                    entry: {
+                                        ...selectedTD.entry,
+                                        amount: value.toFixed(2)
+                                    }
+                                })
+                            }
+                        />
+                    </>
+                )}
             </Modal>
         </>
     );

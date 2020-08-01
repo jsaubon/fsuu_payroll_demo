@@ -32,7 +32,7 @@ const FormNewPayrollData = ({
             if (res.success) {
                 setShowLoading(false);
                 // setEmployeesList(res.data);
-                // console.log(res.data);
+                // let row_number = 0;(res.data);
                 let _employeeList = [];
                 res.data.map((employee, key) => {
                     _employeeList.push({
