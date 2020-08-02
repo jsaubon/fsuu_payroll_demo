@@ -12,9 +12,18 @@ class ClientPayrollController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $payrolls = ClientPayroll::whereMonth('date_start',$request->month)
+                                    ->whereYear('date_start',$request->year)
+                                    ->whereMonth('date_end',$request->month)
+                                    ->whereYear('date_end',$request->year)
+                                    ->with('client')
+                                    ->get();
+        return response()->json([
+            'success' => true,
+            'data' => $payrolls
+        ]);
     }
 
     /**
@@ -27,32 +36,35 @@ class ClientPayrollController extends Controller
     {
         $data = $request->all();
         foreach ($data['employeePayroll'] as $key => $payroll) {
-            $client_payroll = ClientPayroll::create([
-                'client_id' => $data['client_id'],
-                'employee_id' => $payroll['employee_id'],
-                'days_present' => $payroll['days_of_work'],
-                'hours_overtime' => $payroll['hours_overtime'],
-                'date_start' => $data['date_start'],
-                'date_end' => $data['date_end'],
-            ]);
-
-            foreach ($payroll['debit'] as $key => $debit) {
-                $client_employee_accountings = \App\ClientEmployeeAccounting::create([
-                    'client_payroll_id' => $client_payroll->id,
-                    'client_accounting_entry_id' => $debit['id'],
+            if($payroll['days_of_work'] > 0) {
+                $client_payroll = ClientPayroll::create([
+                    'client_id' => $data['client_id'],
                     'employee_id' => $payroll['employee_id'],
-                    'amount' => $debit['amount']
+                    'days_present' => $payroll['days_of_work'],
+                    'hours_overtime' => $payroll['hours_overtime'],
+                    'date_start' => $data['date_start'],
+                    'date_end' => $data['date_end'],
                 ]);
+    
+                foreach ($payroll['debit'] as $key => $debit) {
+                    $client_employee_accountings = \App\ClientEmployeeAccounting::create([
+                        'client_payroll_id' => $client_payroll->id,
+                        'client_accounting_entry_id' => $debit['id'],
+                        'employee_id' => $payroll['employee_id'],
+                        'amount' => $debit['amount']
+                    ]);
+                }
+    
+                foreach ($payroll['credit'] as $key => $credit) {
+                    $client_employee_accountings = \App\ClientEmployeeAccounting::create([
+                        'client_payroll_id' => $client_payroll->id,
+                        'client_accounting_entry_id' => $credit['id'],
+                        'employee_id' => $payroll['employee_id'],
+                        'amount' => $credit['amount']
+                    ]);
+                }
             }
-
-            foreach ($payroll['credit'] as $key => $credit) {
-                $client_employee_accountings = \App\ClientEmployeeAccounting::create([
-                    'client_payroll_id' => $client_payroll->id,
-                    'client_accounting_entry_id' => $credit['id'],
-                    'employee_id' => $payroll['employee_id'],
-                    'amount' => $credit['amount']
-                ]);
-            }
+            
         }
 
         return response()->json([
@@ -90,8 +102,26 @@ class ClientPayrollController extends Controller
      * @param  \App\ClientPayroll  $clientPayroll
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ClientPayroll $clientPayroll)
+    public function destroy($id)
     {
-        //
+        $client_payroll = ClientPayroll::find($id);
+
+        if (!$client_payroll) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Payroll with id ' . $id . ' not found'
+            ], 400);
+        }
+
+        if ($client_payroll->delete()) {
+            return response()->json([
+                'success' => true
+            ],200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Payroll could not be deleted'
+            ], 500);
+        }
     }
 }

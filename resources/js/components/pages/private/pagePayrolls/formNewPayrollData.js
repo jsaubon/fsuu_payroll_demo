@@ -140,6 +140,7 @@ const FormNewPayrollData = ({
                 );
 
                 let sum = arrSum(arrayColumn(_deduction, "amount"));
+                sum = sum + credit.amount;
                 sum = sum.toFixed(2);
                 _employeePayroll.credit.push({
                     id: credit.id,

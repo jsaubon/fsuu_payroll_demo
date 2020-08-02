@@ -8,7 +8,6 @@ const PagePayrolls = () => {
     const [showCardNewPayroll, setShowCardNewPayroll] = useState(true);
     return (
         <>
-            <Title level={3}>Payrolls</Title>
             <Row style={{ marginLeft: "-10px", marginRight: "-10px" }}>
                 <Col xs={24} md={24}>
                     <Button
