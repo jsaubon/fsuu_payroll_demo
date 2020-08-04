@@ -3,6 +3,7 @@ import { InputNumber, Modal, Table } from "antd";
 import { fetchData } from "../../../../../../axios";
 import moment from "moment";
 import Title from "antd/lib/typography/Title";
+import { Print, NoPrint } from "react-easy-print";
 
 const TableAccountingEntries = ({
     accountingEntries,
@@ -224,6 +225,7 @@ const TableAccountingEntries = ({
                         columns={columns}
                         dataSource={employeeAccountingReports}
                         onChange={onChange}
+                        pagination={{ hideOnSinglePage: false, pageSize: 50 }}
                     />
                     <div className="text-right">
                         <Title level={4}>
