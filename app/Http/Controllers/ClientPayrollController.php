@@ -86,9 +86,22 @@ class ClientPayrollController extends Controller
      * @param  \App\ClientPayroll  $clientPayroll
      * @return \Illuminate\Http\Response
      */
-    public function show(ClientPayroll $clientPayroll)
+    public function show($id)
     {
-        //
+        $payrolls = ClientPayroll::where('client_id',$id)
+                                    ->with('client')
+                                    ->with('client.client_accounting_entries')
+                                    ->with('client_employee_payrolls')
+                                    ->with('client_employee_payrolls.client_employee')
+                                    ->with('client_employee_payrolls.client_employee_accountings')
+                                    ->with('client_employee_payrolls.client_employee_accountings.client_accounting_entry')
+                                    ->orderBy('date_start','desc')
+                                    ->get();
+        return response()->json([
+            'success' => true,
+            'data' => $payrolls,
+            'response' => $id
+        ]);
     }
 
     /**

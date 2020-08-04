@@ -26,6 +26,7 @@ import CardClientDetails from "./pageClientInfo/cardClientDetails";
 import { clientEmployeesTableColumns } from "./pageClientInfo/tabs/tabEmployeesList/clientEmployeesTableColumns";
 import TabContentClientEmployees from "./pageClientInfo/tabs/tabEmployeesList/tabContentClientEmployees";
 import TabContentClientAccountingEntries from "./pageClientInfo/tabs/tabDebitCreditSettings/tabContentClientAccountingEntries";
+import TabClientPayrolls from "./pageClientInfo/tabs/tabClientPayrolls/tabClientPayrolls";
 const PageClientInfo = ({ match, history }) => {
     const client_id = match.params.id;
     const [clientInfo, setClientInfo] = useState();
@@ -57,7 +58,7 @@ const PageClientInfo = ({ match, history }) => {
     }, [showModalAddEditClient]);
 
     function changeTabCallback(key) {
-        console.log(key);
+        // console.log(key);
     }
 
     return (
@@ -95,7 +96,10 @@ const PageClientInfo = ({ match, history }) => {
                                     client_id={client_id}
                                 />
                             </Tabs.TabPane>
-                            <Tabs.TabPane tab="Debit/Credit Settings" key="2">
+                            <Tabs.TabPane tab="Payrolls" key="2">
+                                <TabClientPayrolls client_id={client_id} />
+                            </Tabs.TabPane>
+                            <Tabs.TabPane tab="Debit/Credit Settings" key="3">
                                 <TabContentClientAccountingEntries
                                     client_id={client_id}
                                 />
