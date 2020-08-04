@@ -37,7 +37,7 @@ const ModalDeductionsList = ({
             "GET",
             "api/employee_deduction?employee_id=" + employee.id
         ).then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.success) {
                 if (res.data) {
                     let dataSource = [];
@@ -156,6 +156,12 @@ const ModalDeductionsList = ({
                                     ]}
                                 >
                                     <Select placeholder="Select Deduction">
+                                        <Select.Option value="LOANS SSS">
+                                            LOANS SSS
+                                        </Select.Option>
+                                        <Select.Option value="LOANS Pag-IBIG">
+                                            LOANS Pag-IBIG
+                                        </Select.Option>
                                         <Select.Option value="C/A">
                                             Cash Advance
                                         </Select.Option>

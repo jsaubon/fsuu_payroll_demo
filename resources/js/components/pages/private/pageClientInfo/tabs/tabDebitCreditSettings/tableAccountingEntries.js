@@ -34,12 +34,7 @@ const TableAccountingEntries = ({
                     setEmployeeAccountingReports(res.data);
                     toggleShowModalAccountingReports();
                     let employee_filter = [];
-                    let year_filter = [
-                        {
-                            value: "2021",
-                            text: "2021"
-                        }
-                    ];
+                    let year_filter = [];
                     let _totalAmount = 0;
                     res.data.map((accounting, key) => {
                         //console.log(accounting.client_employee_payroll.client_payroll.date_start);

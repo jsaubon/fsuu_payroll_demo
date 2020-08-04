@@ -136,8 +136,9 @@ const FormNewPayrollData = ({
                 amount = amount.toFixed(2);
 
                 let _deduction = employee.deductions.filter(
-                    p => "OTHERS " + p.deduction == credit.title
+                    p => credit.title.indexOf(p.deduction) !== -1
                 );
+                // console.log(_deduction);
 
                 let sum = arrSum(arrayColumn(_deduction, "amount"));
                 sum = sum + credit.amount;
