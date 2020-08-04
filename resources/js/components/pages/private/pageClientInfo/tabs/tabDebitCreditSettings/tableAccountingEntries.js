@@ -214,7 +214,7 @@ const TableAccountingEntries = ({
                 <Modal
                     title={selectedAccountingEntry.title}
                     visible={showModalAccountingReports}
-                    onOk={e => toggleShowModalAccountingReports}
+                    onOk={e => toggleShowModalAccountingReports()}
                     onCancel={toggleShowModalAccountingReports}
                     // confirmLoading={formSaveLoading}
                     // width={"90%"}
@@ -225,9 +225,9 @@ const TableAccountingEntries = ({
                         columns={columns}
                         dataSource={employeeAccountingReports}
                         onChange={onChange}
-                        pagination={{ hideOnSinglePage: false, pageSize: 50 }}
+                        pagination={{ hideOnSinglePage: true, pageSize: 50 }}
                     />
-                    <div className="text-right">
+                    <div className="text-right mt-10">
                         <Title level={4}>
                             Total: {currencyFormat(totalAmount)}
                         </Title>

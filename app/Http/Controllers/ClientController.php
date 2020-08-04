@@ -18,7 +18,8 @@ class ClientController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $clients->toArray()
+            'data' => $clients->toArray(),
+            'request' => $request->all()
         ],200);
     }
 

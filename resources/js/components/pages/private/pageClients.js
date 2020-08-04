@@ -13,7 +13,6 @@ import {
     SortAscendingOutlined,
     SortDescendingOutlined
 } from "@ant-design/icons";
-import moment from "moment";
 import CardClientInfo from "./pageClients/cardClientInfo";
 import { getClients } from "./pageClients/getClients";
 
@@ -32,7 +31,7 @@ const PageClients = ({ history }) => {
     };
 
     useEffect(() => {
-        getClients(dispatchClients);
+        getClients(dispatchClients, searchClient, sortClient);
         return () => {};
     }, [sortClient, searchClient]);
     const toggleShowModalAddEditClient = () => {
