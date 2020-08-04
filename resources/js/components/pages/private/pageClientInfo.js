@@ -96,10 +96,13 @@ const PageClientInfo = ({ match, history }) => {
                                     client_id={client_id}
                                 />
                             </Tabs.TabPane>
-                            <Tabs.TabPane tab="Payrolls" key="2">
+                            <Tabs.TabPane tab="Payroll List" key="2">
                                 <TabClientPayrolls client_id={client_id} />
                             </Tabs.TabPane>
-                            <Tabs.TabPane tab="Debit/Credit Settings" key="3">
+                            <Tabs.TabPane
+                                tab="Debit/Credit Settings & Reports"
+                                key="3"
+                            >
                                 <TabContentClientAccountingEntries
                                     client_id={client_id}
                                 />

@@ -1,10 +1,149 @@
-import React from "react";
-import { InputNumber } from "antd";
+import React, { useState } from "react";
+import { InputNumber, Modal, Table } from "antd";
+import { fetchData } from "../../../../../../axios";
+import moment from "moment";
+import Title from "antd/lib/typography/Title";
 
 const TableAccountingEntries = ({
     accountingEntries,
     setAccountingEntries
 }) => {
+    const [
+        showModalAccountingReports,
+        setShowModalAccountingReports
+    ] = useState(false);
+    const [
+        employeeAccountingReports,
+        setEmployeeAccountingReports
+    ] = useState();
+    const [selectedAccountingEntry, setSelectedAccountingEntry] = useState();
+    const toggleShowModalAccountingReports = () => {
+        setShowModalAccountingReports(!showModalAccountingReports);
+    };
+    const [employeeFilters, setEmployeeFilters] = useState([]);
+    const [yearFilters, setYearFilters] = useState([]);
+    const [totalAmount, setTotalAmount] = useState(0);
+
+    const showReports = (e, _accountEntry) => {
+        setSelectedAccountingEntry(_accountEntry);
+        setEmployeeAccountingReports(null);
+        e.preventDefault(true);
+        fetchData("GET", "api/employee_accounting/" + _accountEntry.id).then(
+            res => {
+                if (res.success) {
+                    setEmployeeAccountingReports(res.data);
+                    toggleShowModalAccountingReports();
+                    let employee_filter = [];
+                    let year_filter = [
+                        {
+                            value: "2021",
+                            text: "2021"
+                        }
+                    ];
+                    let _totalAmount = 0;
+                    res.data.map((accounting, key) => {
+                        //console.log(accounting.client_employee_payroll.client_payroll.date_start);
+                        let emp_temp = employee_filter.find(
+                            p => p.text == accounting.client_employee.name
+                        );
+                        if (!emp_temp) {
+                            employee_filter.push({
+                                text: accounting.client_employee.name,
+                                value: accounting.client_employee.name
+                            });
+                        }
+
+                        let year_temp = year_filter.find(
+                            p =>
+                                p.text ==
+                                moment(
+                                    accounting.client_employee_payroll
+                                        .client_payroll.date_start
+                                ).format("YYYY")
+                        );
+
+                        if (!year_temp) {
+                            year_filter.push({
+                                text: moment(
+                                    accounting.client_employee_payroll
+                                        .client_payroll.date_start
+                                ).format("YYYY"),
+                                value: moment(
+                                    accounting.client_employee_payroll
+                                        .client_payroll.date_start
+                                ).format("YYYY")
+                            });
+                        }
+
+                        _totalAmount += parseFloat(accounting.amount);
+                    });
+
+                    setYearFilters(year_filter);
+                    setTotalAmount(_totalAmount);
+                    setEmployeeFilters([...employee_filter]);
+                }
+            }
+        );
+    };
+
+    function currencyFormat(num) {
+        return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+    }
+
+    let columns = [
+        {
+            title: "Employee",
+            dataIndex: "client_employee",
+            key: "client_employee",
+            render: (text, record) => {
+                return record.client_employee.name;
+            },
+            filterMultiple: false,
+            onFilter: (value, record) =>
+                record.client_employee.name.indexOf(value) === 0,
+            sorter: (a, b) =>
+                a.client_employee.name.length - b.client_employee.name.length,
+            sortDirections: ["descend", "ascend"],
+            filters: [...employeeFilters]
+        },
+        {
+            title: "Amount",
+            dataIndex: "amount",
+            key: "amount",
+            render: (text, record) => {
+                return currencyFormat(record.amount);
+            }
+        },
+        {
+            title: "Payroll Date",
+            dataIndex: "client_employee_payroll",
+            key: "client_employee_payroll",
+            render: (text, record) => {
+                return (
+                    moment(
+                        record.client_employee_payroll.client_payroll.date_start
+                    ).format("YYYY-MM-DD") +
+                    " to " +
+                    moment(
+                        record.client_employee_payroll.client_payroll.date_end
+                    ).format("YYYY-MM-DD")
+                );
+            },
+            onFilter: (value, record) =>
+                record.client_employee_payroll.client_payroll.date_start.indexOf(
+                    value
+                ) === 0,
+            filters: [...yearFilters]
+        }
+    ];
+
+    function onChange(pagination, filters, sorter, extra) {
+        let _totalAmount = 0;
+        extra.currentDataSource.map((record, key) => {
+            _totalAmount += record.amount;
+        });
+        setTotalAmount(_totalAmount);
+    }
     return (
         <>
             <div className="ant-table ant-table-bordered">
@@ -54,7 +193,17 @@ const TableAccountingEntries = ({
                                                 />
                                             </td>
                                             <td className="ant-table-cell">
-                                                <a href="#">Reports</a>
+                                                <a
+                                                    href="#"
+                                                    onClick={e =>
+                                                        showReports(
+                                                            e,
+                                                            accountEntry
+                                                        )
+                                                    }
+                                                >
+                                                    Reports
+                                                </a>
                                             </td>
                                         </tr>
                                     );
@@ -64,6 +213,30 @@ const TableAccountingEntries = ({
                     </div>
                 </div>
             </div>
+
+            {selectedAccountingEntry && (
+                <Modal
+                    title={selectedAccountingEntry.title}
+                    visible={showModalAccountingReports}
+                    onOk={e => toggleShowModalAccountingReports}
+                    onCancel={toggleShowModalAccountingReports}
+                    // confirmLoading={formSaveLoading}
+                    // width={"90%"}
+                    style={{ top: 20 }}
+                    okText="Close"
+                >
+                    <Table
+                        columns={columns}
+                        dataSource={employeeAccountingReports}
+                        onChange={onChange}
+                    />
+                    <div className="text-right">
+                        <Title level={4}>
+                            Total: {currencyFormat(totalAmount)}
+                        </Title>
+                    </div>
+                </Modal>
+            )}
         </>
     );
 };

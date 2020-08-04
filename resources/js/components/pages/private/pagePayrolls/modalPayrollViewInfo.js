@@ -11,7 +11,7 @@ const ModalPayrollViewInfo = ({
     toggleShowModalPayrollViewInfo,
     accountingEntries
 }) => {
-    console.log(selectedPayroll);
+    // console.log(selectedPayroll);
     return (
         <>
             <Modal

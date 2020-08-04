@@ -34,9 +34,20 @@ class ClientEmployeeAccountingController extends Controller
      * @param  \App\ClientEmployeeAccounting  $clientEmployeeAccounting
      * @return \Illuminate\Http\Response
      */
-    public function show(ClientEmployeeAccounting $clientEmployeeAccounting)
+    public function show($id)
     {
-        //
+        $employee_accounting = ClientEmployeeAccounting::where('client_accounting_entry_id',$id)
+                                            ->with('client_accounting_entry')
+                                            ->with('client_employee')
+                                            ->with('client_employee_payroll')
+                                            ->with('client_employee_payroll.client_payroll')
+                                            ->orderBy('created_at','desc')
+                                            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $employee_accounting
+        ]);
     }
 
     /**

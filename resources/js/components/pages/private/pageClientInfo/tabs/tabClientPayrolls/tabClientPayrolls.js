@@ -29,23 +29,19 @@ const TabClientPayrolls = ({ client_id }) => {
     };
     const columns = [
         {
-            title: "Client Name",
-            dataIndex: "client",
-            key: "client",
-            render: (text, record) => {
-                return record.client.name;
-            }
-        },
-        {
-            title: "Payroll Date",
+            title: "Date start",
             dataIndex: "date_start",
             key: "date_start",
             render: (text, record) => {
-                return (
-                    moment(record.date_start).format("YYYY-MM-DD") +
-                    " to " +
-                    moment(record.date_start).format("YYYY-MM-DD")
-                );
+                return moment(record.date_start).format("YYYY-MM-DD");
+            }
+        },
+        {
+            title: "Date End",
+            dataIndex: "date_end",
+            key: "date_end",
+            render: (text, record) => {
+                return moment(record.date_start).format("YYYY-MM-DD");
             }
         },
 
