@@ -15,7 +15,7 @@ class CreateClientEmployeeAccountingsTable extends Migration
     {
         Schema::create('client_employee_accountings', function (Blueprint $table) {
             $table->id();
-            $table->integer('client_payroll_id')->unsigned();
+            $table->integer('client_employee_payroll_id')->unsigned();
             $table->integer('client_accounting_entry_id')->unsigned();
             $table->integer('employee_id')->unsigned();
             $table->double('amount');

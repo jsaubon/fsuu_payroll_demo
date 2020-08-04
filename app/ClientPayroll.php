@@ -17,7 +17,11 @@ class ClientPayroll extends Model
     }
 
     public function client_employee_accountings() {
-        return $this->hasMany('App\ClientEmployeeAccounting','client_accounting_entry_id');
+        return $this->hasMany('App\ClientEmployeeAccounting','client_payroll_id');
+    }
+
+    public function client_employee_payrolls() {
+        return $this->hasMany('App\ClientEmployeePayroll','client_payroll_id');
     }
     
 }

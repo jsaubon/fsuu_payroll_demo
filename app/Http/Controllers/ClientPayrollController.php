@@ -14,11 +14,14 @@ class ClientPayrollController extends Controller
      */
     public function index(Request $request)
     {
-        $payrolls = ClientPayroll::whereMonth('date_start',$request->month)
-                                    ->whereYear('date_start',$request->year)
-                                    ->whereMonth('date_end',$request->month)
+        $payrolls = ClientPayroll::whereYear('date_start',$request->year)
                                     ->whereYear('date_end',$request->year)
                                     ->with('client')
+                                    ->with('client.client_accounting_entries')
+                                    ->with('client_employee_payrolls')
+                                    ->with('client_employee_payrolls.client_employee')
+                                    ->with('client_employee_payrolls.client_employee_accountings')
+                                    ->with('client_employee_payrolls.client_employee_accountings.client_accounting_entry')
                                     ->get();
         return response()->json([
             'success' => true,
@@ -35,20 +38,23 @@ class ClientPayrollController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        $client_payroll = ClientPayroll::create([
+            'client_id' => $data['client_id'], 
+            'date_start' => $data['date_start'],
+            'date_end' => $data['date_end'],
+        ]);
         foreach ($data['employeePayroll'] as $key => $payroll) {
             if($payroll['days_of_work'] > 0) {
-                $client_payroll = ClientPayroll::create([
-                    'client_id' => $data['client_id'],
+                $client_employee_payroll = \App\ClientEmployeePayroll::create([
+                    'client_payroll_id' => $client_payroll->id,
                     'employee_id' => $payroll['employee_id'],
                     'days_present' => $payroll['days_of_work'],
                     'hours_overtime' => $payroll['hours_overtime'],
-                    'date_start' => $data['date_start'],
-                    'date_end' => $data['date_end'],
                 ]);
     
                 foreach ($payroll['debit'] as $key => $debit) {
                     $client_employee_accountings = \App\ClientEmployeeAccounting::create([
-                        'client_payroll_id' => $client_payroll->id,
+                        'client_employee_payroll_id' => $client_employee_payroll->id,
                         'client_accounting_entry_id' => $debit['id'],
                         'employee_id' => $payroll['employee_id'],
                         'amount' => $debit['amount']
@@ -57,7 +63,7 @@ class ClientPayrollController extends Controller
     
                 foreach ($payroll['credit'] as $key => $credit) {
                     $client_employee_accountings = \App\ClientEmployeeAccounting::create([
-                        'client_payroll_id' => $client_payroll->id,
+                        'client_employee_payroll_id' => $client_employee_payroll->id,
                         'client_accounting_entry_id' => $credit['id'],
                         'employee_id' => $payroll['employee_id'],
                         'amount' => $credit['amount']

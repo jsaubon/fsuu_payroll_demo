@@ -16,9 +16,6 @@ class CreateClientPayrollsTable extends Migration
         Schema::create('client_payrolls', function (Blueprint $table) {
             $table->id();
             $table->integer('client_id')->unsigned();
-            $table->integer('employee_id')->unsigned();
-            $table->integer('days_present');
-            $table->integer('hours_overtime')->default(0);
             $table->datetime('date_start');
             $table->datetime('date_end');
             $table->timestamps();

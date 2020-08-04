@@ -9,46 +9,71 @@ import {
     Table,
     Button,
     Popconfirm,
-    notification
+    notification,
+    Modal,
+    Input,
+    DatePicker
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import moment from "moment";
 import { fetchData } from "../../../../axios";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
+import { Print } from "react-easy-print";
+import ModalPayrollViewInfo from "./modalPayrollViewInfo";
 
 const CardPayrollList = () => {
     const [pageFilters, setPageFilters] = useState({
-        month: parseInt(moment().format("M")),
         year: parseInt(moment().format("YYYY"))
     });
-
+    const [showModalPayrollViewInfo, setShowModalPayrollViewInfo] = useState(
+        false
+    );
+    const [selectedPayroll, setSelectedPayroll] = useState();
     const [payrollList, setPayrollList] = useState([]);
+    const [accountingEntries, setAccountingEntries] = useState({
+        debit: [],
+        credit: []
+    });
 
     useEffect(() => {
-        fetchData(
-            "GET",
-            "api/payroll?month=" +
-                pageFilters.month +
-                "&year=" +
-                pageFilters.year
-        ).then(res => {
-            // console.log(res);
-            if (res.success) {
-                setPayrollList(res.data);
-            }
-        });
+        getPayrollList();
         return () => {};
     }, [pageFilters]);
+
+    const getPayrollList = () => {
+        fetchData("GET", "api/payroll?year=" + pageFilters.year).then(res => {
+            if (res.success) {
+                setPayrollList([...res.data]);
+            }
+        });
+    };
 
     const deletePayroll = record => {
         fetchData("DELETE", "api/payroll/" + record.id).then(res => {
             if (res.success) {
+                getPayrollList();
                 notification.success({
                     message: "Payroll Successfully Deleted!"
                 });
             }
         });
+    };
+
+    const handleViewPayroll = record => {
+        setSelectedPayroll(record);
+        let debit = record.client.client_accounting_entries.filter(
+            p => p.type == "debit"
+        );
+        let credit = record.client.client_accounting_entries.filter(
+            p => p.type == "credit"
+        );
+        setAccountingEntries({
+            ...accountingEntries,
+            debit: debit,
+            credit: credit
+        });
+        toggleShowModalPayrollViewInfo();
     };
 
     const columns = [
@@ -79,7 +104,12 @@ const CardPayrollList = () => {
             width: "1%",
             render: (text, record) => {
                 return (
-                    <Button type="primary" size="small" icon={<EyeOutlined />}>
+                    <Button
+                        type="primary"
+                        size="small"
+                        icon={<EyeOutlined />}
+                        onClick={e => handleViewPayroll(record)}
+                    >
                         View
                     </Button>
                 );
@@ -112,57 +142,57 @@ const CardPayrollList = () => {
             }
         }
     ];
+
+    const toggleShowModalPayrollViewInfo = () => {
+        setShowModalPayrollViewInfo(!showModalPayrollViewInfo);
+    };
     return (
-        <Card className="mt-10">
-            <Row>
-                <Col xs={24} md={18}>
-                    <Title level={4}>Payroll List</Title>
-                </Col>
-                <Col xs={24} md={6}>
-                    <div style={{ display: "flex" }}>
-                        <Text style={{ lineHeight: "2.2", paddingRight: 10 }}>
-                            Filters
-                        </Text>
-                        <Select
-                            placeholder="Select Month"
-                            style={{ width: "-webkit-fill-available" }}
-                            value={pageFilters.month}
-                            onChange={e =>
-                                setPageFilters({
-                                    ...pageFilters,
-                                    month: parseInt(e)
-                                })
-                            }
-                        >
-                            <Select.Option value={1}>January</Select.Option>
-                            <Select.Option value={2}>February</Select.Option>
-                            <Select.Option value={3}>March</Select.Option>
-                            <Select.Option value={4}>April</Select.Option>
-                            <Select.Option value={5}>May</Select.Option>
-                            <Select.Option value={6}>June</Select.Option>
-                            <Select.Option value={7}>July</Select.Option>
-                            <Select.Option value={8}>August</Select.Option>
-                            <Select.Option value={9}>September</Select.Option>
-                            <Select.Option value={10}>October</Select.Option>
-                            <Select.Option value={11}>November</Select.Option>
-                            <Select.Option value={12}>December</Select.Option>
-                        </Select>
-                        <InputNumber
-                            style={{ width: 140 }}
-                            value={pageFilters.year}
-                            onChange={e =>
-                                setPageFilters({
-                                    ...pageFilters,
-                                    year: parseInt(e)
-                                })
-                            }
-                        />
-                    </div>
-                </Col>
-            </Row>
-            <Divider />
-            <Table columns={columns} size="small" dataSource={payrollList} />
-        </Card>
+        <>
+            <Card className="mt-10">
+                <Row>
+                    <Col xs={24} md={21}>
+                        <Title level={4}>Payroll List</Title>
+                    </Col>
+                    <Col xs={24} md={3}>
+                        <div style={{ display: "flex" }}>
+                            <Text
+                                style={{ lineHeight: "2.2", paddingRight: 10 }}
+                            >
+                                Year
+                            </Text>
+
+                            <InputNumber
+                                style={{ width: "100%" }}
+                                value={pageFilters.year}
+                                onChange={e =>
+                                    setPageFilters({
+                                        ...pageFilters,
+                                        year: parseInt(e)
+                                    })
+                                }
+                            />
+                        </div>
+                    </Col>
+                </Row>
+                <Divider />
+                <Table
+                    columns={columns}
+                    size="small"
+                    pagination={false}
+                    dataSource={payrollList}
+                />
+            </Card>
+            {selectedPayroll && (
+                <ModalPayrollViewInfo
+                    selectedPayroll={selectedPayroll}
+                    showModalPayrollViewInfo={showModalPayrollViewInfo}
+                    toggleShowModalPayrollViewInfo={
+                        toggleShowModalPayrollViewInfo
+                    }
+                    accountingEntries={accountingEntries}
+                />
+            )}
+        </>
     );
 };
 

@@ -8,8 +8,8 @@ class ClientEmployeeAccounting extends Model
 {
     protected $guarded = [];
 
-    public function client_payroll() {
-        return $this->belongsTo('App\ClientPayroll','client_payroll_id');
+    public function client_employee_payroll() {
+        return $this->belongsTo('App\ClientEmployeePayroll','client_employee_payroll_id');
     }
     
     public function client_accounting_entry() {
