@@ -29,5 +29,9 @@ class ClientEmployee extends Model
         return $this->hasMany('App\ClientEmployeeDeduction','employee_id');
     }
 
+    public function client_employee_assigned_posts() {
+        return $this->hasMany('App\ClientEmployeeAssignedPost','employee_id');
+    }
+
     
 }

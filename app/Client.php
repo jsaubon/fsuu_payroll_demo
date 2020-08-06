@@ -24,4 +24,8 @@ class Client extends Model
     public function client_accounting_entries() {
         return $this->hasMany('App\ClientAccountingEntry','client_id');
     }
+
+    public function client_employee_assigned_posts() {
+        return $this->hasMany('App\ClientEmployeeAssignedPost','client_id');
+    }
 }

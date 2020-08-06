@@ -23,5 +23,18 @@ class ClientPayroll extends Model
     public function client_employee_payrolls() {
         return $this->hasMany('App\ClientEmployeePayroll','client_payroll_id');
     }
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($payroll) { // before delete() method call this
+             $employee_payrolls = $payroll->client_employee_payrolls()->get();
+             foreach ($employee_payrolls as $key => $employee_payroll) {
+                 $employee_payroll->client_employee_accountings()->delete();
+             }
+             $payroll->client_employee_payrolls()->delete();
+             // do the rest of the cleanup...
+        });
+    }
     
 }

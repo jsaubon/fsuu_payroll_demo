@@ -17,4 +17,5 @@ class ClientEmployeePayroll extends Model
     public function client_payroll() {
         return $this->belongsTo('App\ClientPayroll','client_payroll_id');
     }
+
 }

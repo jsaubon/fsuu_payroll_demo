@@ -1,14 +1,21 @@
 import React from "react";
 
-import { Space, Popconfirm, Input, notification } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { Space, Popconfirm, Input, notification, Button } from "antd";
+import {
+    SearchOutlined,
+    EditOutlined,
+    DeleteOutlined,
+    EyeOutlined
+} from "@ant-design/icons";
 import { fetchData } from "../../../../../../axios";
 import Text from "antd/lib/typography/Text";
+import ButtonGroup from "antd/lib/button/button-group";
 
 export const clientEmployeesTableColumns = (
     getClientEmployees,
     toggleShowAddEditClientEmployeesModal,
-    toggleShowModalDeductionsList
+    toggleShowModalDeductionsList,
+    toggleShowModalAssignedPosts
 ) => {
     const deleteEmployee = record => {
         fetchData("DELETE", "api/employee/" + record.id).then(res => {
@@ -23,7 +30,8 @@ export const clientEmployeesTableColumns = (
             title: "Name",
             dataIndex: "name",
             key: "name",
-            sorter: true
+            sorter: true,
+            className: "w-nowrap"
         },
         {
             title: "Email",
@@ -55,37 +63,81 @@ export const clientEmployeesTableColumns = (
             }
         },
         {
+            title: "Assigned Posts",
+            key: "assigned_posts",
+            width: "10%",
+            render: (text, record) => {
+                return (
+                    <Space size="middle" key={record.id}>
+                        <Button
+                            size="small"
+                            type="primary"
+                            icon={<EyeOutlined />}
+                            onClick={e => toggleShowModalAssignedPosts(record)}
+                        >
+                            View
+                        </Button>
+                    </Space>
+                );
+            }
+        },
+        {
+            title: "Deductions",
+            key: "deductions",
+            width: "10%",
+            render: (text, record) => {
+                return (
+                    <Space size="middle" key={record.id}>
+                        <Button
+                            size="small"
+                            type="primary"
+                            icon={<EyeOutlined />}
+                            onClick={e => toggleShowModalDeductionsList(record)}
+                        >
+                            View
+                        </Button>
+                    </Space>
+                );
+            }
+        },
+        {
             title: "Action",
             key: "action",
             width: "20%",
             render: (text, record) => {
                 return (
                     <Space size="middle" key={record.id}>
-                        <a
-                            onClick={
-                                e => toggleShowModalDeductionsList(record)
-                                // alert(record.id)
-                            }
-                        >
-                            Deductions
-                        </a>
-                        <a
-                            onClick={e =>
-                                toggleShowAddEditClientEmployeesModal(record)
-                            }
-                        >
-                            Edit
-                        </a>
-                        <Popconfirm
-                            title="Are you sure to delete this employee?"
-                            okText="Yes"
-                            cancelText="No"
-                            onConfirm={e => {
-                                deleteEmployee(record);
-                            }}
-                        >
-                            <a>Delete</a>
-                        </Popconfirm>
+                        <ButtonGroup>
+                            <Button
+                                size="small"
+                                type="primary"
+                                icon={<EditOutlined />}
+                                onClick={e =>
+                                    toggleShowAddEditClientEmployeesModal(
+                                        record
+                                    )
+                                }
+                            >
+                                Edit
+                            </Button>
+                            <Popconfirm
+                                title="Are you sure to delete this employee?"
+                                okText="Yes"
+                                cancelText="No"
+                                onConfirm={e => {
+                                    deleteEmployee(record);
+                                }}
+                            >
+                                <Button
+                                    size="small"
+                                    type="primary"
+                                    danger
+                                    icon={<DeleteOutlined />}
+                                >
+                                    Delete
+                                </Button>
+                            </Popconfirm>
+                        </ButtonGroup>
                     </Space>
                 );
             }

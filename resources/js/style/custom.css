@@ -202,3 +202,7 @@ body {
 .hide {
     display: none !important;
 }
+
+.w-nowrap {
+    white-space: nowrap;
+}

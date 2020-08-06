@@ -4,12 +4,14 @@ import { fetchData } from "../../../../../../axios";
 import { clientEmployeesTableColumns } from "./clientEmployeesTableColumns";
 import ModalAddEditEmployee from "./modalAddEditEmployee";
 import ModalDeductionsList from "./modalDeductionsList";
+import ModalAssignedPosts from "./modalAssignedPosts";
 
 const TabContentClientEmployees = ({ client_id }) => {
     const [clientEmployees, setClientEmployees] = useState([]);
     const [showClientEmployeesModal, setShowClientEmployeesModal] = useState(
         false
     );
+    const [showModalAssignedPosts, setShowModalAssignedPosts] = useState(false);
     const [employeeData, setEmployeeData] = useState();
     const [employeesTableSettings, setEmployeesTableSettings] = useState({
         size: 20,
@@ -40,10 +42,15 @@ const TabContentClientEmployees = ({ client_id }) => {
     };
 
     const toggleShowAddEditClientEmployeesModal = record => {
-        setShowClientEmployeesModal(!showClientEmployeesModal);
         if (record) {
             setEmployeeData(record);
         }
+        setShowClientEmployeesModal(!showClientEmployeesModal);
+    };
+
+    const toggleShowModalAssignedPosts = record => {
+        setSelectedEmployee(record);
+        setShowModalAssignedPosts(!showModalAssignedPosts);
     };
 
     const handleOnPageChange = (page, pageSize) => {
@@ -110,7 +117,8 @@ const TabContentClientEmployees = ({ client_id }) => {
                 columns={clientEmployeesTableColumns(
                     getClientEmployees,
                     toggleShowAddEditClientEmployeesModal,
-                    toggleShowModalDeductionsList
+                    toggleShowModalDeductionsList,
+                    toggleShowModalAssignedPosts
                 )}
                 pagination={{
                     onChange: (page, pageSize) =>
@@ -146,6 +154,13 @@ const TabContentClientEmployees = ({ client_id }) => {
                     toggleShowModalDeductionsList={
                         toggleShowModalDeductionsList
                     }
+                    employee={selectedEmployee}
+                />
+            )}
+            {showModalAssignedPosts && (
+                <ModalAssignedPosts
+                    showModalAssignedPosts={showModalAssignedPosts}
+                    toggleShowModalAssignedPosts={toggleShowModalAssignedPosts}
                     employee={selectedEmployee}
                 />
             )}
