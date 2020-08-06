@@ -1,11 +1,29 @@
 import React from "react";
 import Text from "antd/lib/typography/Text";
-import { Form, Input, DatePicker } from "antd";
+import { Form, Input, DatePicker, Select } from "antd";
 
 const FormClientBasicInfo = () => {
     return (
         <>
             <Text>Basic Information</Text>
+            <Form.Item
+                label="Client Type"
+                name="type"
+                rules={[
+                    {
+                        required: true,
+                        message: "Select Client Type"
+                    }
+                ]}
+                className="mb-15"
+            >
+                <Select name="type">
+                    <Select.Option value="Commando">Commando</Select.Option>
+                    <Select.Option value="First Commando">
+                        First Commando
+                    </Select.Option>
+                </Select>
+            </Form.Item>
             <Form.Item
                 label="Client Name"
                 name="name"

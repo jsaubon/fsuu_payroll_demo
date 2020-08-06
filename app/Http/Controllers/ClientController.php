@@ -14,7 +14,15 @@ class ClientController extends Controller
      */
     public function index(Request $request)
     {
-        $clients = Client::where('name','like',isset($request->search) ? '%'.$request->search.'%' : '%%')->orderBy('name',$request->sort)->get();
+        $clients = Client::where('name','like',isset($request->search) ? '%'.$request->search.'%' : '%%')
+                                
+                                ->orderBy('name',$request->sort);
+        if(isset($request->type) && $request->type != '' && $request->type != 'All') {
+            $clients->where('type',$request->type);
+        }
+
+            
+        $clients = $clients->get();
 
         return response()->json([
             'success' => true,
@@ -47,6 +55,7 @@ class ClientController extends Controller
         
         if($request->id) {
             $client = Client::find($request->id);
+            $client->type = $request->type;
             $client->name = $request->name;
             $client->address = $request->address;
             $client->photo = $photo;
@@ -55,6 +64,7 @@ class ClientController extends Controller
             $client->save();
         } else {
             $client = new Client();
+            $client->type = $request->type;
             $client->name = $request->name;
             $client->address = $request->address;
             $client->photo = $photo;

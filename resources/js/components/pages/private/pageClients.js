@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, Input, Row, Col, Card, Divider } from "antd";
+import { Button, Input, Row, Col, Card, Divider, Select } from "antd";
 import Title from "antd/lib/typography/Title";
 import Meta from "antd/lib/card/Meta";
 import ModalAddEditClient from "./pageClients/modalAddEditClient";
@@ -19,6 +19,7 @@ import { getClients } from "./pageClients/getClients";
 const PageClients = ({ history }) => {
     const { stateClients, dispatchClients } = useContext(ClientsContext);
     const [sortClient, setSortClient] = useState("asc");
+    const [clientType, setClientType] = useState("");
     const [searchClient, setSearchClient] = useState("");
 
     useEffect(() => {
@@ -31,9 +32,9 @@ const PageClients = ({ history }) => {
     };
 
     useEffect(() => {
-        getClients(dispatchClients, searchClient, sortClient);
+        getClients(dispatchClients, searchClient, sortClient, clientType);
         return () => {};
-    }, [sortClient, searchClient]);
+    }, [sortClient, searchClient, clientType]);
     const toggleShowModalAddEditClient = () => {
         setShowModalAddEditClient(!showModalAddEditClient);
     };
@@ -50,13 +51,26 @@ const PageClients = ({ history }) => {
         <>
             <Title level={3}>Clients List</Title>
             <Row style={{ marginLeft: "-10px", marginRight: "-10px" }}>
-                <Col xs={24} md={18}>
+                <Col xs={24} md={14}>
                     <Button
                         type="primary"
                         onClick={e => toggleShowModalAddEditClient()}
                     >
                         New
                     </Button>
+                </Col>
+                <Col xs={24} md={4}>
+                    <Select
+                        placeholder="Filter Client Type"
+                        style={{ width: "100%" }}
+                        onChange={value => setClientType(value)}
+                    >
+                        <Select.Option value="All">All</Select.Option>
+                        <Select.Option value="Commando">Commando</Select.Option>
+                        <Select.Option value="First Commando">
+                            First Commando
+                        </Select.Option>
+                    </Select>
                 </Col>
                 <Col xs={24} md={6}>
                     <div style={{ display: "flex" }}>
