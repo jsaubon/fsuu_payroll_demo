@@ -257,6 +257,11 @@ const ModalPayrollViewInfo = ({
                                                                         credit,
                                                                         key
                                                                     ) => {
+                                                                        console.log(
+                                                                            parseFloat(
+                                                                                credit.amount
+                                                                            )
+                                                                        );
                                                                         netPay += parseFloat(
                                                                             credit.amount
                                                                         );
@@ -275,9 +280,10 @@ const ModalPayrollViewInfo = ({
                                                                     }
                                                                 )}
                                                             <td className="ant-table-cell text-center fz-10">
-                                                                {netPay.toFixed(
-                                                                    2
-                                                                )}
+                                                                {(
+                                                                    grossPay -
+                                                                    netPay
+                                                                ).toFixed(2)}
                                                             </td>
                                                             <td></td>
                                                         </tr>

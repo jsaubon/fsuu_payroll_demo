@@ -93,7 +93,7 @@ const CardPayrollList = () => {
                 return (
                     moment(record.date_start).format("YYYY-MM-DD") +
                     " to " +
-                    moment(record.date_start).format("YYYY-MM-DD")
+                    moment(record.date_end).format("YYYY-MM-DD")
                 );
             }
         },

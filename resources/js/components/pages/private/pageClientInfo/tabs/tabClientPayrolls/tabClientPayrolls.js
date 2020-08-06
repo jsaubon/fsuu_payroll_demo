@@ -41,7 +41,7 @@ const TabClientPayrolls = ({ client_id }) => {
             dataIndex: "date_end",
             key: "date_end",
             render: (text, record) => {
-                return moment(record.date_start).format("YYYY-MM-DD");
+                return moment(record.date_end).format("YYYY-MM-DD");
             }
         },
 
