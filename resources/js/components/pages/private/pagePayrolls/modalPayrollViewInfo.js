@@ -96,7 +96,7 @@ const ModalPayrollViewInfo = ({
                                                     className="ant-table-cell text-center fz-12"
                                                     colSpan={
                                                         accountingEntries.debit
-                                                            .length
+                                                            .length - 7
                                                     }
                                                 >
                                                     DEBIT
@@ -137,12 +137,43 @@ const ModalPayrollViewInfo = ({
                                                     (debit, key) => {
                                                         if (
                                                             debit.title !=
-                                                            "13th-Month Pay"
+                                                                "13th-Month Pay" &&
+                                                            debit.title !=
+                                                                "Uniform Allowance" &&
+                                                            debit.title.indexOf(
+                                                                "Hol. Pay"
+                                                            ) === -1
                                                         ) {
+                                                            if (
+                                                                debit.title ==
+                                                                    "Basic Pay" ||
+                                                                debit.title ==
+                                                                    "Night Premium Pay" ||
+                                                                debit.title ==
+                                                                    "Overtime Pay"
+                                                            ) {
+                                                                return (
+                                                                    <th
+                                                                        className="ant-table-cell text-center fz-10"
+                                                                        key={
+                                                                            key
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            debit.title
+                                                                        }
+                                                                    </th>
+                                                                );
+                                                            }
                                                             return (
                                                                 <th
-                                                                    className="ant-table-cell text-center fz-10"
+                                                                    className="ant-table-cell text-center fz-10 c-pointer"
                                                                     key={key}
+                                                                    onClick={e =>
+                                                                        toggleShowModalTblHeaderCalculation(
+                                                                            debit
+                                                                        )
+                                                                    }
                                                                 >
                                                                     {
                                                                         debit.title
@@ -174,6 +205,161 @@ const ModalPayrollViewInfo = ({
                                                 (employee_payroll, key) => {
                                                     let grossPay = 0;
                                                     let netPay = 0;
+                                                    let totalBasicPay = 0;
+                                                    let totalNightPay = 0;
+                                                    let totalOvertimePay = 0;
+
+                                                    employee_payroll.client_employee_accountings
+                                                        .filter(
+                                                            p =>
+                                                                p
+                                                                    .client_accounting_entry
+                                                                    .type ==
+                                                                "debit"
+                                                        )
+                                                        .map((debit, key) => {
+                                                            if (
+                                                                debit
+                                                                    .client_accounting_entry
+                                                                    .title ==
+                                                                    "Basic Pay" ||
+                                                                debit
+                                                                    .client_accounting_entry
+                                                                    .title ==
+                                                                    "Reg. Hol. Pay" ||
+                                                                debit
+                                                                    .client_accounting_entry
+                                                                    .title ==
+                                                                    "Spcl. Hol. Pay"
+                                                            ) {
+                                                                totalBasicPay +=
+                                                                    debit
+                                                                        .client_accounting_entry
+                                                                        .title ==
+                                                                    "Basic Pay"
+                                                                        ? debit
+                                                                              .client_accounting_entry
+                                                                              .amount *
+                                                                          employee_payroll.days_of_work
+                                                                        : 0;
+                                                                totalBasicPay +=
+                                                                    debit
+                                                                        .client_accounting_entry
+                                                                        .title ==
+                                                                    "Reg. Hol. Pay"
+                                                                        ? debit
+                                                                              .client_accounting_entry
+                                                                              .amount *
+                                                                          employee_payroll.days_of_work_reg_hol
+                                                                        : 0;
+                                                                totalBasicPay +=
+                                                                    debit
+                                                                        .client_accounting_entry
+                                                                        .title ==
+                                                                    "Spcl. Hol. Pay"
+                                                                        ? debit
+                                                                              .client_accounting_entry
+                                                                              .amount *
+                                                                          employee_payroll.days_of_work_spcl_hol
+                                                                        : 0;
+                                                            }
+
+                                                            if (
+                                                                debit
+                                                                    .client_accounting_entry
+                                                                    .title ==
+                                                                    "Night Premium Pay" ||
+                                                                debit
+                                                                    .client_accounting_entry
+                                                                    .title ==
+                                                                    "Night Reg. Hol. Pay" ||
+                                                                debit
+                                                                    .client_accounting_entry
+                                                                    .title ==
+                                                                    "Night Spcl. Hol. Pay"
+                                                            ) {
+                                                                totalNightPay +=
+                                                                    debit
+                                                                        .client_accounting_entry
+                                                                        .title ==
+                                                                    "Night Premium Pay"
+                                                                        ? debit
+                                                                              .client_accounting_entry
+                                                                              .amount *
+                                                                          employee_payroll.night_pay
+                                                                        : 0;
+                                                                totalNightPay +=
+                                                                    debit
+                                                                        .client_accounting_entry
+                                                                        .title ==
+                                                                    "Night Reg. Hol. Pay"
+                                                                        ? debit
+                                                                              .client_accounting_entry
+                                                                              .amount *
+                                                                          employee_payroll.night_pay_reg_hol
+                                                                        : 0;
+                                                                totalNightPay +=
+                                                                    debit
+                                                                        .client_accounting_entry
+                                                                        .title ==
+                                                                    "Night Spcl. Hol. Pay"
+                                                                        ? debit
+                                                                              .client_accounting_entry
+                                                                              .amount *
+                                                                          employee_payroll.night_pay_spcl_hol
+                                                                        : 0;
+                                                            }
+                                                            if (
+                                                                debit
+                                                                    .client_accounting_entry
+                                                                    .title ==
+                                                                    "Overtime Pay" ||
+                                                                debit
+                                                                    .client_accounting_entry
+                                                                    .title ==
+                                                                    "Overtime Reg. Hol. Pay" ||
+                                                                debit
+                                                                    .client_accounting_entry
+                                                                    .title ==
+                                                                    "Overtime Spcl. Hol. Pay"
+                                                            ) {
+                                                                totalOvertimePay +=
+                                                                    debit
+                                                                        .client_accounting_entry
+                                                                        .title ==
+                                                                    "Overtime Pay"
+                                                                        ? debit
+                                                                              .client_accounting_entry
+                                                                              .amount *
+                                                                          employee_payroll.hours_overtime
+                                                                        : 0;
+                                                                totalOvertimePay +=
+                                                                    debit
+                                                                        .client_accounting_entry
+                                                                        .title ==
+                                                                    "Overtime Reg. Hol. Pay"
+                                                                        ? debit
+                                                                              .client_accounting_entry
+                                                                              .amount *
+                                                                          employee_payroll.hours_overtime_reg_hol
+                                                                        : 0;
+                                                                totalOvertimePay +=
+                                                                    debit
+                                                                        .client_accounting_entry
+                                                                        .title ==
+                                                                    "Overtime Spcl. Hol. Pay"
+                                                                        ? debit
+                                                                              .client_accounting_entry
+                                                                              .amount *
+                                                                          employee_payroll.hours_overtime_spcl_hol
+                                                                        : 0;
+                                                            }
+                                                        });
+
+                                                    grossPay =
+                                                        totalBasicPay +
+                                                        totalNightPay +
+                                                        totalOvertimePay;
                                                     return (
                                                         <tr
                                                             key={key}
@@ -199,7 +385,7 @@ const ModalPayrollViewInfo = ({
                                                             </td>
                                                             <td className="ant-table-cell text-center fz-10">
                                                                 {
-                                                                    employee_payroll.days_present
+                                                                    employee_payroll.days_of_work
                                                                 }
                                                             </td>
                                                             {employee_payroll.client_employee_accountings
@@ -216,26 +402,93 @@ const ModalPayrollViewInfo = ({
                                                                         key
                                                                     ) => {
                                                                         if (
-                                                                            debit
-                                                                                .client_accounting_entry
-                                                                                .title !=
-                                                                            "13th-Month Pay"
+                                                                            debit.client_accounting_entry.title.indexOf(
+                                                                                "Hol. Pay"
+                                                                            ) ===
+                                                                            -1
                                                                         ) {
-                                                                            grossPay += parseFloat(
-                                                                                debit.amount
-                                                                            );
-                                                                            return (
-                                                                                <td
-                                                                                    key={
-                                                                                        key
-                                                                                    }
-                                                                                    className="ant-table-cell text-center fz-10"
-                                                                                >
-                                                                                    {
+                                                                            if (
+                                                                                debit
+                                                                                    .client_accounting_entry
+                                                                                    .title !=
+                                                                                    "13th-Month Pay" &&
+                                                                                debit
+                                                                                    .client_accounting_entry
+                                                                                    .title !=
+                                                                                    "Uniform Allowance"
+                                                                            ) {
+                                                                                if (
+                                                                                    debit
+                                                                                        .client_accounting_entry
+                                                                                        .title ==
+                                                                                    "Basic Pay"
+                                                                                ) {
+                                                                                    return (
+                                                                                        <td
+                                                                                            key={
+                                                                                                key
+                                                                                            }
+                                                                                            className="ant-table-cell text-center fz-10"
+                                                                                        >
+                                                                                            {
+                                                                                                totalBasicPay
+                                                                                            }
+                                                                                        </td>
+                                                                                    );
+                                                                                } else if (
+                                                                                    debit
+                                                                                        .client_accounting_entry
+                                                                                        .title ==
+                                                                                    "Night Premium Pay"
+                                                                                ) {
+                                                                                    return (
+                                                                                        <td
+                                                                                            key={
+                                                                                                key
+                                                                                            }
+                                                                                            className="ant-table-cell text-center fz-10"
+                                                                                        >
+                                                                                            {
+                                                                                                totalNightPay
+                                                                                            }
+                                                                                        </td>
+                                                                                    );
+                                                                                } else if (
+                                                                                    debit
+                                                                                        .client_accounting_entry
+                                                                                        .title ==
+                                                                                    "Overtime Pay"
+                                                                                ) {
+                                                                                    return (
+                                                                                        <td
+                                                                                            key={
+                                                                                                key
+                                                                                            }
+                                                                                            className="ant-table-cell text-center fz-10"
+                                                                                        >
+                                                                                            {
+                                                                                                totalOvertimePay
+                                                                                            }
+                                                                                        </td>
+                                                                                    );
+                                                                                } else {
+                                                                                    grossPay += parseFloat(
                                                                                         debit.amount
-                                                                                    }
-                                                                                </td>
-                                                                            );
+                                                                                    );
+                                                                                    return (
+                                                                                        <td
+                                                                                            key={
+                                                                                                key
+                                                                                            }
+                                                                                            className="ant-table-cell text-center fz-10"
+                                                                                        >
+                                                                                            {
+                                                                                                debit.amount
+                                                                                            }
+                                                                                        </td>
+                                                                                    );
+                                                                                }
+                                                                            }
                                                                         }
                                                                     }
                                                                 )}
@@ -257,11 +510,6 @@ const ModalPayrollViewInfo = ({
                                                                         credit,
                                                                         key
                                                                     ) => {
-                                                                        console.log(
-                                                                            parseFloat(
-                                                                                credit.amount
-                                                                            )
-                                                                        );
                                                                         netPay += parseFloat(
                                                                             credit.amount
                                                                         );

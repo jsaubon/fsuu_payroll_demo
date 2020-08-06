@@ -49,8 +49,15 @@ class ClientPayrollController extends Controller
                 $client_employee_payroll = \App\ClientEmployeePayroll::create([
                     'client_payroll_id' => $client_payroll->id,
                     'employee_id' => $payroll['employee_id'],
-                    'days_present' => $payroll['days_of_work'],
+                    'days_of_work' => $payroll['days_of_work'],
+                    'days_of_work_reg_hol' => $payroll['days_of_work_reg_hol'],
+                    'days_of_work_spcl_hol' => $payroll['days_of_work_spcl_hol'],
+                    'night_pay' => $payroll['night_pay'],
+                    'night_pay_reg_hol' => $payroll['night_pay_reg_hol'],
+                    'night_pay_spcl_hol' => $payroll['night_pay_spcl_hol'],
                     'hours_overtime' => $payroll['hours_overtime'],
+                    'hours_overtime_reg_hol' => $payroll['hours_overtime_reg_hol'],
+                    'hours_overtime_spcl_hol' => $payroll['hours_overtime_spcl_hol'],
                 ]);
     
                 foreach ($payroll['debit'] as $key => $debit) {

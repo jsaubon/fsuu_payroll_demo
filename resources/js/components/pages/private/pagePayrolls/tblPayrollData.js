@@ -160,7 +160,9 @@ const TblPayrollData = ({
                                     </th>
                                     <th
                                         className="ant-table-cell text-center fz-12"
-                                        colSpan={accountingEntries.debit.length}
+                                        colSpan={
+                                            accountingEntries.debit.length - 7
+                                        }
                                     >
                                         DEBIT
                                     </th>
@@ -197,7 +199,29 @@ const TblPayrollData = ({
                                     </th>
                                     {accountingEntries.debit.map(
                                         (debit, key) => {
-                                            if (debit.visible) {
+                                            if (
+                                                debit.visible &&
+                                                debit.title.indexOf(
+                                                    "Hol. Pay"
+                                                ) === -1
+                                            ) {
+                                                if (
+                                                    debit.title ==
+                                                        "Basic Pay" ||
+                                                    debit.title ==
+                                                        "Night Premium Pay" ||
+                                                    debit.title ==
+                                                        "Overtime Pay"
+                                                ) {
+                                                    return (
+                                                        <th
+                                                            className="ant-table-cell text-center fz-10"
+                                                            key={key}
+                                                        >
+                                                            {debit.title}
+                                                        </th>
+                                                    );
+                                                }
                                                 return (
                                                     <th
                                                         className="ant-table-cell text-center fz-10 c-pointer"
@@ -236,7 +260,10 @@ const TblPayrollData = ({
                                     )}
                                 </tr>
                             </thead>
-                            <tbody className="ant-table-tbody">
+                            <tbody
+                                className="ant-table-tbody"
+                                style={{ background: "white" }}
+                            >
                                 {payrollDetails.employeePayroll.map(
                                     (employee, key) => {
                                         let _debit_basic_pay = employee.debit.find(
@@ -270,7 +297,63 @@ const TblPayrollData = ({
                                                     </td>
                                                     {employee.debit.map(
                                                         (debit, debit_key) => {
-                                                            if (debit.visible) {
+                                                            if (
+                                                                debit.visible &&
+                                                                debit.title.indexOf(
+                                                                    "Hol. Pay"
+                                                                ) === -1
+                                                            ) {
+                                                                if (
+                                                                    debit.title ==
+                                                                    "Basic Pay"
+                                                                ) {
+                                                                    return (
+                                                                        <td
+                                                                            key={
+                                                                                debit_key
+                                                                            }
+                                                                            className="ant-table-cell text-center fz-10 "
+                                                                        >
+                                                                            {
+                                                                                employee.totalBasicPay
+                                                                            }
+                                                                        </td>
+                                                                    );
+                                                                }
+                                                                if (
+                                                                    debit.title ==
+                                                                    "Night Premium Pay"
+                                                                ) {
+                                                                    return (
+                                                                        <td
+                                                                            key={
+                                                                                debit_key
+                                                                            }
+                                                                            className="ant-table-cell text-center fz-10 "
+                                                                        >
+                                                                            {
+                                                                                employee.totalNightPay
+                                                                            }
+                                                                        </td>
+                                                                    );
+                                                                }
+                                                                if (
+                                                                    debit.title ==
+                                                                    "Overtime Pay"
+                                                                ) {
+                                                                    return (
+                                                                        <td
+                                                                            key={
+                                                                                debit_key
+                                                                            }
+                                                                            className="ant-table-cell text-center fz-10 "
+                                                                        >
+                                                                            {
+                                                                                employee.totalOvertimePay
+                                                                            }
+                                                                        </td>
+                                                                    );
+                                                                }
                                                                 return (
                                                                     <td
                                                                         key={

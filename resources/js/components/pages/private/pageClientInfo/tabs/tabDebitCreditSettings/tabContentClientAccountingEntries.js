@@ -30,7 +30,7 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
             amount: 0
         },
         {
-            title: "Band",
+            title: "Bond",
             amount: 0
         },
         {
@@ -64,7 +64,23 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
             amount: 0
         },
         {
+            title: "Reg. Hol. Pay",
+            amount: 0
+        },
+        {
+            title: "Spcl. Hol. Pay",
+            amount: 0
+        },
+        {
             title: "Night Premium Pay",
+            amount: 0
+        },
+        {
+            title: "Night Reg. Hol. Pay",
+            amount: 0
+        },
+        {
+            title: "Night Spcl. Hol. Pay",
             amount: 0
         },
         {
@@ -72,7 +88,23 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
             amount: 0
         },
         {
+            title: "Uniform Allowance",
+            amount: 0
+        },
+        {
             title: "5-Day Service Leave",
+            amount: 0
+        },
+        {
+            title: "SL/VL",
+            amount: 0
+        },
+        {
+            title: "Holiday Pay",
+            amount: 0
+        },
+        {
+            title: "Separation Pay",
             amount: 0
         },
         {
@@ -81,6 +113,14 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
         },
         {
             title: "Overtime Pay",
+            amount: 0
+        },
+        {
+            title: "Overtime Reg. Hol. Pay",
+            amount: 0
+        },
+        {
+            title: "Overtime Spcl. Hol. Pay",
             amount: 0
         },
         {

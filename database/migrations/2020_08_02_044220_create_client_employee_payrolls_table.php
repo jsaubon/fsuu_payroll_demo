@@ -17,8 +17,15 @@ class CreateClientEmployeePayrollsTable extends Migration
             $table->id();
             $table->integer('client_payroll_id')->unsigned();
             $table->integer('employee_id')->unsigned();
-            $table->integer('days_present');
+            $table->integer('days_of_work');
+            $table->integer('days_of_work_reg_hol')->default(0);
+            $table->integer('days_of_work_spcl_hol')->default(0);
+            $table->integer('night_pay')->default(0);
+            $table->integer('night_pay_reg_hol')->default(0);
+            $table->integer('night_pay_spcl_hol')->default(0);
             $table->integer('hours_overtime')->default(0);
+            $table->integer('hours_overtime_reg_hol')->default(0);
+            $table->integer('hours_overtime_spcl_hol')->default(0);
             $table->timestamps();
         });
     }
