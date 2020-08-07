@@ -6,6 +6,7 @@ import LayoutFooter from "./LayoutFooter";
 import PageClients from "../pages/private/PageClients";
 import PageClientInfo from "../pages/private/pageClientInfo";
 import PagePayrolls from "../pages/private/pagePayrolls";
+import PageReports from "../pages/private/pageReports";
 
 const LayoutContent = () => {
     const { Content } = Layout;
@@ -28,6 +29,7 @@ const LayoutContent = () => {
                             path="/payrolls"
                             component={PagePayrolls}
                         />
+                        <Route exact path="/reports" component={PageReports} />
                         <Route
                             exact
                             path="/clients/:id"

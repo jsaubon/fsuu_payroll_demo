@@ -15,8 +15,9 @@ import {
 } from "antd";
 import { fetchData } from "../../../../../../axios";
 import Title from "antd/lib/typography/Title";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import moment from "moment";
+import ButtonGroup from "antd/lib/button/button-group";
 
 const ModalAssignedPosts = ({
     showModalAssignedPosts,
@@ -32,6 +33,7 @@ const ModalAssignedPosts = ({
         return () => {};
     }, []);
 
+    let formAssigned;
     const [dataSource, setDataSource] = useState([]);
 
     const getClients = () => {
@@ -80,24 +82,52 @@ const ModalAssignedPosts = ({
             date_start: e.date_start.format("YYYY-MM-DD"),
             date_end: e.date_end ? e.date_end.format("YYYY-MM-DD") : null
         };
-        setFormLoading(true);
 
-        fetchData("POST", "api/employee_assinged_post", data).then(res => {
+        setFormLoading(true);
+        fetchData(
+            data.id ? "UPDATE" : "POST",
+            "api/employee_assigned_post" + (data.id ? `/${data.id}` : ""),
+            data
+        ).then(res => {
             if (res.success) {
                 setFormLoading(false);
                 getEmployeeAssignedPosts();
+                setResetFormFields(true);
             }
         });
     };
+    const [resetFormFields, setResetFormFields] = useState(false);
+    useEffect(() => {
+        if (resetFormFields) {
+            resetForm();
+        }
+        return () => {};
+    }, [resetFormFields]);
 
     const handleDeleteAssignedPost = record => {
-        fetchData("DELETE", "api/employee_assinged_post/" + record.id).then(
+        fetchData("DELETE", "api/employee_assigned_post/" + record.id).then(
             res => {
                 if (res.success) {
                     getEmployeeAssignedPosts();
                 }
             }
         );
+    };
+
+    const handleEditAssignedPost = record => {
+        let _record = {
+            ...record,
+            date_start: moment(record.date_start, "YYYY-MM-DD"),
+            date_end:
+                record.date_end != "-"
+                    ? moment(record.date_end, "YYYY-MM-DD")
+                    : undefined
+        };
+        formAssigned.setFieldsValue(_record);
+    };
+
+    const resetForm = () => {
+        formAssigned.resetFields();
     };
 
     const columns = [
@@ -126,23 +156,33 @@ const ModalAssignedPosts = ({
             render: (text, record) => {
                 return (
                     <>
-                        <Button
-                            size="small"
-                            type="primary"
-                            danger
-                            icon={<DeleteOutlined />}
-                        >
-                            <Popconfirm
-                                title="Are you sure delete this assigned post?"
-                                onConfirm={e =>
-                                    handleDeleteAssignedPost(record)
-                                }
-                                okText="Yes"
-                                cancelText="No"
+                        <ButtonGroup>
+                            <Button
+                                size="small"
+                                type="primary"
+                                icon={<EditOutlined />}
+                                onClick={e => handleEditAssignedPost(record)}
                             >
-                                Delete
-                            </Popconfirm>
-                        </Button>
+                                Edit
+                            </Button>
+                            <Button
+                                size="small"
+                                type="primary"
+                                danger
+                                icon={<DeleteOutlined />}
+                            >
+                                <Popconfirm
+                                    title="Are you sure delete this assigned post?"
+                                    onConfirm={e =>
+                                        handleDeleteAssignedPost(record)
+                                    }
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    Delete
+                                </Popconfirm>
+                            </Button>
+                        </ButtonGroup>
                     </>
                 );
             }
@@ -164,11 +204,15 @@ const ModalAssignedPosts = ({
                     name="basic"
                     onFinish={e => submitForm(e)}
                     onFinishFailed={e => console.log(e)}
+                    ref={e => (formAssigned = e)}
                 >
                     <Card>
                         <Title level={4}>New Assigned Post</Title>
                         <Row>
                             <Col xs={24} md={8}>
+                                <Form.Item name="id" className="hide">
+                                    <Input />
+                                </Form.Item>
                                 <Form.Item
                                     label="Select Client"
                                     name="client_id"

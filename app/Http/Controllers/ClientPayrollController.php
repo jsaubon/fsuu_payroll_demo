@@ -14,19 +14,22 @@ class ClientPayrollController extends Controller
      */
     public function index(Request $request)
     {
-        $payrolls = ClientPayroll::whereYear('date_start',$request->year)
-                                    ->whereYear('date_end',$request->year)
-                                    ->with('client')
-                                    ->with('client.client_accounting_entries')
-                                    ->with('client_employee_payrolls')
-                                    ->with('client_employee_payrolls.client_employee')
-                                    ->with('client_employee_payrolls.client_employee_accountings')
-                                    ->with('client_employee_payrolls.client_employee_accountings.client_accounting_entry')
-                                    ->orderBy('date_start','desc')
-                                    ->get();
+        $payrolls = ClientPayroll::with('client')
+                                ->with('client.client_accounting_entries')
+                                ->with('client_employee_payrolls')
+                                ->with('client_employee_payrolls.client_employee')
+                                ->with('client_employee_payrolls.client_employee_accountings')
+                                ->with('client_employee_payrolls.client_employee_accountings.client_accounting_entry')
+                                ->orderBy('date_start','desc');
+        if($request->year) {
+            $payrolls->whereYear('date_start',$request->year)->whereYear('date_end',$request->year);
+        }
+        $payrolls = $payrolls->get();
+
         return response()->json([
             'success' => true,
-            'data' => $payrolls
+            'data' => $payrolls,
+            'test' => 'test'
         ]);
     }
 

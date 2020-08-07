@@ -12,9 +12,31 @@ class ClientEmployeePayrollController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        
+        $payrolls = ClientEmployeePayroll::select(['client_employee_payrolls.*'])
+                                ->with('client_employee')
+                                ->with('client_employee.client')
+                                ->with('client_payroll')
+                                ->with('client_employee_accountings')
+                                ->with('client_employee_accountings.client_accounting_entry')
+                                ->join('client_payrolls','client_employee_payrolls.client_payroll_id','=','client_payrolls.id');
+
+        if(isset($request->payroll_date)) {
+            $payrolls->whereRaw('? between client_payrolls.date_start and client_payrolls.date_end', [$request->payroll_date]);
+        }
+       
+        $payrolls = $payrolls->get()
+                        ->sortBy('client_payroll.date_start')
+                        ->sortBy('client_employee.client.name')
+                        ->sortBy('client_employee.name');
+
+        $query = \DB::getQueryLog();
+        return response()->json([
+            'success' => true,
+            'data' => $payrolls,
+        ]);
     }
 
     /**

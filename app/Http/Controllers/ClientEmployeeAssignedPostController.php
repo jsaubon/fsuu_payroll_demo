@@ -14,7 +14,7 @@ class ClientEmployeeAssignedPostController extends Controller
      */
     public function index(Request $request)
     {
-        $employee_assigned_posts = ClientEmployeeAssignedPost::with('client')->where('employee_id',$request->employee_id)->orderBy('date_start','desc')->get();
+        $employee_assigned_posts = ClientEmployeeAssignedPost::with('client')->where('employee_id',$request->employee_id)->orderBy('date_start','asc')->get();
 
         return response()->json([
             'success' => true,
