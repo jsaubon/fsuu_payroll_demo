@@ -7,6 +7,7 @@ import PageClients from "../pages/private/PageClients";
 import PageClientInfo from "../pages/private/pageClientInfo";
 import PagePayrolls from "../pages/private/pagePayrolls";
 import PageReports from "../pages/private/pageReports";
+import PageUsers from "../pages/private/pageUsers";
 
 const LayoutContent = () => {
     const { Content } = Layout;
@@ -30,6 +31,7 @@ const LayoutContent = () => {
                             component={PagePayrolls}
                         />
                         <Route exact path="/reports" component={PageReports} />
+                        <Route exact path="/users" component={PageUsers} />
                         <Route
                             exact
                             path="/clients/:id"

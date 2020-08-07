@@ -35,6 +35,9 @@ const LayoutHeader = () => {
                     icon={<SettingOutlined style={{ marginRight: "0px" }} />}
                     key="/settings"
                 >
+                    <Menu.Item key="/users">
+                        <Link to="/users">Users</Link>
+                    </Menu.Item>
                     <Menu.Item key="settings_logout">
                         <Link
                             to="/settings/logout"

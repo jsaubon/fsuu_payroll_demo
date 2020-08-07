@@ -12,9 +12,28 @@ class ClientEmployeeAccountingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+
+        $employee_accounting_entry = ClientEmployeeAccounting::select('client_employee_accountings.*')
+                                                            ->with('client_employee')
+                                                            ->with('client_accounting_entry')
+                                                            ->with('client_accounting_entry.client')
+                                                            ->with('client_employee_payroll')
+                                                            ->with('client_employee_payroll.client_payroll')
+                                                            ->join('client_employee_payrolls','client_employee_accountings.client_employee_payroll_id','=','client_employee_payrolls.id')
+                                                            ->join('client_payrolls','client_employee_payrolls.client_payroll_id','=','client_payrolls.id')
+                                                            ->whereRaw('? between client_payrolls.date_start and client_payrolls.date_end', [$request->payroll_date]);
+        $employee_accounting_entry = $employee_accounting_entry->get()
+                                            ->sortBy('client_employee_payroll.client_payroll.name')
+                                            ->sortBy('client_employee.name')
+                                            ->sortBy('client_employee_payroll.client_payroll.date_start');
+
+        
+        return response()->json([
+            'success' => true,
+            'data' => $employee_accounting_entry,
+        ]);
     }
 
     /**

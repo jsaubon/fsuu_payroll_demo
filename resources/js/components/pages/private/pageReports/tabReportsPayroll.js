@@ -3,6 +3,7 @@ import { Card, Table, Row, Col, DatePicker } from "antd";
 import Title from "antd/lib/typography/Title";
 import { fetchData } from "../../../../axios";
 import moment from "moment";
+import { Print } from "react-easy-print";
 const TabReportsPayroll = () => {
     const arrayColumn = (arr, n) => arr.map(x => x[n]);
     const [payrollList, setPayrollList] = useState([]);
@@ -23,11 +24,11 @@ const TabReportsPayroll = () => {
             key: "client",
             className: "fz-10 w-nowrap",
             render: (text, record) => {
-                return record.client_employee.client.name;
+                return record.client_payroll.client.name;
             },
             // filterMultiple: false,
             onFilter: (value, record) =>
-                record.client_employee.client.name.indexOf(value) === 0,
+                record.client_payroll.client.name.indexOf(value) === 0,
             // sorter: (a, b) =>
             //     a.client_employee.name.length - b.client_employee.name.length,
             // sortDirections: ["descend", "ascend"],
@@ -257,8 +258,8 @@ const TabReportsPayroll = () => {
                     _totalAmount += recs;
 
                     _clients.push({
-                        text: payroll.client_employee.client.name,
-                        value: payroll.client_employee.client.name
+                        text: payroll.client_payroll.client.name,
+                        value: payroll.client_payroll.client.name
                     });
                     _employees.push({
                         text: payroll.client_employee.name,
@@ -278,27 +279,31 @@ const TabReportsPayroll = () => {
     }, [payrollDate]);
 
     return (
-        <Card>
-            <Title level={4}>Payroll</Title>
-            <Row className="mb-10">
-                <Col xs={0} md={19}></Col>
-                <Col xs={24} md={5}>
-                    <DatePicker
-                        style={{ width: "100%" }}
-                        placeholder="Pick a Payroll Date"
-                        onChange={e => setPayrollDate(e.format("YYYY-MM-DD"))}
-                        className="text-center"
-                    />
-                </Col>
-            </Row>
-            <Table
-                size="small"
-                dataSource={payrollList}
-                columns={columns}
-                pagination={false}
-            />
-            <div className="text-right mt-10">Total: {totalAmount}</div>
-        </Card>
+        <Print>
+            <Card>
+                <Title level={4}>Payroll</Title>
+                <Row className="mb-10">
+                    <Col xs={0} md={19}></Col>
+                    <Col xs={24} md={5}>
+                        <DatePicker
+                            style={{ width: "100%" }}
+                            placeholder="Pick a Payroll Date"
+                            onChange={e =>
+                                setPayrollDate(e.format("YYYY-MM-DD"))
+                            }
+                            className="text-center"
+                        />
+                    </Col>
+                </Row>
+                <Table
+                    size="small"
+                    dataSource={payrollList}
+                    columns={columns}
+                    pagination={false}
+                />
+                <div className="text-right mt-10">Total: {totalAmount}</div>
+            </Card>
+        </Print>
     );
 };
 

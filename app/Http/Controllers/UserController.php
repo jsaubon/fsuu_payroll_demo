@@ -14,7 +14,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::paginate(15);
+        $users = User::orderBy('name','asc')->get();
 
         return response()->json([
             'success' => true,
@@ -91,12 +91,16 @@ class UserController extends Controller
                 'message' => 'User with id ' . $id . ' not found'
             ], 400);
         }
-
-        $updated = $user->fill($request->all())->save();
+        $user->fill($request->all());
+        if(isset($request->password)) {
+            $user->password = bcrypt($request->password);
+        }
+        $updated = $user->save();
 
         if ($updated)
             return response()->json([
-                'success' => true
+                'success' => true,
+                'request' => $request->all()
             ],200);
         else
             return response()->json([
