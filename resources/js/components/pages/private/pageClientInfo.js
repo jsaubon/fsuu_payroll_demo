@@ -93,6 +93,7 @@ const PageClientInfo = ({ match, history }) => {
                         <Tabs defaultActiveKey="1" onChange={changeTabCallback}>
                             <Tabs.TabPane tab="Employees List" key="1">
                                 <TabContentClientEmployees
+                                    history={history}
                                     client_id={client_id}
                                 />
                             </Tabs.TabPane>

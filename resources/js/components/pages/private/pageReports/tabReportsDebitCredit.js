@@ -94,6 +94,11 @@ const TabReportsDebitCredit = () => {
         return () => {};
     }, [payrollDate]);
 
+    const capitalize = s => {
+        if (typeof s !== "string") return "";
+        return s.charAt(0).toUpperCase() + s.slice(1);
+    };
+
     let columns = [
         {
             title: "Client",
@@ -119,6 +124,27 @@ const TabReportsDebitCredit = () => {
             onFilter: (value, record) =>
                 record.client_employee.name.indexOf(value) === 0,
             filters: [...tableFilters.employees]
+        },
+
+        {
+            title: "Type",
+            dataIndex: "type",
+            key: "type",
+            render: (text, record) => {
+                return capitalize(record.client_accounting_entry.type);
+            },
+            onFilter: (value, record) =>
+                record.client_accounting_entry.type.indexOf(value) === 0,
+            filters: [
+                {
+                    text: "Debit",
+                    value: "debit"
+                },
+                {
+                    text: "Credit",
+                    value: "credit"
+                }
+            ]
         },
         {
             title: "Entry",
@@ -165,12 +191,12 @@ const TabReportsDebitCredit = () => {
             } else {
                 _totalAmount -= parseFloat(record.amount);
             }
-            console.log(
-                "_totalAmount",
-                record.client_accounting_entry.type,
-                record.amount,
-                _totalAmount
-            );
+            // console.log(
+            //     "_totalAmount",
+            //     record.client_accounting_entry.type,
+            //     record.amount,
+            //     _totalAmount
+            // );
         });
         setTotalAmount(_totalAmount);
     }

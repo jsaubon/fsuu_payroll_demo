@@ -6,7 +6,7 @@ import ModalAddEditEmployee from "./modalAddEditEmployee";
 import ModalDeductionsList from "./modalDeductionsList";
 import ModalAssignedPosts from "./modalAssignedPosts";
 
-const TabContentClientEmployees = ({ client_id }) => {
+const TabContentClientEmployees = ({ client_id, history }) => {
     const [clientEmployees, setClientEmployees] = useState([]);
     const [showClientEmployeesModal, setShowClientEmployeesModal] = useState(
         false
@@ -162,6 +162,7 @@ const TabContentClientEmployees = ({ client_id }) => {
                     showModalAssignedPosts={showModalAssignedPosts}
                     toggleShowModalAssignedPosts={toggleShowModalAssignedPosts}
                     employee={selectedEmployee}
+                    history={history}
                 />
             )}
         </>

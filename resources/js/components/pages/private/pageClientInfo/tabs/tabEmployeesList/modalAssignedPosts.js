@@ -22,10 +22,12 @@ import ButtonGroup from "antd/lib/button/button-group";
 const ModalAssignedPosts = ({
     showModalAssignedPosts,
     toggleShowModalAssignedPosts,
-    employee
+    employee,
+    history
 }) => {
-    console.log("employee", employee);
+    // console.log("employee", employee);
     const [formLoading, setFormLoading] = useState(false);
+    const [formLoadingReassign, setFormLoadingReassign] = useState(false);
     const [clientList, setClientList] = useState([]);
     useEffect(() => {
         getClients();
@@ -34,6 +36,7 @@ const ModalAssignedPosts = ({
     }, []);
 
     let formAssigned;
+    let formReAssigned;
     const [dataSource, setDataSource] = useState([]);
 
     const getClients = () => {
@@ -50,7 +53,6 @@ const ModalAssignedPosts = ({
             "GET",
             "api/employee_assigned_post?employee_id=" + employee.id
         ).then(res => {
-            console.log("res.data", res);
             if (res.success) {
                 if (res.data) {
                     let dataSource = [];
@@ -96,6 +98,23 @@ const ModalAssignedPosts = ({
             }
         });
     };
+
+    const submitFormReassign = e => {
+        let data = {
+            ...e
+        };
+        setFormLoadingReassign(true);
+        fetchData("UPDATE", "api/employee/" + employee.id, data).then(res => {
+            if (res.success) {
+                setFormLoadingReassign(false);
+                getEmployeeAssignedPosts();
+                setResetFormFields(true);
+                history.push("/clients/" + e.client_id);
+                location.reload();
+            }
+        });
+    };
+
     const [resetFormFields, setResetFormFields] = useState(false);
     useEffect(() => {
         if (resetFormFields) {
@@ -128,6 +147,8 @@ const ModalAssignedPosts = ({
 
     const resetForm = () => {
         formAssigned.resetFields();
+        formReAssigned.resetFields();
+        setResetFormFields(false);
     };
 
     const columns = [
@@ -202,6 +223,58 @@ const ModalAssignedPosts = ({
             >
                 <Form
                     name="basic"
+                    onFinish={e => submitFormReassign(e)}
+                    onFinishFailed={e => console.log(e)}
+                    ref={e => (formReAssigned = e)}
+                >
+                    <Card>
+                        <Title level={4}>Re-Assign Post</Title>
+                        <Row>
+                            <Col xs={24} md={8}>
+                                <Form.Item name="id" className="hide">
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item
+                                    label="Select Client"
+                                    name="client_id"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Please Select Client"
+                                        }
+                                    ]}
+                                >
+                                    <Select placeholder="Select Client">
+                                        {clientList.map((client, key) => {
+                                            return (
+                                                <Select.Option
+                                                    key={key}
+                                                    value={client.id}
+                                                >
+                                                    {client.name} -{" "}
+                                                    {client.type}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                            <Col xs={24} md={4}>
+                                <Button
+                                    type="primary"
+                                    block
+                                    loading={formLoadingReassign}
+                                    htmlType="submit"
+                                >
+                                    Save
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Card>
+                </Form>
+                <Divider />
+                <Form
+                    name="basic"
                     onFinish={e => submitForm(e)}
                     onFinishFailed={e => console.log(e)}
                     ref={e => (formAssigned = e)}
@@ -230,7 +303,8 @@ const ModalAssignedPosts = ({
                                                     key={key}
                                                     value={client.id}
                                                 >
-                                                    {client.name}
+                                                    {client.name} -{" "}
+                                                    {client.type}
                                                 </Select.Option>
                                             );
                                         })}

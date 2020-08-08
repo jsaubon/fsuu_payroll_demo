@@ -76,6 +76,12 @@ class ClientEmployeeController extends Controller
             $client_employees->gender = $request->gender;
             $client_employees->birth_date = $request->birth_date;
             $client_employees->save();
+
+            $assigned_posts = new \App\ClientEmployeeAssignedPost();
+            $assigned_posts->employee_id = $client_employees->id;
+            $assigned_posts->client_id = $request->client_id;
+            $assigned_posts->date_start = date('Y-m-d');
+            $assigned_posts->save();
         }
         
        
@@ -134,12 +140,27 @@ class ClientEmployeeController extends Controller
     {
         $client_employees = ClientEmployee::find($id);
 
+        
+
         if (!$client_employees) {
             return response()->json([
                 'success' => false,
                 'message' => 'Client Employee with id ' . $id . ' not found'
             ], 400);
         }
+
+        if($request->client_id != $client_employees->client_id) {
+            $assigned_posts = new \App\ClientEmployeeAssignedPost();
+            $assigned_posts = $assigned_posts->where('employee_id',$id)->orderBy('id','desc')->limit(1)->get()->first();
+            $assigned_posts->date_end = date('Y-m-d');
+            $assigned_posts->save();
+
+            $assigned_posts = new \App\ClientEmployeeAssignedPost();
+            $assigned_posts->employee_id = $id;
+            $assigned_posts->client_id = $request->client_id;
+            $assigned_posts->date_start = date('Y-m-d');
+            $assigned_posts->save();
+        } 
 
         $updated = $client_employees->fill($request->all())->save();
 
