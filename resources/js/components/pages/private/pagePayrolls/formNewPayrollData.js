@@ -19,7 +19,8 @@ const FormNewPayrollData = ({
     setPayrollDetails,
     accountingEntries,
     setAccountingEntries,
-    showForm
+    showForm,
+    setClientInfo
 }) => {
     const [employeesList, setEmployeesList] = useState([]);
     const [showLoading, setShowLoading] = useState(false);
@@ -37,6 +38,7 @@ const FormNewPayrollData = ({
                     payrollDetails.date_end
             ).then(res => {
                 if (res.success) {
+                    setClientInfo(res.client);
                     setShowLoading(false);
                     let _employeeList = [];
                     res.data.map((employee, key) => {

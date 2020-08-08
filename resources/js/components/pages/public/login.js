@@ -55,7 +55,9 @@ const Login = () => {
                                 background: "#fff"
                             }}
                         >
-                            <div className="login-logo"></div>
+                            <div
+                                className="login-logo" 
+                            ></div>
                             <div
                                 style={{
                                     maxWidth: 300,

@@ -15,6 +15,7 @@ class ClientEmployeeController extends Controller
     public function index(Request $request)
     {
         $client_employees = ClientEmployee::where('client_id',$request->client_id);
+        $client = \App\Client::find($request->client_id);
 
         if(isset($request->order)) {
             $client_employees = $client_employees->where(function($query) use ($request) {
@@ -37,7 +38,8 @@ class ClientEmployeeController extends Controller
         return response()->json([
             'success' => true,
             'data' => $client_employees->toArray(),
-            'request' => $request->all()
+            'request' => $request->all(),
+            'client' => $client
         ],200);
     }
 

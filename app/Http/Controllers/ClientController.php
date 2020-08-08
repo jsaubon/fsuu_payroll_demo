@@ -43,7 +43,10 @@ class ClientController extends Controller
             'name' => 'required|min:3',
         ]);
         
-        $photo = 'assets/images/building.jpg';
+        $photo = 'assets/images/commando_logo.jpg';
+        if($request->type == 'First Commando') {
+            $photo = 'assets/images/first_commando_logo.jpg';
+        }
         
         if($request->photo) {
             if(strpos($request->photo, 'data:image') === 0) {

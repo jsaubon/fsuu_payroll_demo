@@ -6,6 +6,7 @@ import CardNewPayroll from "./pagePayrolls/cardNewPayroll";
 
 const PagePayrolls = () => {
     const [showCardNewPayroll, setShowCardNewPayroll] = useState(true);
+    
     return (
         <>
             <Row style={{ marginLeft: "-10px", marginRight: "-10px" }}>

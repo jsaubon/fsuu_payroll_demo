@@ -28,6 +28,7 @@ import TblPayrollData from "./tblPayrollData";
 
 const CardNewPayroll = () => {
     const [clientsList, setClientsList] = useState([]);
+    const [clientInfo, setClientInfo] = useState();
     useEffect(() => {
         fetchData("GET", "api/client?sort=asc").then(res => {
             // console.log(res);
@@ -87,8 +88,11 @@ const CardNewPayroll = () => {
                     <div className="text-center">
                         <Title level={4} className="mb-0">
                             <i>
-                                COMMANDO SECURITY SERVICE AGENCY, INC.
-                                (COMMANDO)
+                                {clientInfo
+                                    ? clientInfo.type == "Commando"
+                                        ? "COMMANDO SECURITY SERVICE AGENCY, INC. (COMMANDO)"
+                                        : "FIRST COMMANDO MANPOWER SERVICES"
+                                    : ""}
                             </i>
                         </Title>
                         <Text>
@@ -129,7 +133,7 @@ const CardNewPayroll = () => {
                                                 key={key}
                                                 value={client.name}
                                             >
-                                                {client.name}
+                                                {client.name} - {client.type}
                                             </Select.Option>
                                         );
                                     })}
@@ -163,6 +167,7 @@ const CardNewPayroll = () => {
                     </Row>
 
                     <FormNewPayrollData
+                        setClientInfo={setClientInfo}
                         setPayrollDetails={setPayrollDetails}
                         payrollDetails={payrollDetails}
                         clientsList={clientsList}
