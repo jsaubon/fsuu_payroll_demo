@@ -7,7 +7,7 @@ import { Print } from "react-easy-print";
 const TabReportsPayroll = () => {
     const arrayColumn = (arr, n) => arr.map(x => x[n]);
     const [payrollList, setPayrollList] = useState([]);
-    function formatNumber(num) {
+    function currencyFormat(num) {
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
     }
     const [totalAmount, setTotalAmount] = useState(0);
@@ -16,6 +16,9 @@ const TabReportsPayroll = () => {
         employees: []
     });
     const [payrollDate, setPayrollDate] = useState();
+    function formatNumber(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+    }
 
     const columns = [
         {
@@ -24,7 +27,7 @@ const TabReportsPayroll = () => {
             key: "client",
             className: "fz-10 w-nowrap",
             render: (text, record) => {
-                return record.client_payroll.client.name;
+                return record.id ? record.client_payroll.client.name : "";
             },
             // filterMultiple: false,
             onFilter: (value, record) =>
@@ -40,7 +43,7 @@ const TabReportsPayroll = () => {
             key: "employee",
             className: "fz-10  w-nowrap",
             render: (text, record) => {
-                return record.client_employee.name;
+                return record.id ? record.client_employee.name : "";
             },
             // filterMultiple: false,
             onFilter: (value, record) =>
@@ -56,13 +59,23 @@ const TabReportsPayroll = () => {
             key: "payrollDate",
             className: "fz-10 text-center w-nowrap",
             render: (text, record) => {
-                return (
-                    moment(record.client_payroll.date_start).format(
-                        "YYYY-MM-DD"
-                    ) +
-                    " to " +
-                    moment(record.client_payroll.date_end).format("YYYY-MM-DD")
-                );
+                if (record.id) {
+                    return (
+                        moment(record.client_payroll.date_start).format(
+                            "YYYY-MM-DD"
+                        ) +
+                        " to " +
+                        moment(record.client_payroll.date_end).format(
+                            "YYYY-MM-DD"
+                        )
+                    );
+                } else {
+                    return (
+                        <div className="text-right">
+                            <b>Total</b>
+                        </div>
+                    );
+                }
             }
         },
         {
@@ -71,10 +84,64 @@ const TabReportsPayroll = () => {
             key: "13thMonthPay",
             className: "fz-10 text-center",
             render: (text, record) => {
-                let rec = record.client_employee_accountings.find(
-                    p => p.client_accounting_entry.title == "13th-Month Pay"
-                );
-                return formatNumber(rec.amount);
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p => p.client_accounting_entry.title == "13th-Month Pay"
+                    );
+                    return formatNumber(rec.amount);
+                } else {
+                    return <b>{formatNumber(record.total13thMonthPay)}</b>;
+                }
+            }
+        },
+        {
+            title: "Uniform Allowance",
+            dataIndex: "UniformAllowance",
+            key: "UniformAllowance",
+            className: "fz-10 text-center",
+            render: (text, record) => {
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p =>
+                            p.client_accounting_entry.title ==
+                            "Uniform Allowance"
+                    );
+                    return formatNumber(rec.amount);
+                } else {
+                    return <b>{formatNumber(record.totalUniformAllowance)}</b>;
+                }
+            }
+        },
+        {
+            title: "SL/VL",
+            dataIndex: "SLVL",
+            key: "SLVL",
+            className: "fz-10 text-center",
+            render: (text, record) => {
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p => p.client_accounting_entry.title == "SL/VL"
+                    );
+                    return formatNumber(rec.amount);
+                } else {
+                    return <b>{formatNumber(record.totalSLVL)}</b>;
+                }
+            }
+        },
+        {
+            title: "Separation Pay",
+            dataIndex: "SeparationPay",
+            key: "SeparationPay",
+            className: "fz-10 text-center",
+            render: (text, record) => {
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p => p.client_accounting_entry.title == "Separation Pay"
+                    );
+                    return formatNumber(rec.amount);
+                } else {
+                    return <b>{formatNumber(record.totalSeparationPay)}</b>;
+                }
             }
         },
         {
@@ -83,10 +150,14 @@ const TabReportsPayroll = () => {
             key: "SSS",
             className: "fz-10 text-center",
             render: (text, record) => {
-                let rec = record.client_employee_accountings.find(
-                    p => p.client_accounting_entry.title == "SSS"
-                );
-                return formatNumber(rec.amount);
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p => p.client_accounting_entry.title == "SSS"
+                    );
+                    return formatNumber(rec.amount);
+                } else {
+                    return <b>{formatNumber(record.totalSSS)}</b>;
+                }
             }
         },
         {
@@ -95,10 +166,14 @@ const TabReportsPayroll = () => {
             key: "PhilHealth",
             className: "fz-10 text-center",
             render: (text, record) => {
-                let rec = record.client_employee_accountings.find(
-                    p => p.client_accounting_entry.title == "PhilHealth"
-                );
-                return formatNumber(rec.amount);
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p => p.client_accounting_entry.title == "PhilHealth"
+                    );
+                    return formatNumber(rec.amount);
+                } else {
+                    return <b>{formatNumber(record.totalPhilHealth)}</b>;
+                }
             }
         },
         {
@@ -107,10 +182,14 @@ const TabReportsPayroll = () => {
             key: "Pag-IBIG",
             className: "fz-10 text-center",
             render: (text, record) => {
-                let rec = record.client_employee_accountings.find(
-                    p => p.client_accounting_entry.title == "Pag-IBIG"
-                );
-                return formatNumber(rec.amount);
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p => p.client_accounting_entry.title == "Pag-IBIG"
+                    );
+                    return formatNumber(rec.amount);
+                } else {
+                    return <b>{formatNumber(record.totalPagIBIG)}</b>;
+                }
             }
         },
         {
@@ -119,10 +198,14 @@ const TabReportsPayroll = () => {
             key: "Bond",
             className: "fz-10 text-center",
             render: (text, record) => {
-                let rec = record.client_employee_accountings.find(
-                    p => p.client_accounting_entry.title == "Bond"
-                );
-                return formatNumber(rec.amount);
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p => p.client_accounting_entry.title == "Bond"
+                    );
+                    return formatNumber(rec.amount);
+                } else {
+                    return <b>{formatNumber(record.totalBond)}</b>;
+                }
             }
         },
         {
@@ -131,10 +214,14 @@ const TabReportsPayroll = () => {
             key: "LOANS_SSS",
             className: "fz-10 text-center",
             render: (text, record) => {
-                let rec = record.client_employee_accountings.find(
-                    p => p.client_accounting_entry.title == "LOANS SSS"
-                );
-                return formatNumber(rec.amount);
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p => p.client_accounting_entry.title == "LOANS SSS"
+                    );
+                    return formatNumber(rec.amount);
+                } else {
+                    return <b>{formatNumber(record.totalLOANSSSS)}</b>;
+                }
             }
         },
         {
@@ -143,10 +230,14 @@ const TabReportsPayroll = () => {
             key: "LOANS_Pag-IBIG",
             className: "fz-10 text-center",
             render: (text, record) => {
-                let rec = record.client_employee_accountings.find(
-                    p => p.client_accounting_entry.title == "LOANS Pag-IBIG"
-                );
-                return formatNumber(rec.amount);
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p => p.client_accounting_entry.title == "LOANS Pag-IBIG"
+                    );
+                    return formatNumber(rec.amount);
+                } else {
+                    return <b>{formatNumber(record.totalLOANSPagIBIG)}</b>;
+                }
             }
         },
         {
@@ -155,10 +246,14 @@ const TabReportsPayroll = () => {
             key: "OTHERS_C/A",
             className: "fz-10 text-center",
             render: (text, record) => {
-                let rec = record.client_employee_accountings.find(
-                    p => p.client_accounting_entry.title == "OTHERS C/A"
-                );
-                return formatNumber(rec.amount);
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p => p.client_accounting_entry.title == "OTHERS C/A"
+                    );
+                    return formatNumber(rec.amount);
+                } else {
+                    return <b>{formatNumber(record.totalOTHERSCA)}</b>;
+                }
             }
         },
         {
@@ -167,10 +262,14 @@ const TabReportsPayroll = () => {
             key: "OTHERS_Canteen",
             className: "fz-10 text-center",
             render: (text, record) => {
-                let rec = record.client_employee_accountings.find(
-                    p => p.client_accounting_entry.title == "OTHERS Canteen"
-                );
-                return formatNumber(rec.amount);
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p => p.client_accounting_entry.title == "OTHERS Canteen"
+                    );
+                    return formatNumber(rec.amount);
+                } else {
+                    return <b>{formatNumber(record.totalOTHERSCanteen)}</b>;
+                }
             }
         },
         {
@@ -179,12 +278,21 @@ const TabReportsPayroll = () => {
             key: "OTHERS_Ammos_&_Accessories",
             className: "fz-10 text-center",
             render: (text, record) => {
-                let rec = record.client_employee_accountings.find(
-                    p =>
-                        p.client_accounting_entry.title ==
-                        "OTHERS Ammos & Accessories"
-                );
-                return formatNumber(rec.amount);
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p =>
+                            p.client_accounting_entry.title ==
+                            "OTHERS Ammos & Accessories"
+                    );
+
+                    return formatNumber(rec.amount);
+                } else {
+                    return (
+                        <b>
+                            {formatNumber(record.totalOTHERSAmmosAccessories)}
+                        </b>
+                    );
+                }
             }
         },
         {
@@ -193,35 +301,14 @@ const TabReportsPayroll = () => {
             key: "OTHERS_Misc.",
             className: "fz-10 text-center",
             render: (text, record) => {
-                let rec = record.client_employee_accountings.find(
-                    p => p.client_accounting_entry.title == "OTHERS Misc."
-                );
-                return formatNumber(rec.amount);
-            }
-        },
-        {
-            title: "Total",
-            dataIndex: "total",
-            key: "total",
-            className: "fz-10 text-center",
-            render: (text, record) => {
-                let recs = record.client_employee_accountings.filter(
-                    p =>
-                        p.client_accounting_entry.title == "13th-Month Pay" ||
-                        p.client_accounting_entry.title == "SSS" ||
-                        p.client_accounting_entry.title == "PhilHealth" ||
-                        p.client_accounting_entry.title == "Pag-IBIG" ||
-                        p.client_accounting_entry.title == "Bond" ||
-                        p.client_accounting_entry.title == "LOANS SSS" ||
-                        p.client_accounting_entry.title == "LOANS Pag-IBIG" ||
-                        p.client_accounting_entry.title == "OTHERS C/A" ||
-                        p.client_accounting_entry.title == "OTHERS Canteen" ||
-                        p.client_accounting_entry.title == "OTHERS Misc."
-                );
-                recs = arrayColumn(recs, "amount");
-                recs = recs.reduce((sum, x) => sum + x);
-
-                return formatNumber(recs);
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p => p.client_accounting_entry.title == "OTHERS Misc."
+                    );
+                    return formatNumber(rec.amount);
+                } else {
+                    return <b>{formatNumber(record.totalOTHERSMisc)}</b>;
+                }
             }
         }
     ];
@@ -232,15 +319,38 @@ const TabReportsPayroll = () => {
                 "GET",
                 "api/employee_payroll?payroll_date=" + payrollDate
             ).then(res => {
-                setPayrollList(res.data);
+                console.log(res.data);
+                let data = res.data;
+
                 let _totalAmount = 0;
                 let _clients = [];
                 let _employees = [];
+                let _entry = {
+                    total13thMonthPay: 0,
+                    totalUniformAllowance: 0,
+                    totalSLVL: 0,
+                    totalSeparationPay: 0,
+                    totalSSS: 0,
+                    totalPhilHealth: 0,
+                    totalPagIBIG: 0,
+                    totalBond: 0,
+                    totalLOANSSSS: 0,
+                    totalLOANSPagIBIG: 0,
+                    totalOTHERSCA: 0,
+                    totalOTHERSCanteen: 0,
+                    totalOTHERSAmmosAccessories: 0,
+                    totalOTHERSMisc: 0
+                };
                 res.data.map((payroll, key) => {
                     let recs = payroll.client_employee_accountings.filter(
                         p =>
                             p.client_accounting_entry.title ==
                                 "13th-Month Pay" ||
+                            p.client_accounting_entry.title ==
+                                "Uniform Allowance" ||
+                            p.client_accounting_entry.title == "SL/VL" ||
+                            p.client_accounting_entry.title ==
+                                "Separation Pay" ||
                             p.client_accounting_entry.title == "SSS" ||
                             p.client_accounting_entry.title == "PhilHealth" ||
                             p.client_accounting_entry.title == "Pag-IBIG" ||
@@ -251,8 +361,73 @@ const TabReportsPayroll = () => {
                             p.client_accounting_entry.title == "OTHERS C/A" ||
                             p.client_accounting_entry.title ==
                                 "OTHERS Canteen" ||
+                            p.client_accounting_entry.title ==
+                                "OTHERS Ammos & Accessories" ||
                             p.client_accounting_entry.title == "OTHERS Misc."
                     );
+
+                    recs.map((entry, key) => {
+                        _entry.total13thMonthPay +=
+                            entry.client_accounting_entry.title ==
+                            "13th-Month Pay"
+                                ? entry.amount
+                                : 0;
+                        _entry.totalUniformAllowance +=
+                            entry.client_accounting_entry.title ==
+                            "Uniform Allowance"
+                                ? entry.amount
+                                : 0;
+                        _entry.totalSLVL +=
+                            entry.client_accounting_entry.title == "SL/VL"
+                                ? entry.amount
+                                : 0;
+                        _entry.totalSeparationPay +=
+                            entry.client_accounting_entry.title ==
+                            "Separation Pay"
+                                ? entry.amount
+                                : 0;
+                        _entry.totalSSS +=
+                            entry.client_accounting_entry.title == "SSS"
+                                ? entry.amount
+                                : 0;
+                        _entry.totalPhilHealth +=
+                            entry.client_accounting_entry.title == "Phil Health"
+                                ? entry.amount
+                                : 0;
+                        _entry.totalPagIBIG +=
+                            entry.client_accounting_entry.title == "Pag-IBIG"
+                                ? entry.amount
+                                : 0;
+                        _entry.totalLOANSSSS +=
+                            entry.client_accounting_entry.title == "LOANS SSS"
+                                ? entry.amount
+                                : 0;
+                        _entry.totalLOANSPagIBIG +=
+                            entry.client_accounting_entry.title ==
+                            "LOANS Pag-IBIG"
+                                ? entry.amount
+                                : 0;
+                        _entry.totalOTHERSCA +=
+                            entry.client_accounting_entry.title == "OTHERS C/A"
+                                ? entry.amount
+                                : 0;
+                        _entry.totalOTHERSCanteen +=
+                            entry.client_accounting_entry.title ==
+                            "OTHERS Canteen"
+                                ? entry.amount
+                                : 0;
+                        _entry.totalOTHERSAmmosAccessories +=
+                            entry.client_accounting_entry.title ==
+                            "OTHERS Ammos & Accessories"
+                                ? entry.amount
+                                : 0;
+                        _entry.totalOTHERSMisc +=
+                            entry.client_accounting_entry.title ==
+                            "OTHERS Misc."
+                                ? entry.amount
+                                : 0;
+                    });
+
                     recs = arrayColumn(recs, "amount");
                     recs = recs.reduce((sum, x) => sum + x);
                     _totalAmount += recs;
@@ -266,12 +441,16 @@ const TabReportsPayroll = () => {
                         value: payroll.client_employee.name
                     });
                 });
+                // console.log(_entry);
+                data.push(_entry);
+
+                setPayrollList(data);
                 setTableFilters({
                     ...tableFilters,
                     clients: _clients,
                     employees: _employees
                 });
-                setTotalAmount(formatNumber(_totalAmount.toFixed(2)));
+                setTotalAmount(currencyFormat(_totalAmount.toFixed(2)));
             });
         }
 

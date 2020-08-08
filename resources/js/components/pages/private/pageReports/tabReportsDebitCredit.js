@@ -72,7 +72,14 @@ const TabReportsDebitCredit = () => {
                                 value: accounting.client_accounting_entry.title
                             });
                         }
-                        _totalAmount += parseFloat(accounting.amount);
+
+                        if (
+                            accounting.client_accounting_entry.type == "debit"
+                        ) {
+                            _totalAmount += parseFloat(accounting.amount);
+                        } else {
+                            _totalAmount -= parseFloat(accounting.amount);
+                        }
                     });
                     setTotalAmount(_totalAmount);
                     setTableFilters({
@@ -153,7 +160,17 @@ const TabReportsDebitCredit = () => {
     function onChange(pagination, filters, sorter, extra) {
         let _totalAmount = 0;
         extra.currentDataSource.map((record, key) => {
-            _totalAmount += record.amount;
+            if (record.client_accounting_entry.type == "debit") {
+                _totalAmount += parseFloat(record.amount);
+            } else {
+                _totalAmount -= parseFloat(record.amount);
+            }
+            console.log(
+                "_totalAmount",
+                record.client_accounting_entry.type,
+                record.amount,
+                _totalAmount
+            );
         });
         setTotalAmount(_totalAmount);
     }
@@ -180,7 +197,7 @@ const TabReportsDebitCredit = () => {
                     columns={columns}
                     dataSource={employeeAccountingReports}
                     onChange={onChange}
-                    pagination={{ hideOnSinglePage: true, pageSize: 50 }}
+                    pagination={false}
                     size="small"
                 />
                 <div className="text-right mt-10">

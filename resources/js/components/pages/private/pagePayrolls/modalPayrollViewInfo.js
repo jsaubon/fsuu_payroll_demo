@@ -25,8 +25,11 @@ const ModalPayrollViewInfo = ({
                     <div className="text-center">
                         <Title level={4} className="mb-0">
                             <i>
-                                COMMANDO SECURITY SERVICE AGENCY, INC.
-                                (COMMANDO)
+                                {selectedPayroll
+                                    ? selectedPayroll.client.type == "Commando"
+                                        ? "COMMANDO SECURITY SERVICE AGENCY, INC. (COMMANDO)"
+                                        : "FIRST COMMANDO MANPOWER SERVICES"
+                                    : ""}
                             </i>
                         </Title>
                         <Text>

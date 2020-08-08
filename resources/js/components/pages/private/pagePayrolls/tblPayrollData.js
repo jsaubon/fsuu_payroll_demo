@@ -46,7 +46,10 @@ const TblPayrollData = ({
 
             let totalDebit = 0;
             payrolls.debit.forEach(payroll => {
-                if (payroll.title != "13th-Month Pay") {
+                if (
+                    payroll.title != "13th-Month Pay" &&
+                    payroll.title != "Uniform Allowance"
+                ) {
                     totalDebit += parseFloat(payroll.amount);
                 } else {
                     // payroll.amount = totalDebit.toFixed(2);
@@ -111,7 +114,10 @@ const TblPayrollData = ({
         _employeePayroll.forEach(payrolls => {
             let totalDebit = 0;
             payrolls.debit.forEach(payroll => {
-                if (payroll.title != "13th-Month Pay") {
+                if (
+                    payroll.title != "13th-Month Pay" &&
+                    payroll.title != "Uniform Allowance"
+                ) {
                     totalDebit += parseFloat(payroll.amount);
                 } else {
                     // payroll.amount = totalDebit.toFixed(2);

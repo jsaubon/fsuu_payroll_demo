@@ -16,6 +16,7 @@ class CreateClientAccountingEntriesTable extends Migration
         Schema::create('client_accounting_entries', function (Blueprint $table) {
             $table->id();
             $table->integer('client_id')->unsigned();
+            $table->boolean('visible')->default(true);
             $table->string('type');
             $table->string('title');
             $table->double('amount');

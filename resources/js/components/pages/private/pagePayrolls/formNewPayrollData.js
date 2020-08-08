@@ -75,17 +75,17 @@ const FormNewPayrollData = ({
             ).then(res => {
                 if (res.success) {
                     let _debit = res.debit;
-                    _debit.forEach(debit => {
-                        debit["visible"] =
-                            debit.title == "13th-Month Pay" ||
-                            debit.title == "Uniform Allowance"
-                                ? false
-                                : true;
-                    });
+                    // // _debit.forEach(debit => {
+                    // //     debit["visible"] =
+                    // //         debit.title == "13th-Month Pay" ||
+                    // //         debit.title == "Uniform Allowance"
+                    // //             ? false
+                    // //             : true;
+                    // // });
                     let _credit = res.credit;
-                    _credit.forEach(credit => {
-                        credit["visible"] = true;
-                    });
+                    // _credit.forEach(credit => {
+                    //     credit["visible"] = true;
+                    // });
                     setAccountingEntries({
                         debit: _debit,
                         credit: _credit
@@ -219,8 +219,8 @@ const FormNewPayrollData = ({
                 amount = amount.toFixed(2);
 
                 if (
-                    debit.title != "13th-Month Pay" ||
-                    debit.title == "Uniform Allowance"
+                    debit.title != "13th-Month Pay" &&
+                    debit.title != "Uniform Allowance"
                 ) {
                     grossPay += parseFloat(amount);
                 }
@@ -229,11 +229,7 @@ const FormNewPayrollData = ({
                     id: debit.id,
                     title: debit.title,
                     amount: amount,
-                    visible:
-                        debit.title == "13th-Month Pay" ||
-                        debit.title == "Uniform Allowance"
-                            ? false
-                            : true
+                    visible: debit.visible
                 });
             });
 
@@ -259,7 +255,7 @@ const FormNewPayrollData = ({
                     id: credit.id,
                     title: credit.title,
                     amount: _deduction.length > 0 ? sum : amount,
-                    visible: true
+                    visible: credit.visible
                 });
 
                 netPay += parseFloat(_deduction.length > 0 ? sum : amount);

@@ -19,113 +19,135 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
     const [creditList, setCreditList] = useState([
         {
             title: "SSS",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "PhilHealth",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "Pag-IBIG",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "Bond",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "LOANS SSS",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "LOANS Pag-IBIG",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "OTHERS C/A",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "OTHERS Canteen",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "OTHERS Ammos & Accessories",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "OTHERS Misc.",
-            amount: 0
+            amount: 0,
+            visible: true
         }
     ]);
     const [debitList, setDebitList] = useState([
         {
             title: "Basic Pay",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "Reg. Hol. Pay",
-            amount: 0
+            amount: 0,
+            visible: false
         },
         {
             title: "Spcl. Hol. Pay",
-            amount: 0
+            amount: 0,
+            visible: false
         },
         {
             title: "Night Premium Pay",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "Night Reg. Hol. Pay",
-            amount: 0
+            amount: 0,
+            visible: false
         },
         {
             title: "Night Spcl. Hol. Pay",
-            amount: 0
+            amount: 0,
+            visible: false
         },
         {
             title: "13th-Month Pay",
-            amount: 0
+            amount: 0,
+            visible: false
         },
         {
             title: "Uniform Allowance",
-            amount: 0
+            amount: 0,
+            visible: false
         },
         {
             title: "5-Day Service Leave",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "SL/VL",
-            amount: 0
-        },
-        {
-            title: "Holiday Pay",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "Separation Pay",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "COLA",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "Overtime Pay",
-            amount: 0
+            amount: 0,
+            visible: true
         },
         {
             title: "Overtime Reg. Hol. Pay",
-            amount: 0
+            amount: 0,
+            visible: false
         },
         {
             title: "Overtime Spcl. Hol. Pay",
-            amount: 0
+            amount: 0,
+            visible: false
         },
         {
             title: "Others",
-            amount: 0
+            amount: 0,
+            visible: true
         }
     ]);
 

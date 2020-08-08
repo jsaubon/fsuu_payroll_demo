@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { InputNumber, Modal, Table } from "antd";
+import { InputNumber, Modal, Table, Checkbox } from "antd";
 import { fetchData } from "../../../../../../axios";
 import moment from "moment";
 import Title from "antd/lib/typography/Title";
@@ -149,6 +149,7 @@ const TableAccountingEntries = ({
                             <thead className="ant-table-thead">
                                 <tr>
                                     <th className="ant-table-cell">Title</th>
+                                    <th className="ant-table-cell">Visible</th>
                                     <th
                                         className="ant-table-cell"
                                         style={{ width: "10%" }}
@@ -173,6 +174,24 @@ const TableAccountingEntries = ({
                                             <td className="ant-table-cell">
                                                 {accountEntry.title}
                                             </td>
+
+                                            <td className="ant-table-cell text-center">
+                                                <Checkbox
+                                                    checked={
+                                                        accountEntry.visible
+                                                    }
+                                                    onChange={e => {
+                                                        let _accountingEntries = accountingEntries;
+                                                        _accountingEntries[
+                                                            key
+                                                        ].visible =
+                                                            e.target.checked;
+                                                        setAccountingEntries([
+                                                            ..._accountingEntries
+                                                        ]);
+                                                    }}
+                                                />
+                                            </td>
                                             <td className="ant-table-cell">
                                                 <InputNumber
                                                     value={accountEntry.amount}
@@ -188,6 +207,7 @@ const TableAccountingEntries = ({
                                                     }}
                                                 />
                                             </td>
+
                                             <td className="ant-table-cell">
                                                 <a
                                                     href="#"
