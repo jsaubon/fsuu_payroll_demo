@@ -16,7 +16,7 @@ const PageReports = () => {
                 <Tabs.TabPane tab="Debit/Credit" key="2">
                     <TabReportsDebitCredit />
                 </Tabs.TabPane>
-                <Tabs.TabPane tab="Assigned Posts" key="3">
+                <Tabs.TabPane tab="Cashbond" key="3">
                     Content of Tab Pane 3
                 </Tabs.TabPane>
             </Tabs>
