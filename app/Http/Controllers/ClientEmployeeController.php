@@ -28,7 +28,7 @@ class ClientEmployeeController extends Controller
             ->offset($request->size * ($request->page -1))
             ->with('other_infos');
         } else {
-            $client_employees = $client_employees->with(['client_employee_deductions' => function($query) use ($request) {
+            $client_employees = $client_employees->where('status','Active')->with(['client_employee_deductions' => function($query) use ($request) {
                 $query->where('date_applied','>=',$request->date_start)->where('date_applied','<=',$request->date_end);
             }])->orderBy('name','asc');   
         }
@@ -65,7 +65,18 @@ class ClientEmployeeController extends Controller
             $client_employees->contact_number = $request->contact_number;
             $client_employees->gender = $request->gender;
             $client_employees->birth_date = $request->birth_date;
+            $client_employees->status = $request->status;
             $client_employees->save();
+
+            if($client_employees->status != 'Active') {
+                $assigned_posts = new \App\ClientEmployeeAssignedPost();
+                $assigned_posts = $assigned_posts->where('employee_id',$request->id)->get()->last();
+                if(!isset($assigned_posts->date_end)) {
+                    $assigned_posts->date_end = date('Y-m-d');
+                    $assigned_posts->save();
+                }
+               
+            }   
         } else {
             $client_employees = new ClientEmployee();
             $client_employees->client_id = $request->client_id;
@@ -75,6 +86,7 @@ class ClientEmployeeController extends Controller
             $client_employees->contact_number = $request->contact_number;
             $client_employees->gender = $request->gender;
             $client_employees->birth_date = $request->birth_date;
+            $client_employees->status = $request->status;
             $client_employees->save();
 
             $assigned_posts = new \App\ClientEmployeeAssignedPost();

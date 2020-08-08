@@ -4,6 +4,7 @@ import { Tabs, Card } from "antd";
 import TabReportsPayroll from "./pageReports/tabReportsPayroll";
 import TabReportsDebitCredit from "./pageReports/tabReportsDebitCredit";
 import PrintProvider, { Print, NoPrint } from "react-easy-print";
+import TabReportsCashbond from "./pageReports/tabReportsCashbond";
 
 const PageReports = () => {
     return (
@@ -17,7 +18,7 @@ const PageReports = () => {
                     <TabReportsDebitCredit />
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="Cashbond" key="3">
-                    Content of Tab Pane 3
+                    <TabReportsCashbond />
                 </Tabs.TabPane>
             </Tabs>
         </NoPrint>

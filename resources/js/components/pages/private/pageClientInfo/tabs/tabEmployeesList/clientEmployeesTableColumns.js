@@ -1,6 +1,14 @@
 import React from "react";
 
-import { Space, Popconfirm, Input, notification, Button } from "antd";
+import {
+    Space,
+    Popconfirm,
+    Input,
+    notification,
+    Button,
+    Badge,
+    Tag
+} from "antd";
 import {
     SearchOutlined,
     EditOutlined,
@@ -60,6 +68,18 @@ export const clientEmployeesTableColumns = (
                 });
 
                 return other_infos;
+            }
+        },
+        {
+            title: "Status",
+            dataIndex: "status",
+            key: "status",
+            render: (text, record) => {
+                return (
+                    <Tag color={record.status == "Active" ? "green" : "red"}>
+                        {record.status}
+                    </Tag>
+                );
             }
         },
         {

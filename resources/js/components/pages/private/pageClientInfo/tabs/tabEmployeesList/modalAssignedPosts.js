@@ -48,6 +48,7 @@ const ModalAssignedPosts = ({
         });
     };
 
+    const [totalCashbond, setTotalCashbond] = useState(0);
     const getEmployeeAssignedPosts = () => {
         fetchData(
             "GET",
@@ -55,6 +56,7 @@ const ModalAssignedPosts = ({
         ).then(res => {
             if (res.success) {
                 if (res.data) {
+                    setTotalCashbond(res.total_cashbond);
                     let dataSource = [];
                     res.data.map((assigned_post, key) => {
                         dataSource.push({
@@ -209,6 +211,10 @@ const ModalAssignedPosts = ({
             }
         }
     ];
+
+    function currencyFormat(num) {
+        return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+    }
     return (
         <>
             <Modal
@@ -356,6 +362,11 @@ const ModalAssignedPosts = ({
                     pagination={false}
                     size="small"
                 />
+                <div className="text-right mt-10">
+                    <Title level={4}>
+                        Total Cashbond: {currencyFormat(totalCashbond)}
+                    </Title>
+                </div>
             </Modal>
         </>
     );

@@ -1,6 +1,6 @@
 import React from "react";
 import Text from "antd/lib/typography/Text";
-import { Form, Input, DatePicker } from "antd";
+import { Form, Input, DatePicker, Select } from "antd";
 
 const FormEmployeeBasicInfo = () => {
     return (
@@ -46,6 +46,23 @@ const FormEmployeeBasicInfo = () => {
                 className="mb-15"
             >
                 <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
+            </Form.Item>
+            <Form.Item
+                label="Status"
+                name="status"
+                className="mb-15"
+                rules={[
+                    {
+                        required: true,
+                        message: "Select Status"
+                    }
+                ]}
+            >
+                <Select name="status" width="100%">
+                    <Select.Option value="Active">Active</Select.Option>
+                    <Select.Option value="Inactive">Inactive</Select.Option>
+                    <Select.Option value="Resigned">Resigned</Select.Option>
+                </Select>
             </Form.Item>
         </>
     );

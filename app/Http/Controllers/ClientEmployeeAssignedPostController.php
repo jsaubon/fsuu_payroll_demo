@@ -15,10 +15,31 @@ class ClientEmployeeAssignedPostController extends Controller
     public function index(Request $request)
     {
         $employee_assigned_posts = ClientEmployeeAssignedPost::with('client')->where('employee_id',$request->employee_id)->orderBy('date_start','asc')->get();
+        $first = $employee_assigned_posts->first();
+        $last = $employee_assigned_posts->last();
+
+        $date1 = strtotime($first->date_start);
+        $date2 = strtotime(isset($first->date_end) ? $first->date_end : date('Y-m-d'));
+
+        // Formulate the Difference between two dates 
+        $diff = abs($date2 - $date1);  
+        
+        
+        // To get the year divide the resultant date into 
+        // total seconds in a year (365*60*60*24) 
+        $years = floor($diff / (365*60*60*24));  
+
+        $months = floor(($diff - $years * 365*60*60*24) 
+        / (30*60*60*24));  
+
+        $total_months = ($years != 0 ?  ($years * 12) : 0) +$months; 
+
+        $total_cashbond = $total_months * 100;
 
         return response()->json([
             'success' => true,
-            'data' => $employee_assigned_posts->toArray()
+            'data' => $employee_assigned_posts->toArray(),
+            'total_cashbond' => $total_cashbond,
         ],200);
     }
 
