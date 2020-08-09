@@ -55,6 +55,7 @@ const ModalAssignedPosts = ({
             "api/employee_assigned_post?employee_id=" + employee.id
         ).then(res => {
             if (res.success) {
+                // console.log("assigned post", res);
                 if (res.data) {
                     setTotalCashbond(res.total_cashbond);
                     let dataSource = [];

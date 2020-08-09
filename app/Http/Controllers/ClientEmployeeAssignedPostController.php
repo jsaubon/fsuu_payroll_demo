@@ -14,12 +14,79 @@ class ClientEmployeeAssignedPostController extends Controller
      */
     public function index(Request $request)
     {
-        $employee_assigned_posts = ClientEmployeeAssignedPost::with('client')->where('employee_id',$request->employee_id)->orderBy('date_start','asc')->get();
-        $first = $employee_assigned_posts->first();
-        $last = $employee_assigned_posts->last();
+        if(isset($request->report)) {
 
-        $date1 = strtotime($first->date_start);
-        $date2 = strtotime(isset($first->date_end) ? $first->date_end : date('Y-m-d'));
+            $employees_list = \App\ClientEmployee::orderBy('name','asc')->get();
+            $employees = \App\ClientEmployee::with('client')
+                                        ->with('client_employee_assigned_posts')
+                                        ->with('client_employee_assigned_posts.client')
+                                        ->orderBy('name','asc');;
+            if(isset($request->employee)) {
+                $employees->where('id',$request->employee);
+            }
+            $employees = $employees->get()->sortBy('client_employee_assigned_posts.client.name');
+
+            $reports = [];
+            foreach ($employees as $key => $employee) {
+                $_report = [
+                    'name' => $employee->name,
+                    'status' => $employee->status,
+                    'clients' => []
+                ];
+                $assigned_posts = $employee->client_employee_assigned_posts->sortBy(function($col)
+                                    {
+                                        return $col;
+                                    })->values()->all();
+                $total_cb = 0;
+                foreach ($assigned_posts as $key => $assigned_post) {
+                    $total = $this->getCashbond($assigned_post);
+                    $date_end = ($assigned_post['date_end'] !== null) ? $assigned_post['date_end'] : 'now';
+                    $_report['clients'][] = [
+                        'name' => $assigned_post['client']['name'],
+                        'date' => $assigned_post['date_start'] . ' to ' . $date_end,
+                        'total' => $total
+                    ];
+                    $total_cb += $total;
+                    $_report['total'] = $total_cb;
+                }
+
+                $reports[] = $_report;
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $reports,
+                'employees' => $employees_list
+            ]);
+        } else {
+            $employee_assigned_posts = ClientEmployeeAssignedPost::with('client')->where('employee_id',$request->employee_id)->orderBy('date_start','asc')->get();
+            $total_cashbond = 0;
+            foreach ($employee_assigned_posts as $key => $assigned_posts) {
+                $cb = $this->getCashbond($assigned_posts);
+                $total_cashbond += $cb;
+            }
+            
+
+            return response()->json([
+                'success' => true,
+                'data' => $employee_assigned_posts->toArray(),
+                'total_cashbond' => $total_cashbond,
+            ],200);
+        }
+        
+        
+    }
+
+    private function getCashbond($assigned_posts) {
+        $first = $assigned_posts['date_start'];
+        if($assigned_posts['date_end'] !== null) {
+            $last = $assigned_posts['date_end'];
+        } else {
+            $last = date('Y-m-d');
+        }
+
+        $date1 = strtotime($first);
+        $date2 = strtotime($last);
 
         // Formulate the Difference between two dates 
         $diff = abs($date2 - $date1);  
@@ -29,18 +96,21 @@ class ClientEmployeeAssignedPostController extends Controller
         // total seconds in a year (365*60*60*24) 
         $years = floor($diff / (365*60*60*24));  
 
-        $months = floor(($diff - $years * 365*60*60*24) 
+        $months = (($diff - $years * 365*60*60*24) 
         / (30*60*60*24));  
 
         $total_months = ($years != 0 ?  ($years * 12) : 0) +$months; 
 
-        $total_cashbond = $total_months * 100;
+        $whole = floor($total_months);
+        $fraction = ($total_months - $whole) * 100;
+        if($fraction >= 50) {
+            $total_months = $whole + 0.5;
+        } else {
+            $total_months = $whole;
+        }
 
-        return response()->json([
-            'success' => true,
-            'data' => $employee_assigned_posts->toArray(),
-            'total_cashbond' => $total_cashbond,
-        ],200);
+        $total_cashbond = $total_months * 100;
+        return $total_cashbond;
     }
 
     /**
