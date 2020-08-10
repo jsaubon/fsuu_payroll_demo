@@ -23,7 +23,7 @@ class CreateClientEmployeesTable extends Migration
             $table->string('gender')->nullable();
             $table->datetime('birth_date')->nullable();
             $table->datetime('member_since')->nullable();
-            $table->boolean('status')->default('Active');
+            $table->string('status')->default('Active');
             $table->timestamps();
         });
     }
