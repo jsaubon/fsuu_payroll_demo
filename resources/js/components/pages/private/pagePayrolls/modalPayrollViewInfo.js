@@ -83,7 +83,7 @@ const ModalPayrollViewInfo = ({
                         </Col>
                     </Row>
                     <div className="mt-10">
-                        <div className="ant-table ant-table-bordered ant-table-responsive ant-table-small ">
+                        <div className="payroll-table ant-table ant-table-bordered ant-table-responsive ant-table-small ">
                             <div className="ant-table-container">
                                 <div className="ant-table-content">
                                     <table style={{ tableLayout: "auto" }}>
@@ -98,8 +98,11 @@ const ModalPayrollViewInfo = ({
                                                 <th
                                                     className="ant-table-cell text-center fz-12"
                                                     colSpan={
-                                                        accountingEntries.debit
-                                                            .length - 7
+                                                        accountingEntries.debit.filter(
+                                                            p =>
+                                                                p.visible ==
+                                                                true
+                                                        ).length + 1
                                                     }
                                                 >
                                                     DEBIT
