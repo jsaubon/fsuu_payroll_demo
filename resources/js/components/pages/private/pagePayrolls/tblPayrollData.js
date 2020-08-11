@@ -150,7 +150,7 @@ const TblPayrollData = ({
     return (
         <>
             <div
-                className={`ant-table ant-table-bordered ant-table-responsive mt-10 ant-table-small ${showForm &&
+                className={`payroll-table ant-table ant-table-bordered ant-table-responsive mt-10 ant-table-small ${showForm &&
                     "hide"}`}
             >
                 <div className="ant-table-container">

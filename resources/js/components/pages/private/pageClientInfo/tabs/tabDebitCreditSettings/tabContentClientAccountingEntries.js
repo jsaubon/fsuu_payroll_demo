@@ -164,10 +164,10 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
         fetchData("GET", "api/accounting_entry?client_id=" + client_id).then(
             res => {
                 if (res.credit.length) {
-                    setCreditList(res.credit);
+                    setCreditList([...res.credit]);
                 }
                 if (res.debit.length) {
-                    setDebitList(res.debit);
+                    setDebitList([...res.debit]);
                 }
             }
         );
