@@ -84,7 +84,7 @@ const CardNewPayroll = () => {
     return (
         <>
             <Card className="mt-10">
-                <Print single={true} name="payroll">
+                <Print single={true} name="payroll" className="payrollPrint">
                     <div className="text-center">
                         <Title level={4} className="mb-0">
                             <i>

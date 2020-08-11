@@ -21,7 +21,7 @@ const ModalPayrollViewInfo = ({
                 onCancel={toggleShowModalPayrollViewInfo}
                 width="95%"
             >
-                <Print single={true} name="payroll">
+                <Print single={true} name="payroll" className="payrollPrint">
                     <div className="text-center">
                         <Title level={4} className="mb-0">
                             <i>
