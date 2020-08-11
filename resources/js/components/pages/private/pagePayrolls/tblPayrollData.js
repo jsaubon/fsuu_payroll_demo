@@ -167,7 +167,9 @@ const TblPayrollData = ({
                                     <th
                                         className="ant-table-cell text-center fz-12"
                                         colSpan={
-                                            accountingEntries.debit.length - 7
+                                            accountingEntries.debit.filter(
+                                                p => p.visible == true
+                                            ).length + 1
                                         }
                                     >
                                         DEBIT
