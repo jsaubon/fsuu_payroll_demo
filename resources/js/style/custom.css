@@ -335,6 +335,9 @@ body {
     border-left: 1px solid black;
 }
 
+input,
+.ant-select,
+.ant-typography,
 .payrollPrint *,
 .payroll-table * {
     color: black !important;
