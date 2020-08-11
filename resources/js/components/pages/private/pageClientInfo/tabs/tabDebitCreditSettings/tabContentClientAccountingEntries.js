@@ -38,6 +38,11 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
             visible: true
         },
         {
+            title: "License",
+            amount: 0,
+            visible: true
+        },
+        {
             title: "LOANS SSS",
             amount: 0,
             visible: true

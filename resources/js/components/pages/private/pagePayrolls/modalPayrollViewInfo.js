@@ -413,12 +413,7 @@ const ModalPayrollViewInfo = ({
                                                                             if (
                                                                                 debit
                                                                                     .client_accounting_entry
-                                                                                    .title !=
-                                                                                    "13th-Month Pay" &&
-                                                                                debit
-                                                                                    .client_accounting_entry
-                                                                                    .title !=
-                                                                                    "Uniform Allowance"
+                                                                                    .visible
                                                                             ) {
                                                                                 if (
                                                                                     debit

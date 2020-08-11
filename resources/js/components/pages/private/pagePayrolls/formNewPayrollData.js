@@ -218,10 +218,7 @@ const FormNewPayrollData = ({
 
                 amount = amount.toFixed(2);
 
-                if (
-                    debit.title != "13th-Month Pay" &&
-                    debit.title != "Uniform Allowance"
-                ) {
+                if (debit.visible) {
                     grossPay += parseFloat(amount);
                 }
 
