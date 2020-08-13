@@ -363,11 +363,11 @@ const ModalAssignedPosts = ({
                     pagination={false}
                     size="small"
                 />
-                <div className="text-right mt-10">
+                {/* <div className="text-right mt-10">
                     <Title level={4}>
                         Total Cashbond: {currencyFormat(totalCashbond)}
                     </Title>
-                </div>
+                </div> */}
             </Modal>
         </>
     );

@@ -91,22 +91,6 @@ const TabReportsCashbond = () => {
             key: "clients",
             render: (text, record) => {
                 // return record.name;
-                let _cb = [];
-                record.clients.map((client, key) => {
-                    _cb.push(
-                        <>
-                            <Row className="w-nowrap">
-                                <Col md={6}>Post: {client.name}</Col>
-                                <Col md={10}>Date: {client.date}</Col>
-                                <Col md={8}>
-                                    Amount: {currencyFormat(client.total)}
-                                </Col>
-                            </Row>
-                        </>
-                    );
-                });
-
-                return _cb;
             }
         },
         {

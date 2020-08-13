@@ -18,44 +18,21 @@ class ClientEmployeeAssignedPostController extends Controller
 
             $employees_list = \App\ClientEmployee::orderBy('name','asc')->get();
             $employees = \App\ClientEmployee::with('client')
-                                        ->with('client_employee_assigned_posts')
-                                        ->with('client_employee_assigned_posts.client')
-                                        ->orderBy('name','asc');;
+                                        ->with('client_employee_accountings')
+                                        ->with('client_employee_accountings.client_accounting_entry')
+                                        ->join('client_employee_accountings','client_employee_accountings.employee_id','=','client_employees.id')
+                                        ->join('client_accounting_entries','client_accounting_entries.id','=','client_employee_accountings.client_accounting_entries_id')
+                                        ->where('client_accounting_entries.title','Bond')
+                                        ->orderBy('name','asc');
             if(isset($request->employee)) {
                 $employees->where('id',$request->employee);
             }
-            $employees = $employees->get()->sortBy('client_employee_assigned_posts.client.name');
-
-            $reports = [];
-            foreach ($employees as $key => $employee) {
-                $_report = [
-                    'name' => $employee->name,
-                    'status' => $employee->status,
-                    'clients' => []
-                ];
-                $assigned_posts = $employee->client_employee_assigned_posts->sortBy(function($col)
-                                    {
-                                        return $col;
-                                    })->values()->all();
-                $total_cb = 0;
-                foreach ($assigned_posts as $key => $assigned_post) {
-                    $total = $this->getCashbond($assigned_post);
-                    $date_end = ($assigned_post['date_end'] !== null) ? $assigned_post['date_end'] : 'now';
-                    $_report['clients'][] = [
-                        'name' => $assigned_post['client']['name'],
-                        'date' => $assigned_post['date_start'] . ' to ' . $date_end,
-                        'total' => $total
-                    ];
-                    $total_cb += $total;
-                    $_report['total'] = $total_cb;
-                }
-
-                $reports[] = $_report;
-            }
+            $employees = $employees->get();
+ 
 
             return response()->json([
                 'success' => true,
-                'data' => $reports,
+                'data' => $employees,
                 'employees' => $employees_list
             ]);
         } else {
