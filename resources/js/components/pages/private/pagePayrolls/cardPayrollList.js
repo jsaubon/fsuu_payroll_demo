@@ -19,8 +19,9 @@ import moment from "moment";
 import { fetchData } from "../../../../axios";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
-import { Print } from "react-easy-print";
+import { Print, NoPrint } from "react-easy-print";
 import ModalPayrollViewInfo from "./modalPayrollViewInfo";
+import ModalPayslip from "./modalPayslip";
 
 const CardPayrollList = () => {
     const [pageFilters, setPageFilters] = useState({
@@ -219,13 +220,21 @@ const CardPayrollList = () => {
                     dataSource={payrollList}
                 />
             </Card>
-            {selectedPayroll && (
+            {selectedPayroll && showModalPayrollViewInfo && (
                 <ModalPayrollViewInfo
                     selectedPayroll={selectedPayroll}
                     showModalPayrollViewInfo={showModalPayrollViewInfo}
                     toggleShowModalPayrollViewInfo={
                         toggleShowModalPayrollViewInfo
                     }
+                    accountingEntries={accountingEntries}
+                />
+            )}
+            {selectedPayroll && showModalPayslip && (
+                <ModalPayslip
+                    selectedPayroll={selectedPayroll}
+                    showModalPayslip={showModalPayslip}
+                    toggleShowModalPayslip={toggleShowModalPayslip}
                     accountingEntries={accountingEntries}
                 />
             )}
