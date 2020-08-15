@@ -18,11 +18,15 @@ class ClientEmployeeAssignedPostController extends Controller
 
             $employees_list = \App\ClientEmployee::orderBy('name','asc')->get();
             $employees = \App\ClientEmployee::with('client')
-                                        ->with('client_employee_accountings')
                                         ->with('client_employee_accountings.client_accounting_entry')
-                                        ->join('client_employee_accountings','client_employee_accountings.employee_id','=','client_employees.id')
-                                        ->join('client_accounting_entries','client_accounting_entries.id','=','client_employee_accountings.client_accounting_entries_id')
-                                        ->where('client_accounting_entries.title','Bond')
+                                        ->with('client_employee_accountings.client_employee_payroll')
+                                        ->with('client_employee_accountings.client_employee_payroll.client_payroll')
+                                        ->with(['client_employee_accountings' => function($query) {
+                                            $query->join('client_accounting_entries', function($join) {
+                                                $join->on('client_employee_accountings.client_accounting_entry_id','=','client_accounting_entries.id')
+                                                        ->where('client_accounting_entries.title','Bond');
+                                            });
+                                        }])
                                         ->orderBy('name','asc');
             if(isset($request->employee)) {
                 $employees->where('id',$request->employee);
@@ -33,7 +37,8 @@ class ClientEmployeeAssignedPostController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $employees,
-                'employees' => $employees_list
+                'employees' => $employees_list,
+                'test' => 'test'
             ]);
         } else {
             $employee_assigned_posts = ClientEmployeeAssignedPost::with('client')->where('employee_id',$request->employee_id)->orderBy('date_start','asc')->get();
