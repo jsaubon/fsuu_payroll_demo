@@ -141,15 +141,7 @@ const ModalPayrollViewInfo = ({
                                                 </th>
                                                 {accountingEntries.debit.map(
                                                     (debit, key) => {
-                                                        if (
-                                                            debit.title !=
-                                                                "13th-Month Pay" &&
-                                                            debit.title !=
-                                                                "Uniform Allowance" &&
-                                                            debit.title.indexOf(
-                                                                "Hol. Pay"
-                                                            ) === -1
-                                                        ) {
+                                                        if (debit.visible) {
                                                             if (
                                                                 debit.title ==
                                                                     "Basic Pay" ||

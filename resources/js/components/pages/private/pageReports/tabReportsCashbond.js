@@ -26,7 +26,6 @@ const TabReportsCashbond = () => {
         ).then(res => {
             if (res.success) {
                 setCashbonds(res.data);
-                console.log(res.data);
                 let _employeeFilter = [];
                 let _subTotal = 0;
                 res.data.map((data, key) => {

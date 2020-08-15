@@ -29,6 +29,7 @@ const CardPayrollList = () => {
     const [showModalPayrollViewInfo, setShowModalPayrollViewInfo] = useState(
         false
     );
+    const [showModalPayslip, setShowModalPayslip] = useState(false);
     const [selectedPayroll, setSelectedPayroll] = useState();
     const [payrollList, setPayrollList] = useState([]);
     const [accountingEntries, setAccountingEntries] = useState({
@@ -76,6 +77,22 @@ const CardPayrollList = () => {
         toggleShowModalPayrollViewInfo();
     };
 
+    const handleViewPayslip = record => {
+        setSelectedPayroll(record);
+        let debit = record.client.client_accounting_entries.filter(
+            p => p.type == "debit"
+        );
+        let credit = record.client.client_accounting_entries.filter(
+            p => p.type == "credit"
+        );
+        setAccountingEntries({
+            ...accountingEntries,
+            debit: debit,
+            credit: credit
+        });
+        toggleShowModalPayslip();
+    };
+
     const columns = [
         {
             title: "Client Name",
@@ -99,8 +116,25 @@ const CardPayrollList = () => {
         },
 
         {
-            title: "View",
-            key: "view",
+            title: "Payslip",
+            key: "payslip",
+            width: "1%",
+            render: (text, record) => {
+                return (
+                    <Button
+                        type="primary"
+                        size="small"
+                        icon={<EyeOutlined />}
+                        onClick={e => handleViewPayslip(record)}
+                    >
+                        View Payslip
+                    </Button>
+                );
+            }
+        },
+        {
+            title: "Payroll",
+            key: "payroll",
             width: "1%",
             render: (text, record) => {
                 return (
@@ -110,7 +144,7 @@ const CardPayrollList = () => {
                         icon={<EyeOutlined />}
                         onClick={e => handleViewPayroll(record)}
                     >
-                        View
+                        View Payroll
                     </Button>
                 );
             }
@@ -145,6 +179,9 @@ const CardPayrollList = () => {
 
     const toggleShowModalPayrollViewInfo = () => {
         setShowModalPayrollViewInfo(!showModalPayrollViewInfo);
+    };
+    const toggleShowModalPayslip = () => {
+        setShowModalPayslip(!showModalPayslip);
     };
     return (
         <>
