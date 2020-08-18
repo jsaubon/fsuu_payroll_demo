@@ -16,6 +16,14 @@ const TblPayrollData = ({
         return () => {};
     }, [payrollDetails.employeePayroll]);
 
+    useEffect(() => {
+        console.log('showForm',showForm);
+        if(!showForm) {
+            reCalculate();
+        }
+        return () => {};
+    },[showForm])
+
     const [
         showModalTblHeaderCalculation,
         setShowModalTblHeaderCalculation
@@ -35,9 +43,11 @@ const TblPayrollData = ({
         setShowModalTblHeaderCalculation(!showModalTblHeaderCalculation);
     };
 
+    const [totalNetpay, setTotalNetpay] = useState();
+
     const handleRemovePayrollCalculation = () => {
         let _employeePayroll = payrollDetails.employeePayroll;
-
+        let _totalNetpay = 0;
         _employeePayroll.forEach(payrolls => {
             let column = payrolls[selectedHeader.type].find(
                 p => p.id == selectedHeader.id
@@ -47,8 +57,7 @@ const TblPayrollData = ({
             let totalDebit = 0;
             payrolls.debit.forEach(payroll => {
                 if (
-                    payroll.title != "13th-Month Pay" &&
-                    payroll.title != "Uniform Allowance"
+                    payroll.visible
                 ) {
                     totalDebit += parseFloat(payroll.amount);
                 } else {
@@ -63,7 +72,10 @@ const TblPayrollData = ({
             });
             //console.log(totalDebit, totalCredit, totalDebit - totalCredit);
             payrolls.netPay = (totalDebit - totalCredit).toFixed(2);
+            _totalNetpay += payrolls.netPay > 0 ? parseFloat(payrolls.netPay) : 0;
         });
+
+        setTotalNetpay(_totalNetpay.toFixed(2));
 
         setPayrollDetails({
             ...payrollDetails,
@@ -111,12 +123,13 @@ const TblPayrollData = ({
 
     const reCalculate = () => {
         let _employeePayroll = payrollDetails.employeePayroll;
+        console.log(_employeePayroll);
+        let _totalNetpay = 0
         _employeePayroll.forEach(payrolls => {
             let totalDebit = 0;
             payrolls.debit.forEach(payroll => {
                 if (
-                    payroll.title != "13th-Month Pay" &&
-                    payroll.title != "Uniform Allowance"
+                    payroll.visible
                 ) {
                     totalDebit += parseFloat(payroll.amount);
                 } else {
@@ -131,7 +144,9 @@ const TblPayrollData = ({
             });
             //console.log(totalDebit, totalCredit, totalDebit - totalCredit);
             payrolls.netPay = (totalDebit - totalCredit).toFixed(2);
+            _totalNetpay += payrolls.netPay > 0 ? parseFloat(payrolls.netPay) : 0;
         });
+        setTotalNetpay(_totalNetpay.toFixed(2) );
 
         setPayrollDetails({
             ...payrollDetails,
@@ -208,10 +223,7 @@ const TblPayrollData = ({
                                     {accountingEntries.debit.map(
                                         (debit, key) => {
                                             if (
-                                                debit.visible &&
-                                                debit.title.indexOf(
-                                                    "Hol. Pay"
-                                                ) === -1
+                                                debit.visible
                                             ) {
                                                 if (
                                                     debit.title ==
@@ -306,28 +318,25 @@ const TblPayrollData = ({
                                                     {employee.debit.map(
                                                         (debit, debit_key) => {
                                                             if (
-                                                                debit.visible &&
-                                                                debit.title.indexOf(
-                                                                    "Hol. Pay"
-                                                                ) === -1
+                                                                debit.visible
                                                             ) {
-                                                                if (
-                                                                    debit.title ==
-                                                                    "Basic Pay"
-                                                                ) {
-                                                                    return (
-                                                                        <td
-                                                                            key={
-                                                                                debit_key
-                                                                            }
-                                                                            className="ant-table-cell text-center fz-10 "
-                                                                        >
-                                                                            {
-                                                                                employee.totalBasicPay
-                                                                            }
-                                                                        </td>
-                                                                    );
-                                                                }
+                                                                // if (
+                                                                //     debit.title ==
+                                                                //     "Basic Pay"
+                                                                // ) {
+                                                                //     return (
+                                                                //         <td
+                                                                //             key={
+                                                                //                 debit_key
+                                                                //             }
+                                                                //             className="ant-table-cell text-center fz-10 "
+                                                                //         >
+                                                                //             {
+                                                                //                 employee.totalBasicPay
+                                                                //             }
+                                                                //         </td>
+                                                                //     );
+                                                                // }
                                                                 if (
                                                                     debit.title ==
                                                                     "Night Premium Pay"
@@ -428,8 +437,10 @@ const TblPayrollData = ({
                                 )}
                             </tbody>
                         </table>
+                        
                     </div>
                 </div>
+                <div style={{textAlign: 'right', paddingRight: 72}}><b>Total: {totalNetpay}</b></div>
             </div>
 
             <Row className={`mt-15 ${showForm && "hide"}`}>
