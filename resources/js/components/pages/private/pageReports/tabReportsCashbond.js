@@ -11,6 +11,7 @@ const TabReportsCashbond = () => {
     const [employeeList, setEmployeeList] = useState();
     const [filterEmployee, setFilterEmployee] = useState();
     const [tableColumns, setTableColumns] = useState([]);
+    const [filterClients, setFilterClients] = useState([]);
 
     useEffect(() => {
         getCashbond();
@@ -28,13 +29,19 @@ const TabReportsCashbond = () => {
                 setCashbonds(res.data);
                 let _employeeFilter = [];
                 let _subTotal = 0;
+                let _clientFilter = [];
                 res.data.map((data, key) => {
                     data.client_employee_accountings.map((entry, k) => {
                         _subTotal += entry.amount;
                     });
+                    _clientFilter.push({
+                        value: data.client.name,
+                        text: data.client.name
+                    });
                 });
                 setSubTotal(_subTotal);
                 setEmployeeList(res.employees);
+                setFilterClients(_clientFilter);
             }
         });
     };
@@ -107,7 +114,10 @@ const TabReportsCashbond = () => {
                 key: "clients",
                 render: (text, record) => {
                     return record.client.name;
-                }
+                },
+                onFilter: (value, record) =>
+                    record.client.name.indexOf(value) === 0,
+                filters: [...filterClients]
             }
         ];
         for (let year = filterYear.from; year <= filterYear.to; year++) {
