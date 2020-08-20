@@ -175,17 +175,15 @@ const TabReportsCashbond = () => {
                     </Select>
                 </Col>
             </Row>
-            <Print>
-                <Table
-                    columns={tableColumns}
-                    dataSource={cashbonds}
-                    onChange={onChangeTable}
-                    pagination={{ pageSize: 50 }}
-                />
-                <div className="text-right">
-                    <Title level={3}>Total: {subTotal}</Title>
-                </div>
-            </Print>
+            <Table
+                columns={tableColumns}
+                dataSource={cashbonds}
+                onChange={onChangeTable}
+                pagination={{ pageSize: 50 }}
+            />
+            <div className="text-right">
+                <Title level={3}>Total: {subTotal}</Title>
+            </div>
         </Card>
     );
 };
