@@ -34,14 +34,14 @@ const TabReportsCashbond = () => {
                     data.client_employee_accountings.map((entry, k) => {
                         _subTotal += entry.amount;
                     });
-                    _clientFilter.push({
-                        value: data.client.name,
-                        text: data.client.name
-                    });
+                    // _clientFilter.push({
+                    //     value: data.client.name,
+                    //     text: data.client.name
+                    // });
                 });
                 setSubTotal(_subTotal);
                 setEmployeeList(res.employees);
-                setFilterClients(_clientFilter);
+                // setFilterClients(_clientFilter);
             }
         });
     };
@@ -114,10 +114,10 @@ const TabReportsCashbond = () => {
                 key: "clients",
                 render: (text, record) => {
                     return record.client.name;
-                },
-                onFilter: (value, record) =>
-                    record.client.name.indexOf(value) === 0,
-                filters: [...filterClients]
+                }
+                // onFilter: (value, record) =>
+                //     record.client.name.indexOf(value) === 0,
+                // filters: [...filterClients]
             }
         ];
         for (let year = filterYear.from; year <= filterYear.to; year++) {

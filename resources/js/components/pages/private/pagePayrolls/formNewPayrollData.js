@@ -169,14 +169,6 @@ const FormNewPayrollData = ({
                         debit.title == "Basic Pay"
                             ? debit.amount * employee.days_of_work
                             : 0;
-                    // totalBasicPay +=
-                    //     debit.title == "Reg. Hol. Pay"
-                    //         ? debit.amount * employee.days_of_work_reg_hol
-                    //         : 0;
-                    // totalBasicPay +=
-                    //     debit.title == "Spcl. Hol. Pay"
-                    //         ? debit.amount * employee.days_of_work_spcl_hol
-                    //         : 0;
                 }
 
                 if (
@@ -188,14 +180,6 @@ const FormNewPayrollData = ({
                         debit.title == "Night Premium Pay"
                             ? debit.amount * employee.night_pay
                             : 0;
-                    // totalNightPay +=
-                    //     debit.title == "Night Reg. Hol. Pay"
-                    //         ? debit.amount * employee.night_pay_reg_hol
-                    //         : 0;
-                    // totalNightPay +=
-                    //     debit.title == "Night Spcl. Hol. Pay"
-                    //         ? debit.amount * employee.night_pay_spcl_hol
-                    //         : 0;
                 }
                 if (
                     debit.title == "Overtime Pay" ||
@@ -206,14 +190,14 @@ const FormNewPayrollData = ({
                         debit.title == "Overtime Pay"
                             ? debit.amount * employee.hours_overtime
                             : 0;
-                    // totalOvertimePay +=
-                    //     debit.title == "Overtime Reg. Hol. Pay"
-                    //         ? debit.amount * employee.hours_overtime_reg_hol
-                    //         : 0;
-                    // totalOvertimePay +=
-                    //     debit.title == "Overtime Spcl. Hol. Pay"
-                    //         ? debit.amount * employee.hours_overtime_spcl_hol
-                    //         : 0;
+                }
+
+                if (debit.title == "5-Day Service Leave") {
+                    amount =
+                        debit.amount *
+                        (employee.days_of_work +
+                            employee.days_of_work_reg_hol +
+                            employee.days_of_work_spcl_hol);
                 }
 
                 amount = amount.toFixed(2);
