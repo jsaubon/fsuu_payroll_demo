@@ -8,7 +8,7 @@ import { currencyFormat } from "../../../currencyFormat";
 const TabReportsPayroll = () => {
     const arrayColumn = (arr, n) => arr.map(x => x[n]);
     const [payrollList, setPayrollList] = useState([]);
-   
+
     const [totalAmount, setTotalAmount] = useState(0);
     const [tableFilters, setTableFilters] = useState({
         clients: [],
@@ -31,9 +31,10 @@ const TabReportsPayroll = () => {
             // filterMultiple: false,
             onFilter: (value, record) =>
                 record.client_payroll.client.name.indexOf(value) === 0,
-            // sorter: (a, b) =>
-            //     a.client_employee.name.length - b.client_employee.name.length,
-            // sortDirections: ["descend", "ascend"],
+            sorter: (a, b) =>
+                a.client_payroll.client.name.length -
+                b.client_payroll.client.name.length,
+            sortDirections: ["descend", "ascend"],
             filters: [...tableFilters.clients]
         },
         {
@@ -47,9 +48,9 @@ const TabReportsPayroll = () => {
             // filterMultiple: false,
             onFilter: (value, record) =>
                 record.client_employee.name.indexOf(value) === 0,
-            // sorter: (a, b) =>
-            //     a.client_employee.name.length - b.client_employee.name.length,
-            // sortDirections: ["descend", "ascend"],
+            sorter: (a, b) =>
+                a.client_employee.name.length - b.client_employee.name.length,
+            sortDirections: ["descend", "ascend"],
             filters: [...tableFilters.employees]
         },
         {
@@ -239,6 +240,24 @@ const TabReportsPayroll = () => {
                 }
             }
         },
+
+        {
+            title: "LOANS NorthStar",
+            dataIndex: "LOANS_NorthStar",
+            key: "LOANS_NorthStar",
+            className: "fz-10 text-center",
+            render: (text, record) => {
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p =>
+                            p.client_accounting_entry.title == "LOANS NorthStar"
+                    );
+                    return rec ? formatNumber(rec.amount) : 0;
+                } else {
+                    return <b>{formatNumber(record.totalLOANNorthStar)}</b>;
+                }
+            }
+        },
         {
             title: "OTHERS C/A",
             dataIndex: "OTHERS_C/A",
@@ -335,6 +354,7 @@ const TabReportsPayroll = () => {
                     totalBond: 0,
                     totalLOANSSSS: 0,
                     totalLOANSPagIBIG: 0,
+                    totalLOANNorthStar: 0,
                     totalOTHERSCA: 0,
                     totalOTHERSCanteen: 0,
                     totalOTHERSAmmosAccessories: 0,
@@ -357,6 +377,8 @@ const TabReportsPayroll = () => {
                             p.client_accounting_entry.title == "LOANS SSS" ||
                             p.client_accounting_entry.title ==
                                 "LOANS Pag-IBIG" ||
+                            p.client_accounting_entry.title ==
+                                "LOANS NorthStar" ||
                             p.client_accounting_entry.title == "OTHERS C/A" ||
                             p.client_accounting_entry.title ==
                                 "OTHERS Canteen" ||
@@ -404,6 +426,11 @@ const TabReportsPayroll = () => {
                         _entry.totalLOANSPagIBIG +=
                             entry.client_accounting_entry.title ==
                             "LOANS Pag-IBIG"
+                                ? entry.amount
+                                : 0;
+                        _entry.totalLOANNorthStar +=
+                            entry.client_accounting_entry.title ==
+                            "LOANS NorthStar"
                                 ? entry.amount
                                 : 0;
                         _entry.totalOTHERSCA +=
@@ -479,7 +506,7 @@ const TabReportsPayroll = () => {
                     columns={columns}
                     pagination={false}
                 />
-                <div className="text-right mt-10">Total: {totalAmount}</div>
+                {/* <div className="text-right mt-10">Total: {totalAmount}</div> */}
             </Card>
         </Print>
     );

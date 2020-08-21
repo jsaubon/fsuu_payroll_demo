@@ -27,10 +27,10 @@ class ClientEmployeePayrollController extends Controller
             $payrolls->whereRaw('? between client_payrolls.date_start and client_payrolls.date_end', [$request->payroll_date]);
         }
        
-        $payrolls = $payrolls->get()
-                        ->sortBy('client_payroll.date_start')
-                        ->sortBy('client_payroll.client.name')
-                        ->sortBy('client_employee.name');
+        $payrolls = $payrolls->get();
+                        // ->sortBy('client_payroll.date_start')
+                        // ->sortBy('client_payroll.client.name')
+                        // ->sortBy('client_employee.name')->toArray();
 
         $query = \DB::getQueryLog();
         return response()->json([
