@@ -262,9 +262,9 @@ const ModalPayrollViewInfo = ({
                                                                                     }
                                                                                     className="ant-table-cell text-center fz-10"
                                                                                 >
-                                                                                    {
+                                                                                    {currencyFormat(
                                                                                         debit.amount
-                                                                                    }
+                                                                                    )}
                                                                                 </td>
                                                                             );
                                                                         }
@@ -302,9 +302,9 @@ const ModalPayrollViewInfo = ({
                                                                                 }
                                                                                 className="ant-table-cell text-center fz-10"
                                                                             >
-                                                                                {
+                                                                                {currencyFormat(
                                                                                     credit.amount
-                                                                                }
+                                                                                )}
                                                                             </td>
                                                                         );
                                                                     }

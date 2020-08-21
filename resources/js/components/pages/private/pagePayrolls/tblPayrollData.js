@@ -330,9 +330,9 @@ const TblPayrollData = ({
                                                                             )
                                                                         }
                                                                     >
-                                                                        {
+                                                                        {currencyFormat(
                                                                             debit.amount
-                                                                        }
+                                                                        )}
                                                                     </td>
                                                                 );
                                                             }
@@ -365,9 +365,9 @@ const TblPayrollData = ({
                                                                         )
                                                                     }
                                                                 >
-                                                                    {
+                                                                    {currencyFormat(
                                                                         credit.amount
-                                                                    }
+                                                                    )}
                                                                 </td>
                                                             );
                                                         }
