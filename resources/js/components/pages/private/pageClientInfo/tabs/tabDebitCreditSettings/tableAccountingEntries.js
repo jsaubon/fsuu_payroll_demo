@@ -85,6 +85,15 @@ const TableAccountingEntries = ({
 
     let columns = [
         {
+            title: "Employer",
+            dataIndex: "employer",
+            key: "employer",
+            render: (text, record) => {
+                return record.client_employee_payroll.client_payroll.client
+                    .name;
+            }
+        },
+        {
             title: "Employee",
             dataIndex: "client_employee",
             key: "client_employee",
@@ -108,6 +117,85 @@ const TableAccountingEntries = ({
             }
         },
         {
+            title: "Year",
+            dataIndex: "year",
+            key: "year",
+            render: (text, record) => {
+                return moment(
+                    record.client_employee_payroll.client_payroll.date_start
+                ).format("YYYY");
+            },
+            onFilter: (value, record) =>
+                record.client_employee_payroll.client_payroll.date_start.indexOf(
+                    value
+                ) === 0,
+            filters: [...yearFilters]
+        },
+        {
+            title: "Month",
+            dataIndex: "month",
+            key: "month",
+            render: (text, record) => {
+                return moment(
+                    record.client_employee_payroll.client_payroll.date_start
+                ).format("MMMM");
+            },
+            onFilter: (value, record) =>
+                record.client_employee_payroll.client_payroll.date_start.indexOf(
+                    value
+                ) === 0,
+            filters: [
+                {
+                    text: "January",
+                    value: "January"
+                },
+                {
+                    text: "February",
+                    value: "February"
+                },
+                {
+                    text: "March",
+                    value: "March"
+                },
+                {
+                    text: "April",
+                    value: "April"
+                },
+                {
+                    text: "May",
+                    value: "May"
+                },
+                {
+                    text: "June",
+                    value: "June"
+                },
+                {
+                    text: "July",
+                    value: "July"
+                },
+                {
+                    text: "August",
+                    value: "August"
+                },
+                {
+                    text: "September",
+                    value: "September"
+                },
+                {
+                    text: "October",
+                    value: "October"
+                },
+                {
+                    text: "November",
+                    value: "November"
+                },
+                {
+                    text: "December",
+                    value: "December"
+                }
+            ]
+        },
+        {
             title: "Payroll Date",
             dataIndex: "client_employee_payroll",
             key: "client_employee_payroll",
@@ -115,11 +203,11 @@ const TableAccountingEntries = ({
                 return (
                     moment(
                         record.client_employee_payroll.client_payroll.date_start
-                    ).format("YYYY-MM-DD") +
-                    " to " +
+                    ).format("DD") +
+                    " - " +
                     moment(
                         record.client_employee_payroll.client_payroll.date_end
-                    ).format("YYYY-MM-DD")
+                    ).format("DD")
                 );
             },
             onFilter: (value, record) =>
@@ -234,7 +322,7 @@ const TableAccountingEntries = ({
                     onOk={e => toggleShowModalAccountingReports()}
                     onCancel={toggleShowModalAccountingReports}
                     // confirmLoading={formSaveLoading}
-                    // width={"90%"}
+                    width={"80%"}
                     style={{ top: 20 }}
                     okText="Close"
                 >

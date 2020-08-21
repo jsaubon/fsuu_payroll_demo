@@ -60,6 +60,7 @@ class ClientEmployeeAccountingController extends Controller
                                             ->with('client_employee')
                                             ->with('client_employee_payroll')
                                             ->with('client_employee_payroll.client_payroll')
+                                            ->with('client_employee_payroll.client_payroll.client')
                                             ->orderBy('created_at','desc')
                                             ->get();
 
