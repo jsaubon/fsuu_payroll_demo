@@ -16,9 +16,11 @@ class ClientAccountingEntryController extends Controller
     {
         $accounting_entry_debit = ClientAccountingEntry::where('client_id',$request->client_id)
                                                             ->where('type','debit')
+                                                            ->orderBy('order','asc')
                                                             ->get();
         $accounting_entry_credit = ClientAccountingEntry::where('client_id',$request->client_id)
                                                             ->where('type','credit')
+                                                            ->orderBy('order','asc')
                                                             ->get();
 
         return response()->json([
@@ -57,6 +59,7 @@ class ClientAccountingEntryController extends Controller
                 $data = $data->find($accounting_entry['id']);
             } 
             $data->type = $type;
+            $data->order = $accounting_entry['order'];
             $data->title = $accounting_entry['title'];
             $data->amount = $accounting_entry['amount'];
             $data->visible = $accounting_entry['visible'];

@@ -53,7 +53,7 @@ const TblPayrollData = ({
             let column = payrolls[selectedHeader.type].find(
                 p => p.id == selectedHeader.id
             );
-            column.amount = "0.00";
+            column.amount = 0;
 
             let totalDebit = 0;
             payrolls.debit.forEach(payroll => {

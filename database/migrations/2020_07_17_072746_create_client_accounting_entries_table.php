@@ -18,6 +18,7 @@ class CreateClientAccountingEntriesTable extends Migration
             $table->integer('client_id')->unsigned();
             $table->boolean('visible')->default(true);
             $table->string('type');
+            $table->integer('order');
             $table->string('title');
             $table->double('amount');
             $table->timestamps();
