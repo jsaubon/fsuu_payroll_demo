@@ -342,3 +342,15 @@ input,
 .payroll-table * {
     color: black !important;
 }
+
+.payslip-col {
+    border-bottom: 1px solid black;
+}
+
+.pl-30 {
+    padding-left: 30px;
+}
+
+.employeePayslip * {
+    color: black !important;
+}
