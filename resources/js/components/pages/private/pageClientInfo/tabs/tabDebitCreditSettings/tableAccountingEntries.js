@@ -4,6 +4,7 @@ import { fetchData } from "../../../../../../axios";
 import moment from "moment";
 import Title from "antd/lib/typography/Title";
 import { Print, NoPrint } from "react-easy-print";
+import { currencyFormat } from "../../../../../currencyFormat";
 
 const TableAccountingEntries = ({
     accountingEntries,
@@ -81,10 +82,6 @@ const TableAccountingEntries = ({
             }
         );
     };
-
-    function currencyFormat(num) {
-        return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-    }
 
     let columns = [
         {

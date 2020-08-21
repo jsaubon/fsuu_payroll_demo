@@ -125,16 +125,10 @@ const FormNewPayrollData = ({
                 credit: [],
                 netPay: 0,
                 grossPay: 0,
-                totalBasicPay: 0,
-                totalNightPay: 0,
-                totalOvertimePay: 0,
                 employee_id: employee.id
             };
 
             let grossPay = 0;
-            let totalBasicPay = 0;
-            let totalNightPay = 0;
-            let totalOvertimePay = 0;
             accountingEntries.debit.map((debit, key) => {
                 let amount = 0;
 
@@ -160,38 +154,6 @@ const FormNewPayrollData = ({
                     amount = debit.amount * employee.days_of_work;
                 }
 
-                if (
-                    debit.title == "Basic Pay" ||
-                    debit.title == "Reg. Hol. Pay" ||
-                    debit.title == "Spcl. Hol. Pay"
-                ) {
-                    totalBasicPay +=
-                        debit.title == "Basic Pay"
-                            ? debit.amount * employee.days_of_work
-                            : 0;
-                }
-
-                if (
-                    debit.title == "Night Premium Pay" ||
-                    debit.title == "Night Reg. Hol. Pay" ||
-                    debit.title == "Night Spcl. Hol. Pay"
-                ) {
-                    totalNightPay +=
-                        debit.title == "Night Premium Pay"
-                            ? debit.amount * employee.night_pay
-                            : 0;
-                }
-                if (
-                    debit.title == "Overtime Pay" ||
-                    debit.title == "Overtime Reg. Hol. Pay" ||
-                    debit.title == "Overtime Spcl. Hol. Pay"
-                ) {
-                    totalOvertimePay +=
-                        debit.title == "Overtime Pay"
-                            ? debit.amount * employee.hours_overtime
-                            : 0;
-                }
-
                 if (debit.title == "5-Day Service Leave") {
                     amount =
                         debit.amount *
@@ -200,7 +162,7 @@ const FormNewPayrollData = ({
                             employee.days_of_work_spcl_hol);
                 }
 
-                amount = amount.toFixed(2);
+                amount = amount;
 
                 if (debit.visible) {
                     grossPay += parseFloat(amount);
@@ -214,15 +176,12 @@ const FormNewPayrollData = ({
                 });
             });
 
-            _employeePayroll.grossPay = grossPay.toFixed(2);
-            _employeePayroll.totalBasicPay = totalBasicPay.toFixed(2);
-            _employeePayroll.totalNightPay = totalNightPay.toFixed(2);
-            _employeePayroll.totalOvertimePay = totalOvertimePay.toFixed(2);
+            _employeePayroll.grossPay = grossPay;
 
             let netPay = 0;
             accountingEntries.credit.map((credit, key) => {
                 let amount = credit.amount;
-                amount = amount.toFixed(2);
+                amount = amount;
 
                 let _deduction = employee.deductions.filter(
                     p => credit.title.indexOf(p.deduction) !== -1
@@ -231,7 +190,7 @@ const FormNewPayrollData = ({
 
                 let sum = arrSum(arrayColumn(_deduction, "amount"));
                 sum = sum + credit.amount;
-                sum = sum.toFixed(2);
+                sum = sum;
                 _employeePayroll.credit.push({
                     id: credit.id,
                     title: credit.title,
@@ -241,7 +200,7 @@ const FormNewPayrollData = ({
 
                 netPay += parseFloat(_deduction.length > 0 ? sum : amount);
             });
-            _employeePayroll.netPay = (grossPay - netPay).toFixed(2);
+            _employeePayroll.netPay = grossPay - netPay;
             _payrollData.push(_employeePayroll);
         });
 

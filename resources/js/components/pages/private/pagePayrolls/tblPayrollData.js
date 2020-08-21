@@ -4,6 +4,7 @@ import { head } from "lodash";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import PreviewFooter from "./previewFooter";
+import { currencyFormat } from "../../../currencyFormat";
 
 const TblPayrollData = ({
     payrollDetails,
@@ -17,12 +18,12 @@ const TblPayrollData = ({
     }, [payrollDetails.employeePayroll]);
 
     useEffect(() => {
-        console.log('showForm',showForm);
-        if(!showForm) {
+        console.log("showForm", showForm);
+        if (!showForm) {
             reCalculate();
         }
         return () => {};
-    },[showForm])
+    }, [showForm]);
 
     const [
         showModalTblHeaderCalculation,
@@ -56,26 +57,25 @@ const TblPayrollData = ({
 
             let totalDebit = 0;
             payrolls.debit.forEach(payroll => {
-                if (
-                    payroll.visible
-                ) {
+                if (payroll.visible) {
                     totalDebit += parseFloat(payroll.amount);
                 } else {
-                    // payroll.amount = totalDebit.toFixed(2);
+                    // payroll.amount = totalDebit;
                 }
             });
-            payrolls.grossPay = totalDebit.toFixed(2);
+            payrolls.grossPay = totalDebit;
 
             let totalCredit = 0;
             payrolls.credit.forEach(payroll => {
                 totalCredit += parseFloat(payroll.amount);
             });
             //console.log(totalDebit, totalCredit, totalDebit - totalCredit);
-            payrolls.netPay = (totalDebit - totalCredit).toFixed(2);
-            _totalNetpay += payrolls.netPay > 0 ? parseFloat(payrolls.netPay) : 0;
+            payrolls.netPay = totalDebit - totalCredit;
+            _totalNetpay +=
+                payrolls.netPay > 0 ? parseFloat(payrolls.netPay) : 0;
         });
 
-        setTotalNetpay(_totalNetpay.toFixed(2));
+        setTotalNetpay(_totalNetpay);
 
         setPayrollDetails({
             ...payrollDetails,
@@ -124,29 +124,28 @@ const TblPayrollData = ({
     const reCalculate = () => {
         let _employeePayroll = payrollDetails.employeePayroll;
         console.log(_employeePayroll);
-        let _totalNetpay = 0
+        let _totalNetpay = 0;
         _employeePayroll.forEach(payrolls => {
             let totalDebit = 0;
             payrolls.debit.forEach(payroll => {
-                if (
-                    payroll.visible
-                ) {
+                if (payroll.visible) {
                     totalDebit += parseFloat(payroll.amount);
                 } else {
-                    // payroll.amount = totalDebit.toFixed(2);
+                    // payroll.amount = totalDebit;
                 }
             });
-            payrolls.grossPay = totalDebit.toFixed(2);
+            payrolls.grossPay = totalDebit;
 
             let totalCredit = 0;
             payrolls.credit.forEach(payroll => {
                 totalCredit += parseFloat(payroll.amount);
             });
             //console.log(totalDebit, totalCredit, totalDebit - totalCredit);
-            payrolls.netPay = (totalDebit - totalCredit).toFixed(2);
-            _totalNetpay += payrolls.netPay > 0 ? parseFloat(payrolls.netPay) : 0;
+            payrolls.netPay = totalDebit - totalCredit;
+            _totalNetpay +=
+                payrolls.netPay > 0 ? parseFloat(payrolls.netPay) : 0;
         });
-        setTotalNetpay(_totalNetpay.toFixed(2) );
+        setTotalNetpay(_totalNetpay);
 
         setPayrollDetails({
             ...payrollDetails,
@@ -222,9 +221,7 @@ const TblPayrollData = ({
                                     </th>
                                     {accountingEntries.debit.map(
                                         (debit, key) => {
-                                            if (
-                                                debit.visible
-                                            ) {
+                                            if (debit.visible) {
                                                 if (
                                                     debit.title ==
                                                         "Basic Pay" ||
@@ -317,60 +314,7 @@ const TblPayrollData = ({
                                                     </td>
                                                     {employee.debit.map(
                                                         (debit, debit_key) => {
-                                                            if (
-                                                                debit.visible
-                                                            ) {
-                                                                // if (
-                                                                //     debit.title ==
-                                                                //     "Basic Pay"
-                                                                // ) {
-                                                                //     return (
-                                                                //         <td
-                                                                //             key={
-                                                                //                 debit_key
-                                                                //             }
-                                                                //             className="ant-table-cell text-center fz-10 "
-                                                                //         >
-                                                                //             {
-                                                                //                 employee.totalBasicPay
-                                                                //             }
-                                                                //         </td>
-                                                                //     );
-                                                                // }
-                                                                if (
-                                                                    debit.title ==
-                                                                    "Night Premium Pay"
-                                                                ) {
-                                                                    return (
-                                                                        <td
-                                                                            key={
-                                                                                debit_key
-                                                                            }
-                                                                            className="ant-table-cell text-center fz-10 "
-                                                                        >
-                                                                            {
-                                                                                employee.totalNightPay
-                                                                            }
-                                                                        </td>
-                                                                    );
-                                                                }
-                                                                if (
-                                                                    debit.title ==
-                                                                    "Overtime Pay"
-                                                                ) {
-                                                                    return (
-                                                                        <td
-                                                                            key={
-                                                                                debit_key
-                                                                            }
-                                                                            className="ant-table-cell text-center fz-10 "
-                                                                        >
-                                                                            {
-                                                                                employee.totalOvertimePay
-                                                                            }
-                                                                        </td>
-                                                                    );
-                                                                }
+                                                            if (debit.visible) {
                                                                 return (
                                                                     <td
                                                                         key={
@@ -396,7 +340,9 @@ const TblPayrollData = ({
                                                     )}
                                                     <td className="ant-table-cell text-center fz-10">
                                                         <b>
-                                                            {employee.grossPay}
+                                                            {currencyFormat(
+                                                                employee.grossPay
+                                                            )}
                                                         </b>
                                                     </td>
                                                     {employee.credit.map(
@@ -427,7 +373,11 @@ const TblPayrollData = ({
                                                         }
                                                     )}
                                                     <td className="ant-table-cell text-center fz-10">
-                                                        <b>{employee.netPay}</b>
+                                                        <b>
+                                                            {currencyFormat(
+                                                                employee.netPay
+                                                            )}
+                                                        </b>
                                                     </td>
                                                     <td className="ant-table-cell text-center fz-10"></td>
                                                 </tr>
@@ -437,10 +387,11 @@ const TblPayrollData = ({
                                 )}
                             </tbody>
                         </table>
-                        
                     </div>
                 </div>
-                <div style={{textAlign: 'right', paddingRight: 72}}><b>Total: {totalNetpay}</b></div>
+                <div style={{ textAlign: "right", paddingRight: 72 }}>
+                    <b>Total: {currencyFormat(totalNetpay)}</b>
+                </div>
             </div>
 
             <Row className={`mt-15 ${showForm && "hide"}`}>
@@ -484,7 +435,7 @@ const TblPayrollData = ({
                                     ...selectedTD,
                                     entry: {
                                         ...selectedTD.entry,
-                                        amount: value.toFixed(2)
+                                        amount: value
                                     }
                                 })
                             }

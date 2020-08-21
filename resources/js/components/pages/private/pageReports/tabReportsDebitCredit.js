@@ -4,6 +4,7 @@ import Title from "antd/lib/typography/Title";
 import moment from "moment";
 import { fetchData } from "../../../../axios";
 import { Print } from "react-easy-print";
+import { currencyFormat } from "../../../currencyFormat";
 
 const TabReportsDebitCredit = () => {
     const [totalAmount, setTotalAmount] = useState(0);
@@ -201,9 +202,7 @@ const TabReportsDebitCredit = () => {
         setTotalAmount(_totalAmount);
     }
 
-    function currencyFormat(num) {
-        return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-    }
+   
     return (
         <Card>
             <Title level={4}>Debit/Credit</Title>

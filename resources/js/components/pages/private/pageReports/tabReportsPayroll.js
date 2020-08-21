@@ -4,12 +4,11 @@ import Title from "antd/lib/typography/Title";
 import { fetchData } from "../../../../axios";
 import moment from "moment";
 import { Print } from "react-easy-print";
+import { currencyFormat } from "../../../currencyFormat";
 const TabReportsPayroll = () => {
     const arrayColumn = (arr, n) => arr.map(x => x[n]);
     const [payrollList, setPayrollList] = useState([]);
-    function currencyFormat(num) {
-        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-    }
+   
     const [totalAmount, setTotalAmount] = useState(0);
     const [tableFilters, setTableFilters] = useState({
         clients: [],
