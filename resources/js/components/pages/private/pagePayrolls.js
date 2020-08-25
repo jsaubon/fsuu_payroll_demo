@@ -5,7 +5,7 @@ import CardPayrollList from "./pagePayrolls/cardPayrollList";
 import CardNewPayroll from "./pagePayrolls/cardNewPayroll";
 
 const PagePayrolls = () => {
-    const [showCardNewPayroll, setShowCardNewPayroll] = useState(false);
+    const [showCardNewPayroll, setShowCardNewPayroll] = useState(true);
 
     return (
         <>

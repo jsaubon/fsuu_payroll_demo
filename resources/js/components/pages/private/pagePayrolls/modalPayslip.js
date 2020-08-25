@@ -21,14 +21,14 @@ const ModalPayslip = ({
             onCancel={toggleShowModalPayslip}
             width="1152px"
         >
-            <Print single={true} name="payslip" className="payslipPrint">
+            <Print name="payslipsss" className="payslipPrintsss">
                 <Row>
                     {selectedPayroll.client_employee_payrolls.map(
                         (payroll, key) => {
                             let grossPay = 0;
                             let netPay = 0;
                             return (
-                                <Col xs={12} md={12} key={key}>
+                                <Col xs={12} md={12} key={key} className="pagebreak">
                                     <Card
                                         style={{ border: "1px solid black" }}
                                         className="employeePayslip"

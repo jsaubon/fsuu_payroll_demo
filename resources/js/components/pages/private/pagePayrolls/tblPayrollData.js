@@ -13,7 +13,7 @@ const TblPayrollData = ({
     showForm
 }) => {
     useEffect(() => {
-        //console.log("payrollDetails", payrollDetails);
+        console.log("payrollDetails", payrollDetails);
         return () => {};
     }, [payrollDetails.employeePayroll]);
 
@@ -286,6 +286,8 @@ const TblPayrollData = ({
                                         let _debit_basic_pay = employee.debit.find(
                                             p => p.title == "Basic Pay"
                                         );
+
+                                        console.log(_debit_basic_pay);
 
                                         if (
                                             _debit_basic_pay &&

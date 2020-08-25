@@ -37,34 +37,24 @@ class ClientAccountingEntryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        // $this->validate($request, [
-        //     'client_id' => 'required',
-        //     'type' => 'required',
-        //     'title' => 'required',
-        //     'amount' => 'required',
-        // ]);
-        if($request->debit) {
-            $type = 'debit';
-            $accounting_entries = $request->debit;
-        } else {
-            $type = 'credit';
-            $accounting_entries = $request->credit;
-        }
-        
-        
-        foreach ($accounting_entries as $key => $accounting_entry) {
-            $data = new ClientAccountingEntry();
-            if(isset($accounting_entry['id'])){
-                $data = $data->find($accounting_entry['id']);
-            } 
-            $data->type = $type;
-            $data->order = $accounting_entry['order'];
-            $data->title = $accounting_entry['title'];
-            $data->amount = $accounting_entry['amount'];
-            $data->visible = $accounting_entry['visible'];
-            $data->client_id = $request->client_id;
-            $data->save();
+    {      
+        $ids = [];
+        foreach ($request->data as $key => $accounting_entry) {
+            $accounting = new ClientAccountingEntry();
+            $accounting = $accounting->where('client_id',$request->client_id)->where('title',$accounting_entry['title'])->get();
+            if(!$accounting->isEmpty()){
+                $accounting = $accounting->first();
+            } else {
+                $accounting = new ClientAccountingEntry();
+            }
+
+            $accounting->type = $request->type;
+            $accounting->order = $accounting_entry['order'];
+            $accounting->title = $accounting_entry['title'];
+            $accounting->amount = $accounting_entry['amount'];
+            $accounting->visible = $accounting_entry['visible'];
+            $accounting->client_id = $request->client_id;
+            $accounting->save();
             // $accounting_entry = $doc->toArray();
 
         }
@@ -73,6 +63,8 @@ class ClientAccountingEntryController extends Controller
 
         return response()->json([
             'success' => true,
+            'request' => $request->all(),
+            'ids' => $ids
         ],200);
     }
 

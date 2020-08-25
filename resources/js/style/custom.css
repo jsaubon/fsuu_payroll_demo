@@ -354,3 +354,8 @@ input,
 .employeePayslip * {
     color: black !important;
 }
+
+
+@media print {
+  .pagebreak {page-break-after: always;}
+}

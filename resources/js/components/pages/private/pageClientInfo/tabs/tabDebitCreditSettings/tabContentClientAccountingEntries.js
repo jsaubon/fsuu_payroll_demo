@@ -227,10 +227,13 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
     };
 
     const saveCreditSettings = () => {
+        console.log(creditList);
         fetchData("POST", "api/accounting_entry", {
-            credit: creditList,
+            type: 'debit',
+            data: creditList,
             client_id
         }).then(res => {
+            console.log(res);
             if (res.success) {
                 notification.success({
                     message: "Credit Settings Successfully Saved"
@@ -240,10 +243,13 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
     };
 
     const saveDebitSettings = () => {
+        console.log(debitList);
         fetchData("POST", "api/accounting_entry", {
-            debit: debitList,
+            type: 'debit',
+            data: debitList,
             client_id
         }).then(res => {
+            console.log(res);
             if (res.success) {
                 notification.success({
                     message: "Debit Settings Successfully Saved"
