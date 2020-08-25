@@ -226,15 +226,18 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
         );
     };
 
+    const [saveDebitLoading, setSaveDebitLoading] = useState(false);
+    const [saveCreditLoading, setSaveCreditLoading] = useState(false);
+
     const saveCreditSettings = () => {
-        console.log(creditList);
+        setSaveCreditLoading(true);
         fetchData("POST", "api/accounting_entry", {
-            type: 'debit',
+            type: "credit",
             data: creditList,
             client_id
         }).then(res => {
-            console.log(res);
             if (res.success) {
+                setSaveCreditLoading(false);
                 notification.success({
                     message: "Credit Settings Successfully Saved"
                 });
@@ -243,14 +246,14 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
     };
 
     const saveDebitSettings = () => {
-        console.log(debitList);
+        setSaveDebitLoading(true);
         fetchData("POST", "api/accounting_entry", {
-            type: 'debit',
+            type: "debit",
             data: debitList,
             client_id
         }).then(res => {
-            console.log(res);
             if (res.success) {
+                setSaveDebitLoading(false);
                 notification.success({
                     message: "Debit Settings Successfully Saved"
                 });
@@ -273,6 +276,7 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
                             type="primary"
                             block
                             onClick={e => saveDebitSettings()}
+                            loading={saveDebitLoading}
                         >
                             Save Debit Settings
                         </Button>
@@ -290,6 +294,7 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
                             type="primary"
                             block
                             onClick={e => saveCreditSettings()}
+                            loading={saveCreditLoading}
                         >
                             Save Credit Settings
                         </Button>

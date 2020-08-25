@@ -40,8 +40,7 @@ class ClientAccountingEntryController extends Controller
     {      
         $ids = [];
         foreach ($request->data as $key => $accounting_entry) {
-            $accounting = new ClientAccountingEntry();
-            $accounting = $accounting->where('client_id',$request->client_id)->where('title',$accounting_entry['title'])->get();
+            $accounting = ClientAccountingEntry::where('type',$request->type)->where('client_id',$request->client_id)->where('title',$accounting_entry['title'])->get();
             if(!$accounting->isEmpty()){
                 $accounting = $accounting->first();
             } else {
