@@ -15,9 +15,6 @@ const TabReportsPayroll = () => {
         employees: []
     });
     const [payrollDate, setPayrollDate] = useState();
-    function formatNumber(num) {
-        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-    }
 
     const columns = [
         {
@@ -86,11 +83,13 @@ const TabReportsPayroll = () => {
             render: (text, record) => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
-                        p => p.client_accounting_entry.title == "13th-Month Pay"
+                        p =>
+                            p.client_accounting_entry != null &&
+                            p.client_accounting_entry.title == "13th-Month Pay"
                     );
-                    return formatNumber(rec.amount);
+                    return currencyFormat(rec.amount);
                 } else {
-                    return <b>{formatNumber(record.total13thMonthPay)}</b>;
+                    return <b>{currencyFormat(record.total13thMonthPay)}</b>;
                 }
             }
         },
@@ -103,12 +102,15 @@ const TabReportsPayroll = () => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
                         p =>
+                            p.client_accounting_entry != null &&
                             p.client_accounting_entry.title ==
-                            "Uniform Allowance"
+                                "Uniform Allowance"
                     );
-                    return formatNumber(rec.amount);
+                    return currencyFormat(rec.amount);
                 } else {
-                    return <b>{formatNumber(record.totalUniformAllowance)}</b>;
+                    return (
+                        <b>{currencyFormat(record.totalUniformAllowance)}</b>
+                    );
                 }
             }
         },
@@ -120,11 +122,13 @@ const TabReportsPayroll = () => {
             render: (text, record) => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
-                        p => p.client_accounting_entry.title == "SL/VL"
+                        p =>
+                            p.client_accounting_entry != null &&
+                            p.client_accounting_entry.title == "SL/VL"
                     );
-                    return formatNumber(rec.amount);
+                    return currencyFormat(rec.amount);
                 } else {
-                    return <b>{formatNumber(record.totalSLVL)}</b>;
+                    return <b>{currencyFormat(record.totalSLVL)}</b>;
                 }
             }
         },
@@ -136,11 +140,13 @@ const TabReportsPayroll = () => {
             render: (text, record) => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
-                        p => p.client_accounting_entry.title == "Separation Pay"
+                        p =>
+                            p.client_accounting_entry != null &&
+                            p.client_accounting_entry.title == "Separation Pay"
                     );
-                    return formatNumber(rec.amount);
+                    return currencyFormat(rec.amount);
                 } else {
-                    return <b>{formatNumber(record.totalSeparationPay)}</b>;
+                    return <b>{currencyFormat(record.totalSeparationPay)}</b>;
                 }
             }
         },
@@ -152,11 +158,13 @@ const TabReportsPayroll = () => {
             render: (text, record) => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
-                        p => p.client_accounting_entry.title == "SSS"
+                        p =>
+                            p.client_accounting_entry != null &&
+                            p.client_accounting_entry.title == "SSS"
                     );
-                    return formatNumber(rec.amount);
+                    return currencyFormat(rec.amount);
                 } else {
-                    return <b>{formatNumber(record.totalSSS)}</b>;
+                    return <b>{currencyFormat(record.totalSSS)}</b>;
                 }
             }
         },
@@ -168,11 +176,13 @@ const TabReportsPayroll = () => {
             render: (text, record) => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
-                        p => p.client_accounting_entry.title == "PhilHealth"
+                        p =>
+                            p.client_accounting_entry != null &&
+                            p.client_accounting_entry.title == "PhilHealth"
                     );
-                    return formatNumber(rec.amount);
+                    return currencyFormat(rec.amount);
                 } else {
-                    return <b>{formatNumber(record.totalPhilHealth)}</b>;
+                    return <b>{currencyFormat(record.totalPhilHealth)}</b>;
                 }
             }
         },
@@ -184,11 +194,13 @@ const TabReportsPayroll = () => {
             render: (text, record) => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
-                        p => p.client_accounting_entry.title == "Pag-IBIG"
+                        p =>
+                            p.client_accounting_entry != null &&
+                            p.client_accounting_entry.title == "Pag-IBIG"
                     );
-                    return formatNumber(rec.amount);
+                    return currencyFormat(rec.amount);
                 } else {
-                    return <b>{formatNumber(record.totalPagIBIG)}</b>;
+                    return <b>{currencyFormat(record.totalPagIBIG)}</b>;
                 }
             }
         },
@@ -200,11 +212,13 @@ const TabReportsPayroll = () => {
             render: (text, record) => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
-                        p => p.client_accounting_entry.title == "Bond"
+                        p =>
+                            p.client_accounting_entry != null &&
+                            p.client_accounting_entry.title == "Bond"
                     );
-                    return formatNumber(rec.amount);
+                    return currencyFormat(rec.amount);
                 } else {
-                    return <b>{formatNumber(record.totalBond)}</b>;
+                    return <b>{currencyFormat(record.totalBond)}</b>;
                 }
             }
         },
@@ -216,11 +230,13 @@ const TabReportsPayroll = () => {
             render: (text, record) => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
-                        p => p.client_accounting_entry.title == "LOANS SSS"
+                        p =>
+                            p.client_accounting_entry != null &&
+                            p.client_accounting_entry.title == "LOANS SSS"
                     );
-                    return formatNumber(rec.amount);
+                    return currencyFormat(rec.amount);
                 } else {
-                    return <b>{formatNumber(record.totalLOANSSSS)}</b>;
+                    return <b>{currencyFormat(record.totalLOANSSSS)}</b>;
                 }
             }
         },
@@ -232,11 +248,13 @@ const TabReportsPayroll = () => {
             render: (text, record) => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
-                        p => p.client_accounting_entry.title == "LOANS Pag-IBIG"
+                        p =>
+                            p.client_accounting_entry != null &&
+                            p.client_accounting_entry.title == "LOANS Pag-IBIG"
                     );
-                    return formatNumber(rec.amount);
+                    return currencyFormat(rec.amount);
                 } else {
-                    return <b>{formatNumber(record.totalLOANSPagIBIG)}</b>;
+                    return <b>{currencyFormat(record.totalLOANSPagIBIG)}</b>;
                 }
             }
         },
@@ -250,11 +268,12 @@ const TabReportsPayroll = () => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
                         p =>
+                            p.client_accounting_entry != null &&
                             p.client_accounting_entry.title == "LOANS NorthStar"
                     );
-                    return rec ? formatNumber(rec.amount) : 0;
+                    return rec ? currencyFormat(rec.amount) : 0;
                 } else {
-                    return <b>{formatNumber(record.totalLOANNorthStar)}</b>;
+                    return <b>{currencyFormat(record.totalLOANNorthStar)}</b>;
                 }
             }
         },
@@ -266,11 +285,13 @@ const TabReportsPayroll = () => {
             render: (text, record) => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
-                        p => p.client_accounting_entry.title == "OTHERS C/A"
+                        p =>
+                            p.client_accounting_entry != null &&
+                            p.client_accounting_entry.title == "OTHERS C/A"
                     );
-                    return formatNumber(rec.amount);
+                    return currencyFormat(rec.amount);
                 } else {
-                    return <b>{formatNumber(record.totalOTHERSCA)}</b>;
+                    return <b>{currencyFormat(record.totalOTHERSCA)}</b>;
                 }
             }
         },
@@ -282,11 +303,13 @@ const TabReportsPayroll = () => {
             render: (text, record) => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
-                        p => p.client_accounting_entry.title == "OTHERS Canteen"
+                        p =>
+                            p.client_accounting_entry != null &&
+                            p.client_accounting_entry.title == "OTHERS Canteen"
                     );
-                    return formatNumber(rec.amount);
+                    return currencyFormat(rec.amount);
                 } else {
-                    return <b>{formatNumber(record.totalOTHERSCanteen)}</b>;
+                    return <b>{currencyFormat(record.totalOTHERSCanteen)}</b>;
                 }
             }
         },
@@ -299,15 +322,16 @@ const TabReportsPayroll = () => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
                         p =>
+                            p.client_accounting_entry != null &&
                             p.client_accounting_entry.title ==
-                            "OTHERS Ammos & Accessories"
+                                "OTHERS Ammos & Accessories"
                     );
 
-                    return formatNumber(rec.amount);
+                    return currencyFormat(rec.amount);
                 } else {
                     return (
                         <b>
-                            {formatNumber(record.totalOTHERSAmmosAccessories)}
+                            {currencyFormat(record.totalOTHERSAmmosAccessories)}
                         </b>
                     );
                 }
@@ -321,11 +345,13 @@ const TabReportsPayroll = () => {
             render: (text, record) => {
                 if (record.id) {
                     let rec = record.client_employee_accountings.find(
-                        p => p.client_accounting_entry.title == "OTHERS Misc."
+                        p =>
+                            p.client_accounting_entry != null &&
+                            p.client_accounting_entry.title == "OTHERS Misc."
                     );
-                    return formatNumber(rec.amount);
+                    return currencyFormat(rec.amount);
                 } else {
-                    return <b>{formatNumber(record.totalOTHERSMisc)}</b>;
+                    return <b>{currencyFormat(record.totalOTHERSMisc)}</b>;
                 }
             }
         }
@@ -337,7 +363,7 @@ const TabReportsPayroll = () => {
                 "GET",
                 "api/employee_payroll?payroll_date=" + payrollDate
             ).then(res => {
-                console.log(res.data);
+                // console.log(res.data);
                 let data = res.data;
 
                 let _totalAmount = 0;
@@ -360,31 +386,38 @@ const TabReportsPayroll = () => {
                     totalOTHERSAmmosAccessories: 0,
                     totalOTHERSMisc: 0
                 };
-                res.data.map((payroll, key) => {
+                let _data = res.data;
+                _data.map((payroll, key) => {
+                    // console.log(payroll);
                     let recs = payroll.client_employee_accountings.filter(
                         p =>
-                            p.client_accounting_entry.title ==
+                            p.client_accounting_entry != null &&
+                            (p.client_accounting_entry.title ==
                                 "13th-Month Pay" ||
-                            p.client_accounting_entry.title ==
-                                "Uniform Allowance" ||
-                            p.client_accounting_entry.title == "SL/VL" ||
-                            p.client_accounting_entry.title ==
-                                "Separation Pay" ||
-                            p.client_accounting_entry.title == "SSS" ||
-                            p.client_accounting_entry.title == "PhilHealth" ||
-                            p.client_accounting_entry.title == "Pag-IBIG" ||
-                            p.client_accounting_entry.title == "Bond" ||
-                            p.client_accounting_entry.title == "LOANS SSS" ||
-                            p.client_accounting_entry.title ==
-                                "LOANS Pag-IBIG" ||
-                            p.client_accounting_entry.title ==
-                                "LOANS NorthStar" ||
-                            p.client_accounting_entry.title == "OTHERS C/A" ||
-                            p.client_accounting_entry.title ==
-                                "OTHERS Canteen" ||
-                            p.client_accounting_entry.title ==
-                                "OTHERS Ammos & Accessories" ||
-                            p.client_accounting_entry.title == "OTHERS Misc."
+                                p.client_accounting_entry.title ==
+                                    "Uniform Allowance" ||
+                                p.client_accounting_entry.title == "SL/VL" ||
+                                p.client_accounting_entry.title ==
+                                    "Separation Pay" ||
+                                p.client_accounting_entry.title == "SSS" ||
+                                p.client_accounting_entry.title ==
+                                    "PhilHealth" ||
+                                p.client_accounting_entry.title == "Pag-IBIG" ||
+                                p.client_accounting_entry.title == "Bond" ||
+                                p.client_accounting_entry.title ==
+                                    "LOANS SSS" ||
+                                p.client_accounting_entry.title ==
+                                    "LOANS Pag-IBIG" ||
+                                p.client_accounting_entry.title ==
+                                    "LOANS NorthStar" ||
+                                p.client_accounting_entry.title ==
+                                    "OTHERS C/A" ||
+                                p.client_accounting_entry.title ==
+                                    "OTHERS Canteen" ||
+                                p.client_accounting_entry.title ==
+                                    "OTHERS Ammos & Accessories" ||
+                                p.client_accounting_entry.title ==
+                                    "OTHERS Misc.")
                     );
 
                     recs.map((entry, key) => {
@@ -476,7 +509,7 @@ const TabReportsPayroll = () => {
                     clients: _clients,
                     employees: _employees
                 });
-                setTotalAmount(currencyFormat(_totalAmount.toFixed(2)));
+                setTotalAmount(_totalAmount);
             });
         }
 
@@ -500,12 +533,14 @@ const TabReportsPayroll = () => {
                         />
                     </Col>
                 </Row>
-                <Table
-                    size="small"
-                    dataSource={payrollList}
-                    columns={columns}
-                    pagination={false}
-                />
+                <div style={{ overflowX: "auto" }}>
+                    <Table
+                        size="small"
+                        dataSource={payrollList}
+                        columns={columns}
+                        pagination={false}
+                    />
+                </div>
                 {/* <div className="text-right mt-10">Total: {totalAmount}</div> */}
             </Card>
         </Print>
