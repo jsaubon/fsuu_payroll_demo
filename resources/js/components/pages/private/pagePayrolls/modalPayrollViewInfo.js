@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Modal, Row, Col, DatePicker, Input } from "antd";
 import { Print } from "react-easy-print";
 import Title from "antd/lib/typography/Title";
@@ -6,6 +6,7 @@ import Text from "antd/lib/typography/Text";
 import moment from "moment";
 import PreviewFooter from "./previewFooter";
 import { currencyFormat } from "../../../currencyFormat";
+import { useReactToPrint } from "react-to-print";
 const ModalPayrollViewInfo = ({
     selectedPayroll,
     showModalPayrollViewInfo,
@@ -15,16 +16,24 @@ const ModalPayrollViewInfo = ({
     // console.log(selectedPayroll);
     let totalGrossPay = 0;
     let totalNetPay = 0;
+
+    const componentRef = useRef();
+
+    const handlePrintPayroll = useReactToPrint({
+        content: () => componentRef.current
+    });
     return (
         <>
             <Modal
                 title="Payroll Information"
                 visible={showModalPayrollViewInfo}
-                onOk={toggleShowModalPayrollViewInfo}
+                onOk={handlePrintPayroll}
                 onCancel={toggleShowModalPayrollViewInfo}
+                okText={"Print"}
+                cancelText={"Close"}
                 width="95%"
             >
-                <Print single={true} name="payroll" className="payrollPrint">
+                <div ref={componentRef}>
                     <div className="text-center">
                         <Title level={4} className="mb-0">
                             <i>
@@ -336,10 +345,11 @@ const ModalPayrollViewInfo = ({
                             </div>
                         </div>
                     </div>
+
                     <Row className="mt-15">
                         <PreviewFooter />
                     </Row>
-                </Print>
+                </div>
             </Modal>
         </>
     );

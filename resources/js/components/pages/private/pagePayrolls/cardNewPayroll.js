@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Title from "antd/lib/typography/Title";
 import {
     Card,
@@ -25,6 +25,8 @@ import {
 import FormNewPayrollData from "./formNewPayrollData";
 import { fetchData } from "../../../../axios";
 import TblPayrollData from "./tblPayrollData";
+
+import { useReactToPrint } from "react-to-print";
 
 const CardNewPayroll = () => {
     const [clientsList, setClientsList] = useState([]);
@@ -81,10 +83,16 @@ const CardNewPayroll = () => {
         });
     };
 
+    const componentRef = useRef();
+
+    const handlePrintPayroll = useReactToPrint({
+        content: () => componentRef.current
+    });
+
     return (
         <>
             <Card className="mt-10">
-                <Print single={true} name="payroll" className="payrollPrint">
+                <div ref={componentRef}>
                     <div className="text-center">
                         <Title level={4} className="mb-0">
                             <i>
@@ -106,7 +114,7 @@ const CardNewPayroll = () => {
                         </Text>
                     </div>
                     <Row>
-                        <Col xs={24} md={12} className="text-center">
+                        <Col xs={12} md={12} className="text-center">
                             <div className="ant-form-item-label">
                                 <label>NAME OF CLIENT </label>
                                 <Select
@@ -140,7 +148,7 @@ const CardNewPayroll = () => {
                                 </Select>
                             </div>
                         </Col>
-                        <Col xs={24} md={12} className="text-center">
+                        <Col xs={12} md={12} className="text-center">
                             <div className="ant-form-item-label">
                                 <label>SALARY PERIOD </label>
                                 <DatePicker.RangePicker
@@ -184,45 +192,51 @@ const CardNewPayroll = () => {
                             showForm={showForm}
                         />
                     )}
-                </Print>
-                <NoPrint>
-                    <div className="mt-10">
-                        <Row>
-                            <Col xs={12} md={3}>
-                                <Button
-                                    type="primary"
-                                    block
-                                    onClick={e => handleShowForm()}
-                                >
-                                    {showForm ? (
-                                        <>
-                                            <EyeOutlined /> Preview
-                                        </>
-                                    ) : (
-                                        <>
-                                            <CaretLeftOutlined /> Back
-                                        </>
-                                    )}
-                                </Button>
-                            </Col>
-                            <Col xs={0} md={18}></Col>
-                            <Col xs={12} md={3}>
-                                {!payrollSaved && !showForm && (
+                </div>
+                <div className="mt-10">
+                    <Row>
+                        <Col xs={12} md={3}>
+                            <Button
+                                type="primary"
+                                block
+                                onClick={e => handleShowForm()}
+                            >
+                                {showForm ? (
+                                    <>
+                                        <EyeOutlined /> Preview
+                                    </>
+                                ) : (
+                                    <>
+                                        <CaretLeftOutlined /> Back
+                                    </>
+                                )}
+                            </Button>
+                        </Col>
+                        <Col xs={0} md={18}></Col>
+                        <Col xs={12} md={3}>
+                            {!payrollSaved && !showForm && (
+                                <>
+                                    <Button
+                                        icon={<PrinterOutlined />}
+                                        type="primary"
+                                        onClick={handlePrintPayroll}
+                                    >
+                                        Print
+                                    </Button>
                                     <Button
                                         icon={<SaveOutlined />}
                                         type="primary"
                                         danger
-                                        block
                                         loading={savePayrollLoading}
                                         onClick={e => handleSavePayroll()}
                                     >
                                         Save
                                     </Button>
-                                )}
-                            </Col>
-                        </Row>
-                    </div>
-                </NoPrint>
+                                </>
+                            )}
+                        </Col>
+                    </Row>
+                </div>
             </Card>
         </>
     );
