@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Card, Row, Col, DatePicker, Table } from "antd";
+import React, { useState, useEffect, useRef } from "react";
+import { Card, Row, Col, DatePicker, Table, Button } from "antd";
 import Title from "antd/lib/typography/Title";
 import moment from "moment";
 import { fetchData } from "../../../../axios";
 import { Print } from "react-easy-print";
 import { currencyFormat } from "../../../currencyFormat";
+import { useReactToPrint } from "react-to-print";
 
-const TabReportsDebitCredit = () => {
+const TabReportsDebitCredit = employee => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [payrollDate, setPayrollDate] = useState();
     const [employeeAccountingReports, setEmployeeAccountingReports] = useState(
@@ -17,35 +18,53 @@ const TabReportsDebitCredit = () => {
         clients: [],
         entries: []
     });
+    const [tableLoading, setTableLoading] = useState(false);
 
     useEffect(() => {
         if (payrollDate) {
-            fetchData(
-                "GET",
-                "api/employee_accounting?payroll_date=" + payrollDate
-            ).then(res => {
-                if (res.success) {
-                    let _data = [];
-                    Object.values(res.data).map((entry, key) => {
-                        _data.push(entry);
-                    });
+            generateTable();
+        }
+        return () => {};
+    }, [payrollDate]);
+    useEffect(() => {
+        if (employee) {
+            generateTable();
+        }
+        return () => {};
+    }, []);
 
-                    setEmployeeAccountingReports(_data);
-                    let employee_filter = [];
-                    let client_filter = [];
-                    let entry_filter = [];
-                    let _totalAmount = 0;
-                    _data.map((accounting, key) => {
-                        let emp_temp = employee_filter.find(
-                            p => p.text == accounting.client_employee.name
-                        );
-                        if (!emp_temp) {
-                            employee_filter.push({
-                                text: accounting.client_employee.name,
-                                value: accounting.client_employee.name
-                            });
-                        }
+    const generateTable = () => {
+        setTableLoading(true);
+        let url = "api/employee_accounting?payroll_date=" + payrollDate;
+        if (employee) {
+            console.log(employee, "employee", employee.employee.id);
+            url = "api/employee_accounting?employee=" + employee.employee.id;
+        }
+        fetchData("GET", url).then(res => {
+            if (res.success) {
+                console.log(res);
+                let _data = [];
+                Object.values(res.data).map((entry, key) => {
+                    _data.push(entry);
+                });
 
+                setEmployeeAccountingReports(_data);
+                let employee_filter = [];
+                let client_filter = [];
+                let entry_filter = [];
+                let _totalAmount = 0;
+                _data.map((accounting, key) => {
+                    let emp_temp = employee_filter.find(
+                        p => p.text == accounting.client_employee.name
+                    );
+                    if (!emp_temp) {
+                        employee_filter.push({
+                            text: accounting.client_employee.name,
+                            value: accounting.client_employee.name
+                        });
+                    }
+
+                    if (accounting.client_accounting_entry) {
                         let client_temp = client_filter.find(
                             p =>
                                 p.text ==
@@ -77,23 +96,30 @@ const TabReportsDebitCredit = () => {
                         if (
                             accounting.client_accounting_entry.type == "debit"
                         ) {
-                            _totalAmount += parseFloat(accounting.amount);
+                            if (!employee) {
+                                _totalAmount += parseFloat(accounting.amount);
+                            }
                         } else {
-                            _totalAmount -= parseFloat(accounting.amount);
+                            if (employee) {
+                                _totalAmount += parseFloat(accounting.amount);
+                            } else {
+                                _totalAmount -= parseFloat(accounting.amount);
+                            }
                         }
-                    });
-                    setTotalAmount(_totalAmount);
-                    setTableFilters({
-                        ...tableFilters,
-                        employees: employee_filter,
-                        clients: client_filter,
-                        entries: entry_filter
-                    });
-                }
-            });
-        }
-        return () => {};
-    }, [payrollDate]);
+                    }
+                });
+                setTotalAmount(_totalAmount);
+                setTableFilters({
+                    ...tableFilters,
+                    employees: employee_filter,
+                    clients: client_filter,
+                    entries: entry_filter
+                });
+
+                setTableLoading(false);
+            }
+        });
+    };
 
     const capitalize = s => {
         if (typeof s !== "string") return "";
@@ -106,9 +132,12 @@ const TabReportsDebitCredit = () => {
             dataIndex: "client",
             key: "client",
             render: (text, record) => {
-                return record.client_accounting_entry.client.name;
+                return record.client_accounting_entry
+                    ? record.client_accounting_entry.client.name
+                    : "";
             },
             onFilter: (value, record) =>
+                record.client_accounting_entry &&
                 record.client_accounting_entry.client.name.indexOf(value) === 0,
             // sorter: (a, b) => a.client.name.length - b.client.name.length,
             // sortDirections: ["descend", "ascend"],
@@ -132,9 +161,12 @@ const TabReportsDebitCredit = () => {
             dataIndex: "type",
             key: "type",
             render: (text, record) => {
-                return capitalize(record.client_accounting_entry.type);
+                return record.client_accounting_entry
+                    ? capitalize(record.client_accounting_entry.type)
+                    : "";
             },
             onFilter: (value, record) =>
+                record.client_accounting_entry &&
                 record.client_accounting_entry.type.indexOf(value) === 0,
             filters: [
                 {
@@ -152,9 +184,12 @@ const TabReportsDebitCredit = () => {
             dataIndex: "entry",
             key: "entry",
             render: (text, record) => {
-                return record.client_accounting_entry.title;
+                return record.client_accounting_entry
+                    ? record.client_accounting_entry.title
+                    : "";
             },
             onFilter: (value, record) =>
+                record.client_accounting_entry &&
                 record.client_accounting_entry.title.indexOf(value) === 0,
             filters: [...tableFilters.entries]
         },
@@ -202,35 +237,53 @@ const TabReportsDebitCredit = () => {
         setTotalAmount(_totalAmount);
     }
 
-   
+    const componentRef = useRef();
+
+    const handlePrintPayroll = useReactToPrint({
+        content: () => componentRef.current
+    });
+
     return (
         <Card>
-            <Title level={4}>Debit/Credit</Title>
+            <Title level={4}>{employee ? "Cashbond" : "Debit/Credit"}</Title>
             <Row className="mb-10">
                 <Col xs={0} md={19}></Col>
                 <Col xs={24} md={5}>
-                    <DatePicker
-                        style={{ width: "100%" }}
-                        placeholder="Pick a Payroll Date"
-                        onChange={e => setPayrollDate(e.format("YYYY-MM-DD"))}
-                        className="text-center"
-                    />
+                    {employee ? (
+                        ""
+                    ) : (
+                        <DatePicker
+                            style={{ width: "100%" }}
+                            placeholder="Pick a Payroll Date"
+                            onChange={e =>
+                                setPayrollDate(e.format("YYYY-MM-DD"))
+                            }
+                            className="text-center"
+                        />
+                    )}
                 </Col>
             </Row>
-            <Print>
+            <div ref={componentRef}>
                 <Table
                     columns={columns}
                     dataSource={employeeAccountingReports}
                     onChange={onChange}
                     pagination={false}
                     size="small"
+                    loading={tableLoading}
                 />
                 <div className="text-right mt-10">
                     <Title level={4}>
                         Total: {currencyFormat(totalAmount)}
                     </Title>
                 </div>
-            </Print>
+            </div>
+
+            <div className="text-right mt-10">
+                <Button type="primary" onClick={e => handlePrintPayroll()}>
+                    Print
+                </Button>
+            </div>
         </Card>
     );
 };

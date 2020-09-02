@@ -14,16 +14,23 @@ class ClientEmployeeAccountingController extends Controller
      */
     public function index(Request $request)
     {
-
         $employee_accounting_entry = ClientEmployeeAccounting::select('client_employee_accountings.*')
-                                                            ->with('client_employee')
-                                                            ->with('client_accounting_entry')
-                                                            ->with('client_accounting_entry.client')
-                                                            ->with('client_employee_payroll')
-                                                            ->with('client_employee_payroll.client_payroll')
-                                                            ->join('client_employee_payrolls','client_employee_accountings.client_employee_payroll_id','=','client_employee_payrolls.id')
-                                                            ->join('client_payrolls','client_employee_payrolls.client_payroll_id','=','client_payrolls.id')
-                                                            ->whereRaw('? between client_payrolls.date_start and client_payrolls.date_end', [$request->payroll_date]);
+            ->with('client_employee')
+            ->with('client_accounting_entry')
+            ->with('client_accounting_entry.client')
+            ->with('client_employee_payroll')
+            ->with('client_employee_payroll.client_payroll')
+            ->join('client_employee_payrolls','client_employee_accountings.client_employee_payroll_id','=','client_employee_payrolls.id')
+            ->join('client_payrolls','client_employee_payrolls.client_payroll_id','=','client_payrolls.id')
+            ->join('client_accounting_entries','client_employee_accountings.client_accounting_entry_id','=','client_accounting_entries.id');
+        if($request->payroll_date) {
+            $employee_accounting_entry->whereRaw('? between client_payrolls.date_start and client_payrolls.date_end', [$request->payroll_date]);
+        }
+        if($request->employee) {
+            $employee_accounting_entry->where('client_employee_accountings.employee_id', $request->employee);
+            $employee_accounting_entry->where('client_accounting_entries.title', 'Bond');
+        }
+        
         $employee_accounting_entry = $employee_accounting_entry->get()
                                             ->sortBy('client_employee_payroll.client_payroll.name')
                                             ->sortBy('client_employee.name')

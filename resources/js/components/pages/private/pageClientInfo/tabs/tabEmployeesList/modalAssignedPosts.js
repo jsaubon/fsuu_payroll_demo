@@ -18,6 +18,7 @@ import Title from "antd/lib/typography/Title";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import moment from "moment";
 import ButtonGroup from "antd/lib/button/button-group";
+import TabReportsDebitCredit from "../../../pageReports/tabReportsDebitCredit";
 
 const ModalAssignedPosts = ({
     showModalAssignedPosts,
@@ -365,6 +366,8 @@ const ModalAssignedPosts = ({
                         Total Cashbond: {currencyFormat(totalCashbond)}
                     </Title>
                 </div> */}
+
+                <TabReportsDebitCredit employee={employee} />
             </Modal>
         </>
     );

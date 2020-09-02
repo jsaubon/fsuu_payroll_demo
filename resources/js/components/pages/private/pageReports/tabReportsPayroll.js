@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Card, Table, Row, Col, DatePicker } from "antd";
+import React, { useState, useEffect, useRef } from "react";
+import { Card, Table, Row, Col, DatePicker, Button } from "antd";
 import Title from "antd/lib/typography/Title";
 import { fetchData } from "../../../../axios";
 import moment from "moment";
 import { Print } from "react-easy-print";
 import { currencyFormat } from "../../../currencyFormat";
+import { useReactToPrint } from "react-to-print";
 const TabReportsPayroll = () => {
     const arrayColumn = (arr, n) => arr.map(x => x[n]);
     const [payrollList, setPayrollList] = useState([]);
@@ -357,8 +358,11 @@ const TabReportsPayroll = () => {
         }
     ];
 
+    const [tableLoading, setTableLoading] = useState(false);
+
     useEffect(() => {
         if (payrollDate) {
+            setTableLoading(true);
             fetchData(
                 "GET",
                 "api/employee_payroll?payroll_date=" + payrollDate
@@ -510,11 +514,18 @@ const TabReportsPayroll = () => {
                     employees: _employees
                 });
                 setTotalAmount(_totalAmount);
+                setTableLoading(false);
             });
         }
 
         return () => {};
     }, [payrollDate]);
+
+    const componentRef = useRef();
+
+    const handlePrintPayroll = useReactToPrint({
+        content: () => componentRef.current
+    });
 
     return (
         <Print>
@@ -533,15 +544,20 @@ const TabReportsPayroll = () => {
                         />
                     </Col>
                 </Row>
-                <div style={{ overflowX: "auto" }}>
+                <div style={{ overflowX: "auto" }} ref={componentRef}>
                     <Table
                         size="small"
                         dataSource={payrollList}
                         columns={columns}
                         pagination={false}
+                        loading={tableLoading}
                     />
                 </div>
-                {/* <div className="text-right mt-10">Total: {totalAmount}</div> */}
+                <div className="text-right mt-10">
+                    <Button type="primary" onClick={e => handlePrintPayroll()}>
+                        Print
+                    </Button>
+                </div>
             </Card>
         </Print>
     );

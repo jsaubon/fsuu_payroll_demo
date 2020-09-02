@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Card, Table, Row, Col, Select } from "antd";
+import React, { useEffect, useState, useRef } from "react";
+import { Card, Table, Row, Col, Select, Button } from "antd";
 import Title from "antd/lib/typography/Title";
 import { fetchData } from "../../../../axios";
 import { Print } from "react-easy-print";
 import moment from "moment";
+import { useReactToPrint } from "react-to-print";
+import { currencyFormat } from "../../../currencyFormat";
 
 const TabReportsCashbond = () => {
     const [cashbonds, setCashbonds] = useState([]);
@@ -34,14 +36,20 @@ const TabReportsCashbond = () => {
                     data.client_employee_accountings.map((entry, k) => {
                         _subTotal += entry.amount;
                     });
-                    // _clientFilter.push({
-                    //     value: data.client.name,
-                    //     text: data.client.name
-                    // });
+
+                    let exist = _clientFilter.find(
+                        p => p.value == data.client.name
+                    );
+                    if (!exist) {
+                        _clientFilter.push({
+                            value: data.client.name,
+                            text: data.client.name
+                        });
+                    }
                 });
                 setSubTotal(_subTotal);
                 setEmployeeList(res.employees);
-                // setFilterClients(_clientFilter);
+                setFilterClients(_clientFilter);
             }
         });
     };
@@ -51,11 +59,9 @@ const TabReportsCashbond = () => {
         return () => {};
     }, [filterEmployee]);
 
-   
-
     const [filterYear, setFilterYear] = useState({
         from: 2018,
-        to: 2020
+        to: parseInt(moment().format("YYYY"))
     });
 
     const arrayColumn = (arr, n) => arr.map(x => x[n]);
@@ -112,10 +118,10 @@ const TabReportsCashbond = () => {
                 key: "clients",
                 render: (text, record) => {
                     return record.client.name;
-                }
-                // onFilter: (value, record) =>
-                //     record.client.name.indexOf(value) === 0,
-                // filters: [...filterClients]
+                },
+                onFilter: (value, record) =>
+                    record.client.name.indexOf(value) === 0,
+                filters: [...filterClients]
             }
         ];
         for (let year = filterYear.from; year <= filterYear.to; year++) {
@@ -146,7 +152,7 @@ const TabReportsCashbond = () => {
         setTableColumns(_columns);
 
         return () => {};
-    }, [filterYear]);
+    }, [filterYear, filterClients]);
 
     function onChangeTable(pagination, filters, sorter, extra) {
         let _subTotal = 0;
@@ -157,6 +163,12 @@ const TabReportsCashbond = () => {
         });
         setSubTotal(_subTotal);
     }
+
+    const componentRef = useRef();
+
+    const handlePrintPayroll = useReactToPrint({
+        content: () => componentRef.current
+    });
     return (
         <Card>
             <Title level={4}>Cashbond</Title>
@@ -183,14 +195,22 @@ const TabReportsCashbond = () => {
                     </Select>
                 </Col>
             </Row>
-            <Table
-                columns={tableColumns}
-                dataSource={cashbonds}
-                onChange={onChangeTable}
-                pagination={{ pageSize: 50 }}
-            />
-            <div className="text-right">
-                <Title level={3}>Total: {subTotal}</Title>
+            <div ref={componentRef}>
+                <Table
+                    columns={tableColumns}
+                    dataSource={cashbonds}
+                    onChange={onChangeTable}
+                    pagination={false}
+                />
+                <div className="text-right">
+                    <Title level={3}>Total: {currencyFormat(subTotal)}</Title>
+                </div>
+            </div>
+
+            <div className="text-right mt-10">
+                <Button type="primary" onClick={e => handlePrintPayroll()}>
+                    Print
+                </Button>
             </div>
         </Card>
     );
