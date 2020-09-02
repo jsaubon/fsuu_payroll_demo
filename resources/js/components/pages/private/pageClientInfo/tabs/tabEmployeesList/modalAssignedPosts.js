@@ -19,6 +19,7 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import moment from "moment";
 import ButtonGroup from "antd/lib/button/button-group";
 import TabReportsDebitCredit from "../../../pageReports/tabReportsDebitCredit";
+import TableAccountingEntriesByEmployee from "../tabDebitCreditSettings/tableAccountingEntriesByEmployee";
 
 const ModalAssignedPosts = ({
     showModalAssignedPosts,
@@ -214,6 +215,73 @@ const ModalAssignedPosts = ({
         }
     ];
 
+    const [employeeFilters, setEmployeeFilters] = useState([]);
+    const [yearFilters, setYearFilters] = useState([]);
+    const [totalAmount, setTotalAmount] = useState(0);
+    const [
+        employeeAccountingReports,
+        setEmployeeAccountingReports
+    ] = useState();
+
+    const showReports = _accountEntry => {
+        setEmployeeAccountingReports(null);
+        fetchData(
+            "GET",
+            "api/employee_accounting/" + employee.id + "?per_employee=1"
+        ).then(res => {
+            if (res.success) {
+                setEmployeeAccountingReports(res.data);
+                let employee_filter = [];
+                let year_filter = [];
+                let _totalAmount = 0;
+                res.data.map((accounting, key) => {
+                    //console.log(accounting.client_employee_payroll.client_payroll.date_start);
+                    let emp_temp = employee_filter.find(
+                        p => p.text == accounting.client_employee.name
+                    );
+                    if (!emp_temp) {
+                        employee_filter.push({
+                            text: accounting.client_employee.name,
+                            value: accounting.client_employee.name
+                        });
+                    }
+
+                    let year_temp = year_filter.find(
+                        p =>
+                            p.text ==
+                            moment(
+                                accounting.client_employee_payroll
+                                    .client_payroll.date_start
+                            ).format("YYYY")
+                    );
+
+                    if (!year_temp) {
+                        year_filter.push({
+                            text: moment(
+                                accounting.client_employee_payroll
+                                    .client_payroll.date_start
+                            ).format("YYYY"),
+                            value: moment(
+                                accounting.client_employee_payroll
+                                    .client_payroll.date_start
+                            ).format("YYYY")
+                        });
+                    }
+
+                    _totalAmount += parseFloat(accounting.amount);
+                });
+
+                setYearFilters(year_filter);
+                setTotalAmount(_totalAmount);
+                setEmployeeFilters([...employee_filter]);
+            }
+        });
+    };
+    useEffect(() => {
+        showReports();
+        return () => {};
+    }, []);
+
     return (
         <>
             <Modal
@@ -367,7 +435,16 @@ const ModalAssignedPosts = ({
                     </Title>
                 </div> */}
 
-                <TabReportsDebitCredit employee={employee} />
+                {/* <TabReportsDebitCredit employee={employee} /> */}
+                <Divider />
+                <Title level={4}>Cashbond</Title>
+                <TableAccountingEntriesByEmployee
+                    employeeAccountingReports={employeeAccountingReports}
+                    totalAmount={totalAmount}
+                    setTotalAmount={setTotalAmount}
+                    employeeFilters={employeeFilters}
+                    yearFilters={yearFilters}
+                />
             </Modal>
         </>
     );

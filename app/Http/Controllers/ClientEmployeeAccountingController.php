@@ -60,16 +60,25 @@ class ClientEmployeeAccountingController extends Controller
      * @param  \App\ClientEmployeeAccounting  $clientEmployeeAccounting
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id,Request $request)
     {
-        $employee_accounting = ClientEmployeeAccounting::where('client_accounting_entry_id',$id)
+        $employee_accounting = ClientEmployeeAccounting::select('client_employee_accountings.*')
                                             ->with('client_accounting_entry')
                                             ->with('client_employee')
                                             ->with('client_employee_payroll')
                                             ->with('client_employee_payroll.client_payroll')
                                             ->with('client_employee_payroll.client_payroll.client')
-                                            ->orderBy('created_at','desc')
-                                            ->get();
+                                            
+                                            ->orderBy('created_at','desc');
+        if($request->per_employee) {
+            $employee_accounting->join('client_accounting_entries','client_accounting_entries.id','client_employee_accountings.client_accounting_entry_id');
+            $employee_accounting->where('client_accounting_entries.title','Bond');
+            $employee_accounting->where('employee_id',$id);
+        } else {
+            $employee_accounting->where('client_accounting_entry_id',$id);
+        }
+
+        $employee_accounting = $employee_accounting->get();
 
         return response()->json([
             'success' => true,

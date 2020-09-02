@@ -528,38 +528,34 @@ const TabReportsPayroll = () => {
     });
 
     return (
-        <Print>
-            <Card>
-                <Title level={4}>Payroll</Title>
-                <Row className="mb-10">
-                    <Col xs={0} md={19}></Col>
-                    <Col xs={24} md={5}>
-                        <DatePicker
-                            style={{ width: "100%" }}
-                            placeholder="Pick a Payroll Date"
-                            onChange={e =>
-                                setPayrollDate(e.format("YYYY-MM-DD"))
-                            }
-                            className="text-center"
-                        />
-                    </Col>
-                </Row>
-                <div style={{ overflowX: "auto" }} ref={componentRef}>
-                    <Table
-                        size="small"
-                        dataSource={payrollList}
-                        columns={columns}
-                        pagination={false}
-                        loading={tableLoading}
+        <Card>
+            <Title level={4}>Payroll</Title>
+            <Row className="mb-10">
+                <Col xs={0} md={19}></Col>
+                <Col xs={24} md={5}>
+                    <DatePicker
+                        style={{ width: "100%" }}
+                        placeholder="Pick a Payroll Date"
+                        onChange={e => setPayrollDate(e.format("YYYY-MM-DD"))}
+                        className="text-center"
                     />
-                </div>
-                <div className="text-right mt-10">
-                    <Button type="primary" onClick={e => handlePrintPayroll()}>
-                        Print
-                    </Button>
-                </div>
-            </Card>
-        </Print>
+                </Col>
+            </Row>
+            <div style={{ overflowX: "auto" }} ref={componentRef}>
+                <Table
+                    size="small"
+                    dataSource={payrollList}
+                    columns={columns}
+                    pagination={false}
+                    loading={tableLoading}
+                />
+            </div>
+            <div className="text-right mt-10">
+                <Button type="primary" onClick={e => handlePrintPayroll()}>
+                    Print
+                </Button>
+            </div>
+        </Card>
     );
 };
 

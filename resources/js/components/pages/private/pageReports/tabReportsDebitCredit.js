@@ -7,7 +7,7 @@ import { Print } from "react-easy-print";
 import { currencyFormat } from "../../../currencyFormat";
 import { useReactToPrint } from "react-to-print";
 
-const TabReportsDebitCredit = employee => {
+const TabReportsDebitCredit = () => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [payrollDate, setPayrollDate] = useState();
     const [employeeAccountingReports, setEmployeeAccountingReports] = useState(
@@ -22,104 +22,90 @@ const TabReportsDebitCredit = employee => {
 
     useEffect(() => {
         if (payrollDate) {
-            generateTable();
-        }
-        return () => {};
-    }, [payrollDate]);
-    useEffect(() => {
-        if (employee) {
-            generateTable();
-        }
-        return () => {};
-    }, []);
+            setTableLoading(true);
+            fetchData(
+                "GET",
+                "api/employee_accounting?payroll_date=" + payrollDate
+            ).then(res => {
+                if (res.success) {
+                    let _data = [];
+                    Object.values(res.data).map((entry, key) => {
+                        _data.push(entry);
+                    });
 
-    const generateTable = () => {
-        setTableLoading(true);
-        let url = "api/employee_accounting?payroll_date=" + payrollDate;
-        if (employee) {
-            console.log(employee, "employee", employee.employee.id);
-            url = "api/employee_accounting?employee=" + employee.employee.id;
-        }
-        fetchData("GET", url).then(res => {
-            if (res.success) {
-                console.log(res);
-                let _data = [];
-                Object.values(res.data).map((entry, key) => {
-                    _data.push(entry);
-                });
-
-                setEmployeeAccountingReports(_data);
-                let employee_filter = [];
-                let client_filter = [];
-                let entry_filter = [];
-                let _totalAmount = 0;
-                _data.map((accounting, key) => {
-                    let emp_temp = employee_filter.find(
-                        p => p.text == accounting.client_employee.name
-                    );
-                    if (!emp_temp) {
-                        employee_filter.push({
-                            text: accounting.client_employee.name,
-                            value: accounting.client_employee.name
-                        });
-                    }
-
-                    if (accounting.client_accounting_entry) {
-                        let client_temp = client_filter.find(
-                            p =>
-                                p.text ==
-                                accounting.client_accounting_entry.client.name
+                    setEmployeeAccountingReports(_data);
+                    let employee_filter = [];
+                    let client_filter = [];
+                    let entry_filter = [];
+                    let _totalAmount = 0;
+                    _data.map((accounting, key) => {
+                        let emp_temp = employee_filter.find(
+                            p => p.text == accounting.client_employee.name
                         );
-                        if (!client_temp) {
-                            client_filter.push({
-                                text:
-                                    accounting.client_accounting_entry.client
-                                        .name,
-                                value:
+                        if (!emp_temp) {
+                            employee_filter.push({
+                                text: accounting.client_employee.name,
+                                value: accounting.client_employee.name
+                            });
+                        }
+
+                        if (accounting.client_accounting_entry) {
+                            let client_temp = client_filter.find(
+                                p =>
+                                    p.text ==
                                     accounting.client_accounting_entry.client
                                         .name
-                            });
-                        }
-
-                        let entry_temp = entry_filter.find(
-                            p =>
-                                p.text ==
-                                accounting.client_accounting_entry.title
-                        );
-                        if (!entry_temp) {
-                            entry_filter.push({
-                                text: accounting.client_accounting_entry.title,
-                                value: accounting.client_accounting_entry.title
-                            });
-                        }
-
-                        if (
-                            accounting.client_accounting_entry.type == "debit"
-                        ) {
-                            if (!employee) {
-                                _totalAmount += parseFloat(accounting.amount);
+                            );
+                            if (!client_temp) {
+                                client_filter.push({
+                                    text:
+                                        accounting.client_accounting_entry
+                                            .client.name,
+                                    value:
+                                        accounting.client_accounting_entry
+                                            .client.name
+                                });
                             }
-                        } else {
-                            if (employee) {
+
+                            let entry_temp = entry_filter.find(
+                                p =>
+                                    p.text ==
+                                    accounting.client_accounting_entry.title
+                            );
+                            if (!entry_temp) {
+                                entry_filter.push({
+                                    text:
+                                        accounting.client_accounting_entry
+                                            .title,
+                                    value:
+                                        accounting.client_accounting_entry.title
+                                });
+                            }
+
+                            if (
+                                accounting.client_accounting_entry.type ==
+                                "debit"
+                            ) {
                                 _totalAmount += parseFloat(accounting.amount);
                             } else {
                                 _totalAmount -= parseFloat(accounting.amount);
                             }
                         }
-                    }
-                });
-                setTotalAmount(_totalAmount);
-                setTableFilters({
-                    ...tableFilters,
-                    employees: employee_filter,
-                    clients: client_filter,
-                    entries: entry_filter
-                });
+                    });
+                    setTotalAmount(_totalAmount);
+                    setTableFilters({
+                        ...tableFilters,
+                        employees: employee_filter,
+                        clients: client_filter,
+                        entries: entry_filter
+                    });
 
-                setTableLoading(false);
-            }
-        });
-    };
+                    setTableLoading(false);
+                }
+            });
+        }
+        return () => {};
+    }, [payrollDate]);
 
     const capitalize = s => {
         if (typeof s !== "string") return "";
@@ -245,22 +231,16 @@ const TabReportsDebitCredit = employee => {
 
     return (
         <Card>
-            <Title level={4}>{employee ? "Cashbond" : "Debit/Credit"}</Title>
+            <Title level={4}>Debit/Credit</Title>
             <Row className="mb-10">
                 <Col xs={0} md={19}></Col>
                 <Col xs={24} md={5}>
-                    {employee ? (
-                        ""
-                    ) : (
-                        <DatePicker
-                            style={{ width: "100%" }}
-                            placeholder="Pick a Payroll Date"
-                            onChange={e =>
-                                setPayrollDate(e.format("YYYY-MM-DD"))
-                            }
-                            className="text-center"
-                        />
-                    )}
+                    <DatePicker
+                        style={{ width: "100%" }}
+                        placeholder="Pick a Payroll Date"
+                        onChange={e => setPayrollDate(e.format("YYYY-MM-DD"))}
+                        className="text-center"
+                    />
                 </Col>
             </Row>
             <div ref={componentRef}>
