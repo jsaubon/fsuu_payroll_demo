@@ -52,6 +52,8 @@ class ClientAccountingEntryController extends Controller
             $accounting->title = $accounting_entry['title'];
             $accounting->amount = $accounting_entry['amount'];
             $accounting->visible = $accounting_entry['visible'];
+            $accounting->fixed = $accounting_entry['fixed'];
+            $accounting->fixed_amount = $accounting_entry['fixed_amount'];
             $accounting->client_id = $request->client_id;
             $accounting->save();
             // $accounting_entry = $doc->toArray();

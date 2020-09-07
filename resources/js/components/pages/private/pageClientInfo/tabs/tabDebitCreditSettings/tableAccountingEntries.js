@@ -96,6 +96,7 @@ const TableAccountingEntries = ({
                                 <tr>
                                     <th className="ant-table-cell">Title</th>
                                     <th className="ant-table-cell">Visible</th>
+                                    <th className="ant-table-cell">Fixed</th>
                                     <th
                                         className="ant-table-cell"
                                         style={{ width: "10%" }}
@@ -132,6 +133,23 @@ const TableAccountingEntries = ({
                                                             key
                                                         ].visible =
                                                             e.target.checked;
+
+                                                        setAccountingEntries([
+                                                            ..._accountingEntries
+                                                        ]);
+                                                    }}
+                                                />
+                                            </td>
+                                            <td className="ant-table-cell text-center">
+                                                <Checkbox
+                                                    checked={accountEntry.fixed}
+                                                    onChange={e => {
+                                                        let _accountingEntries = accountingEntries;
+                                                        _accountingEntries[
+                                                            key
+                                                        ].fixed =
+                                                            e.target.checked;
+
                                                         setAccountingEntries([
                                                             ..._accountingEntries
                                                         ]);
@@ -140,13 +158,25 @@ const TableAccountingEntries = ({
                                             </td>
                                             <td className="ant-table-cell">
                                                 <InputNumber
-                                                    value={accountEntry.amount}
+                                                    value={
+                                                        accountEntry.fixed
+                                                            ? accountEntry.fixed_amount
+                                                            : accountEntry.amount
+                                                    }
                                                     min={0}
                                                     onChange={value => {
                                                         let _accountingEntries = accountingEntries;
-                                                        _accountingEntries[
-                                                            key
-                                                        ].amount = value;
+                                                        if (
+                                                            accountEntry.fixed
+                                                        ) {
+                                                            _accountingEntries[
+                                                                key
+                                                            ].fixed_amount = value;
+                                                        } else {
+                                                            _accountingEntries[
+                                                                key
+                                                            ].amount = value;
+                                                        }
                                                         setAccountingEntries([
                                                             ..._accountingEntries
                                                         ]);

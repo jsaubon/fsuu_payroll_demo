@@ -13,7 +13,7 @@ import {
     notification
 } from "antd";
 import { fetchData } from "../../../../axios";
-
+import moment from "moment";
 const FormNewPayrollData = ({
     payrollDetails,
     setPayrollDetails,
@@ -129,35 +129,47 @@ const FormNewPayrollData = ({
             };
 
             let grossPay = 0;
+            let m_date_start = moment(payrollDetails.date_start);
+            let m_date_end = moment(payrollDetails.date_end);
+            let date_range = Math.abs(m_date_start.diff(m_date_end, "day")) + 1;
+
             accountingEntries.debit.map((debit, key) => {
                 let amount = 0;
 
+                let _debit_amount = debit.fixed
+                    ? debit.fixed_amount
+                    : debit.amount;
+
+                let _days_of_work = debit.fixed
+                    ? date_range
+                    : employee.days_of_work;
+
                 if (debit.title == "Basic Pay") {
-                    amount = debit.amount * employee.days_of_work;
+                    amount = _debit_amount * _days_of_work;
                 } else if (debit.title == "Reg. Hol. Pay") {
-                    amount = debit.amount * employee.days_of_work_reg_hol;
+                    amount = _debit_amount * employee.days_of_work_reg_hol;
                 } else if (debit.title == "Spcl. Hol. Pay") {
-                    amount = debit.amount * employee.days_of_work_spcl_hol;
+                    amount = _debit_amount * employee.days_of_work_spcl_hol;
                 } else if (debit.title == "Overtime Pay") {
-                    amount = debit.amount * employee.hours_overtime;
+                    amount = _debit_amount * employee.hours_overtime;
                 } else if (debit.title == "Overtime Reg. Hol. Pay") {
-                    amount = debit.amount * employee.hours_overtime_reg_hol;
+                    amount = _debit_amount * employee.hours_overtime_reg_hol;
                 } else if (debit.title == "Overtime Spcl. Hol. Pay") {
-                    amount = debit.amount * employee.hours_overtime_spcl_hol;
+                    amount = _debit_amount * employee.hours_overtime_spcl_hol;
                 } else if (debit.title == "Night Premium Pay") {
-                    amount = debit.amount * employee.night_pay;
+                    amount = _debit_amount * employee.night_pay;
                 } else if (debit.title == "Night Reg. Hol. Pay") {
-                    amount = debit.amount * employee.night_pay_reg_hol;
+                    amount = _debit_amount * employee.night_pay_reg_hol;
                 } else if (debit.title == "Night Spcl. Hol. Pay") {
-                    amount = debit.amount * employee.night_pay_spcl_hol;
+                    amount = _debit_amount * employee.night_pay_spcl_hol;
                 } else {
-                    amount = debit.amount * employee.days_of_work;
+                    amount = _debit_amount * _days_of_work;
                 }
 
                 if (debit.title == "5-Day Service Leave") {
                     amount =
-                        debit.amount *
-                        (employee.days_of_work +
+                        _debit_amount *
+                        (_days_of_work +
                             employee.days_of_work_reg_hol +
                             employee.days_of_work_spcl_hol);
                 }
@@ -180,7 +192,7 @@ const FormNewPayrollData = ({
 
             let netPay = 0;
             accountingEntries.credit.map((credit, key) => {
-                let amount = credit.amount;
+                let amount = credit.fixed ? credit.fixed_amount : credit.amount;
                 amount = amount;
 
                 let _deduction = employee.deductions.filter(

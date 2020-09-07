@@ -17,10 +17,12 @@ class CreateClientAccountingEntriesTable extends Migration
             $table->id();
             $table->integer('client_id')->unsigned();
             $table->boolean('visible')->default(true);
+            $table->boolean('fixed')->default(false);
             $table->string('type');
             $table->integer('order');
             $table->string('title');
-            $table->double('amount');
+            $table->double('amount')->default(0);
+            $table->double('fixed_amount')->default(0);
             $table->timestamps();
         });
     }
