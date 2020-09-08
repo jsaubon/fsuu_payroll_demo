@@ -132,46 +132,108 @@ const FormNewPayrollData = ({
             let m_date_start = moment(payrollDetails.date_start);
             let m_date_end = moment(payrollDetails.date_end);
             let date_range = Math.abs(m_date_start.diff(m_date_end, "day")) + 1;
+            console.log('date_range',date_range);
 
             accountingEntries.debit.map((debit, key) => {
                 let amount = 0;
 
-                let _debit_amount = debit.fixed
-                    ? debit.fixed_amount
-                    : debit.amount;
+                // let _debit_amount = debit.fixed
+                //     ? debit.fixed_amount
+                //     : debit.amount;
 
-                let _days_of_work = debit.fixed
-                    ? date_range
-                    : employee.days_of_work;
+                // let _days_of_work = debit.fixed
+                //     ? date_range
+                //     : employee.days_of_work;
 
                 if (debit.title == "Basic Pay") {
-                    amount = _debit_amount * _days_of_work;
+                    //amount = _debit_amount * _days_of_work;
+                    if(debit.fixed) {
+                        amount = (debit.fixed_amount / date_range) * employee.days_of_work;
+                    } else {
+                        amount = debit.amount * employee.days_of_work;
+                    }
                 } else if (debit.title == "Reg. Hol. Pay") {
-                    amount = _debit_amount * employee.days_of_work_reg_hol;
+                    // amount = _debit_amount * employee.days_of_work_reg_hol;
+                    if(debit.fixed) {
+                        amount = (debit.fixed_amount / date_range) * employee.days_of_work_reg_hol;
+                    } else {
+                        amount = debit.amount * employee.days_of_work_reg_hol;
+                    }
                 } else if (debit.title == "Spcl. Hol. Pay") {
-                    amount = _debit_amount * employee.days_of_work_spcl_hol;
+                    // amount = _debit_amount * employee.days_of_work_spcl_hol;
+                    if(debit.fixed) {
+                        amount = (debit.fixed_amount / date_range) * employee.days_of_work_spcl_hol;
+                    } else {
+                        amount = debit.amount * employee.days_of_work_spcl_hol;
+                    }
                 } else if (debit.title == "Overtime Pay") {
-                    amount = _debit_amount * employee.hours_overtime;
+                    // amount = _debit_amount * employee.hours_overtime;
+                    if(debit.fixed) {
+                        amount = (debit.fixed_amount / date_range) * employee.hours_overtime;
+                    } else {
+                        amount = debit.amount * employee.hours_overtime;
+                    }
                 } else if (debit.title == "Overtime Reg. Hol. Pay") {
-                    amount = _debit_amount * employee.hours_overtime_reg_hol;
+                    // amount = _debit_amount * employee.hours_overtime_reg_hol;
+                    if(debit.fixed) {
+                        amount = (debit.fixed_amount / date_range) * employee.hours_overtime_reg_hol;
+                    } else {
+                        amount = debit.amount * employee.hours_overtime_reg_hol;
+                    }
                 } else if (debit.title == "Overtime Spcl. Hol. Pay") {
-                    amount = _debit_amount * employee.hours_overtime_spcl_hol;
+                    // amount = _debit_amount * employee.hours_overtime_spcl_hol;
+                    if(debit.fixed) {
+                        amount = (debit.fixed_amount / date_range) * employee.hours_overtime_spcl_hol;
+                    } else {
+                        amount = debit.amount * employee.hours_overtime_spcl_hol;
+                    }
                 } else if (debit.title == "Night Premium Pay") {
-                    amount = _debit_amount * employee.night_pay;
+                    // amount = _debit_amount * employee.night_pay;
+                    if(debit.fixed) {
+                        amount = (debit.fixed_amount / date_range) * employee.night_pay;
+                    } else {
+                        amount = debit.amount * employee.night_pay;
+                    }
                 } else if (debit.title == "Night Reg. Hol. Pay") {
-                    amount = _debit_amount * employee.night_pay_reg_hol;
+                    // amount = _debit_amount * employee.night_pay_reg_hol;
+                    if(debit.fixed) {
+                        amount = (debit.fixed_amount / date_range) * employee.night_pay_reg_hol;
+                    } else {
+                        amount = debit.amount * employee.night_pay_reg_hol;
+                    }
                 } else if (debit.title == "Night Spcl. Hol. Pay") {
-                    amount = _debit_amount * employee.night_pay_spcl_hol;
+                    // amount = _debit_amount * employee.night_pay_spcl_hol;
+                    if(debit.fixed) {
+                        amount = (debit.fixed_amount / date_range) * employee.night_pay_spcl_hol;
+                    } else {
+                        amount = debit.amount * employee.night_pay_spcl_hol;
+                    }
                 } else {
-                    amount = _debit_amount * _days_of_work;
+                    // amount = _debit_amount * _days_of_work;
+                    if(debit.fixed) {
+                        amount = (debit.fixed_amount / date_range) * employee.days_of_work;
+                    } else {
+                        amount = debit.amount * employee.days_of_work;
+                    }
                 }
 
                 if (debit.title == "5-Day Service Leave") {
-                    amount =
-                        _debit_amount *
-                        (_days_of_work +
+                    // amount =
+                    //     _debit_amount *
+                    //     (employee.days_of_work +
+                    //         employee.days_of_work_reg_hol +
+                    //         employee.days_of_work_spcl_hol);
+                    if(debit.fixed) {
+                        amount = (debit.fixed_amount / date_range) * 
+                            (employee.days_of_work +
                             employee.days_of_work_reg_hol +
-                            employee.days_of_work_spcl_hol);
+                            employee.days_of_work_spcl_hol);;
+                    } else {
+                        amount = debit.amount *
+                            (employee.days_of_work +
+                            employee.days_of_work_reg_hol +
+                            employee.days_of_work_spcl_hol);;
+                    }
                 }
 
                 amount = amount;
