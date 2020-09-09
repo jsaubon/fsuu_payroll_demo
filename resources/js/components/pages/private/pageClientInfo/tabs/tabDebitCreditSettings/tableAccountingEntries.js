@@ -86,6 +86,8 @@ const TableAccountingEntries = ({
         );
     };
 
+    
+
     return (
         <>
             <div className="ant-table ant-table-bordered">

@@ -14,7 +14,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('name','asc')->get();
+        $users = User::orderBy('name','asc');
+        if(auth()->user()->role == 'Staff') {
+            $users->where('id',auth()->user()->id);
+        }
+
+        $users = $users->get();
 
         return response()->json([
             'success' => true,

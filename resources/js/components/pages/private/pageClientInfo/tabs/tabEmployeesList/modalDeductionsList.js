@@ -102,28 +102,34 @@ const ModalDeductionsList = ({
             key: "action",
             width: 100,
             render: (text, record) => {
-                return (
-                    <>
-                        <Button
-                            size="small"
-                            type="primary"
-                            danger
-                            icon={<DeleteOutlined />}
-                        >
-                            <Popconfirm
-                                title="Are you sure delete this deduction?"
-                                onConfirm={e => handleDeleteDeduction(record)}
-                                okText="Yes"
-                                cancelText="No"
+                if (userdata.role != "Staff") {
+                    return (
+                        <>
+                            <Button
+                                size="small"
+                                type="primary"
+                                danger
+                                icon={<DeleteOutlined />}
                             >
-                                Delete
-                            </Popconfirm>
-                        </Button>
-                    </>
-                );
+                                <Popconfirm
+                                    title="Are you sure delete this deduction?"
+                                    onConfirm={e =>
+                                        handleDeleteDeduction(record)
+                                    }
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    Delete
+                                </Popconfirm>
+                            </Button>
+                        </>
+                    );
+                }
             }
         }
     ];
+
+    let userdata = JSON.parse(localStorage.userdata);
     return (
         <>
             <Modal
@@ -136,92 +142,102 @@ const ModalDeductionsList = ({
                 style={{ top: 20 }}
                 okText="Close"
             >
-                <Form
-                    name="basic"
-                    onFinish={e => submitForm(e)}
-                    onFinishFailed={e => console.log(e)}
-                >
-                    <Card>
-                        <Title level={4}>New Deduction</Title>
-                        <Row>
-                            <Col xs={24} md={8}>
-                                <Form.Item
-                                    label="Deduction"
-                                    name="deduction"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: "Please Select Deduction"
-                                        }
-                                    ]}
-                                >
-                                    <Select placeholder="Select Deduction">
-                                        <Select.Option value="LOANS SSS">
-                                            LOANS SSS
-                                        </Select.Option>
-                                        <Select.Option value="LOANS Pag-IBIG">
-                                            LOANS Pag-IBIG
-                                        </Select.Option>
-                                        <Select.Option value="C/A">
-                                            Cash Advance
-                                        </Select.Option>
-                                        <Select.Option value="Canteen">
-                                            Canteen
-                                        </Select.Option>
-                                        <Select.Option value="Ammos & Accessories">
-                                            Ammos & Accessories
-                                        </Select.Option>
-                                        <Select.Option value="Misc.">
-                                            Misc.
-                                        </Select.Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col xs={24} md={5}>
-                                <Form.Item
-                                    label="Amount"
-                                    name="amount"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: "Please Input Amount"
-                                        }
-                                    ]}
-                                >
-                                    <Input placeholder="Amount" min={0} />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={24} md={7}>
-                                <Form.Item
-                                    label="Date Applied"
-                                    name="date_applied"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: "Please Pick Date Applied"
-                                        }
-                                    ]}
-                                >
-                                    <DatePicker
-                                        placeholder="Select Date Applied"
-                                        style={{ width: "100%" }}
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={24} md={4}>
-                                <Button
-                                    type="primary"
-                                    block
-                                    loading={formLoading}
-                                    htmlType="submit"
-                                >
-                                    Save
-                                </Button>
-                            </Col>
-                        </Row>
-                    </Card>
-                </Form>
-                <Divider />
+                {userdata.role != "Staff" && (
+                    <>
+                        <Form
+                            name="basic"
+                            onFinish={e => submitForm(e)}
+                            onFinishFailed={e => console.log(e)}
+                        >
+                            <Card>
+                                <Title level={4}>New Deduction</Title>
+                                <Row>
+                                    <Col xs={24} md={8}>
+                                        <Form.Item
+                                            label="Deduction"
+                                            name="deduction"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        "Please Select Deduction"
+                                                }
+                                            ]}
+                                        >
+                                            <Select placeholder="Select Deduction">
+                                                <Select.Option value="LOANS SSS">
+                                                    LOANS SSS
+                                                </Select.Option>
+                                                <Select.Option value="LOANS Pag-IBIG">
+                                                    LOANS Pag-IBIG
+                                                </Select.Option>
+                                                <Select.Option value="C/A">
+                                                    Cash Advance
+                                                </Select.Option>
+                                                <Select.Option value="Canteen">
+                                                    Canteen
+                                                </Select.Option>
+                                                <Select.Option value="Ammos & Accessories">
+                                                    Ammos & Accessories
+                                                </Select.Option>
+                                                <Select.Option value="Misc.">
+                                                    Misc.
+                                                </Select.Option>
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={24} md={5}>
+                                        <Form.Item
+                                            label="Amount"
+                                            name="amount"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        "Please Input Amount"
+                                                }
+                                            ]}
+                                        >
+                                            <Input
+                                                placeholder="Amount"
+                                                min={0}
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={24} md={7}>
+                                        <Form.Item
+                                            label="Date Applied"
+                                            name="date_applied"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        "Please Pick Date Applied"
+                                                }
+                                            ]}
+                                        >
+                                            <DatePicker
+                                                placeholder="Select Date Applied"
+                                                style={{ width: "100%" }}
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={24} md={4}>
+                                        <Button
+                                            type="primary"
+                                            block
+                                            loading={formLoading}
+                                            htmlType="submit"
+                                        >
+                                            Save
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Card>
+                        </Form>
+                        <Divider />
+                    </>
+                )}
                 <Table
                     columns={columns}
                     dataSource={dataSource}

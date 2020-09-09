@@ -47,17 +47,20 @@ const PageClients = ({ history }) => {
         setSearchClient(value);
     };
 
+    let userdata = JSON.parse(localStorage.userdata);
     return (
         <>
             <Title level={3}>Clients List</Title>
             <Row style={{ marginLeft: "-10px", marginRight: "-10px" }}>
                 <Col xs={24} md={14}>
-                    <Button
-                        type="primary"
-                        onClick={e => toggleShowModalAddEditClient()}
-                    >
-                        New
-                    </Button>
+                    {userdata.role != "Staff" && (
+                        <Button
+                            type="primary"
+                            onClick={e => toggleShowModalAddEditClient()}
+                        >
+                            New
+                        </Button>
+                    )}
                 </Col>
                 <Col xs={24} md={4}>
                     <Select

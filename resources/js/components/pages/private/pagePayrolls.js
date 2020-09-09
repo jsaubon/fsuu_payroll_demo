@@ -5,20 +5,25 @@ import CardPayrollList from "./pagePayrolls/cardPayrollList";
 import CardNewPayroll from "./pagePayrolls/cardNewPayroll";
 
 const PagePayrolls = () => {
-    const [showCardNewPayroll, setShowCardNewPayroll] = useState(true);
+    let userdata = JSON.parse(localStorage.userdata);
+    const [showCardNewPayroll, setShowCardNewPayroll] = useState(
+        userdata.role == "Staff" ? false : true
+    );
 
     return (
         <>
             <Row style={{ marginLeft: "-10px", marginRight: "-10px" }}>
                 <Col xs={24} md={24}>
-                    <Button
-                        type="primary"
-                        onClick={e =>
-                            setShowCardNewPayroll(!showCardNewPayroll)
-                        }
-                    >
-                        {showCardNewPayroll ? "List" : "New"}
-                    </Button>
+                    {userdata.role != "Staff" && (
+                        <Button
+                            type="primary"
+                            onClick={e =>
+                                setShowCardNewPayroll(!showCardNewPayroll)
+                            }
+                        >
+                            {showCardNewPayroll ? "List" : "New"}
+                        </Button>
+                    )}
                 </Col>
             </Row>
             <Row style={{ marginLeft: "-10px", marginRight: "-10px" }}>

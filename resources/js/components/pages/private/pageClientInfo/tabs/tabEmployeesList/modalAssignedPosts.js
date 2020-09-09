@@ -180,37 +180,41 @@ const ModalAssignedPosts = ({
             key: "action",
             width: 100,
             render: (text, record) => {
-                return (
-                    <>
-                        <ButtonGroup>
-                            <Button
-                                size="small"
-                                type="primary"
-                                icon={<EditOutlined />}
-                                onClick={e => handleEditAssignedPost(record)}
-                            >
-                                Edit
-                            </Button>
-                            <Button
-                                size="small"
-                                type="primary"
-                                danger
-                                icon={<DeleteOutlined />}
-                            >
-                                <Popconfirm
-                                    title="Are you sure delete this assigned post?"
-                                    onConfirm={e =>
-                                        handleDeleteAssignedPost(record)
+                if (userdata.role != "Staff") {
+                    return (
+                        <>
+                            <ButtonGroup>
+                                <Button
+                                    size="small"
+                                    type="primary"
+                                    icon={<EditOutlined />}
+                                    onClick={e =>
+                                        handleEditAssignedPost(record)
                                     }
-                                    okText="Yes"
-                                    cancelText="No"
                                 >
-                                    Delete
-                                </Popconfirm>
-                            </Button>
-                        </ButtonGroup>
-                    </>
-                );
+                                    Edit
+                                </Button>
+                                <Button
+                                    size="small"
+                                    type="primary"
+                                    danger
+                                    icon={<DeleteOutlined />}
+                                >
+                                    <Popconfirm
+                                        title="Are you sure delete this assigned post?"
+                                        onConfirm={e =>
+                                            handleDeleteAssignedPost(record)
+                                        }
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        Delete
+                                    </Popconfirm>
+                                </Button>
+                            </ButtonGroup>
+                        </>
+                    );
+                }
             }
         }
     ];
@@ -282,6 +286,8 @@ const ModalAssignedPosts = ({
         return () => {};
     }, []);
 
+    let userdata = JSON.parse(localStorage.userdata);
+
     return (
         <>
             <Modal
@@ -294,135 +300,153 @@ const ModalAssignedPosts = ({
                 style={{ top: 20 }}
                 okText="Close"
             >
-                <Form
-                    name="basic"
-                    onFinish={e => submitFormReassign(e)}
-                    onFinishFailed={e => console.log(e)}
-                    ref={e => (formReAssigned = e)}
-                >
-                    <Card>
-                        <Title level={4}>Re-Assign Post</Title>
-                        <Row>
-                            <Col xs={24} md={8}>
-                                <Form.Item name="id" className="hide">
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item
-                                    label="Select Client"
-                                    name="client_id"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: "Please Select Client"
-                                        }
-                                    ]}
-                                >
-                                    <Select placeholder="Select Client">
-                                        {clientList.map((client, key) => {
-                                            return (
-                                                <Select.Option
-                                                    key={key}
-                                                    value={client.id}
-                                                >
-                                                    {client.name} -{" "}
-                                                    {client.type}
-                                                </Select.Option>
-                                            );
-                                        })}
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col xs={24} md={4}>
-                                <Button
-                                    type="primary"
-                                    block
-                                    loading={formLoadingReassign}
-                                    htmlType="submit"
-                                >
-                                    Save
-                                </Button>
-                            </Col>
-                        </Row>
-                    </Card>
-                </Form>
-                <Divider />
-                <Form
-                    name="basic"
-                    onFinish={e => submitForm(e)}
-                    onFinishFailed={e => console.log(e)}
-                    ref={e => (formAssigned = e)}
-                >
-                    <Card>
-                        <Title level={4}>New Assigned Post</Title>
-                        <Row>
-                            <Col xs={24} md={8}>
-                                <Form.Item name="id" className="hide">
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item
-                                    label="Select Client"
-                                    name="client_id"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: "Please Select Client"
-                                        }
-                                    ]}
-                                >
-                                    <Select placeholder="Select Client">
-                                        {clientList.map((client, key) => {
-                                            return (
-                                                <Select.Option
-                                                    key={key}
-                                                    value={client.id}
-                                                >
-                                                    {client.name} -{" "}
-                                                    {client.type}
-                                                </Select.Option>
-                                            );
-                                        })}
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col xs={24} md={6}>
-                                <Form.Item
-                                    label="Date Start"
-                                    name="date_start"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: "Please Pick Date Start"
-                                        }
-                                    ]}
-                                >
-                                    <DatePicker
-                                        placeholder="Select Date Start"
-                                        style={{ width: "100%" }}
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={24} md={6}>
-                                <Form.Item label="Date End" name="date_end">
-                                    <DatePicker
-                                        placeholder="Select Date End"
-                                        style={{ width: "100%" }}
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={24} md={4}>
-                                <Button
-                                    type="primary"
-                                    block
-                                    loading={formLoading}
-                                    htmlType="submit"
-                                >
-                                    Save
-                                </Button>
-                            </Col>
-                        </Row>
-                    </Card>
-                </Form>
-                <Divider />
+                {userdata.role != "Staff" && (
+                    <>
+                        <Form
+                            name="basic"
+                            onFinish={e => submitFormReassign(e)}
+                            onFinishFailed={e => console.log(e)}
+                            ref={e => (formReAssigned = e)}
+                        >
+                            <Card>
+                                <Title level={4}>Re-Assign Post</Title>
+                                <Row>
+                                    <Col xs={24} md={8}>
+                                        <Form.Item name="id" className="hide">
+                                            <Input />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Select Client"
+                                            name="client_id"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        "Please Select Client"
+                                                }
+                                            ]}
+                                        >
+                                            <Select placeholder="Select Client">
+                                                {clientList.map(
+                                                    (client, key) => {
+                                                        return (
+                                                            <Select.Option
+                                                                key={key}
+                                                                value={
+                                                                    client.id
+                                                                }
+                                                            >
+                                                                {client.name} -{" "}
+                                                                {client.type}
+                                                            </Select.Option>
+                                                        );
+                                                    }
+                                                )}
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={24} md={4}>
+                                        <Button
+                                            type="primary"
+                                            block
+                                            loading={formLoadingReassign}
+                                            htmlType="submit"
+                                        >
+                                            Save
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Card>
+                        </Form>
+                        <Divider />
+                        <Form
+                            name="basic"
+                            onFinish={e => submitForm(e)}
+                            onFinishFailed={e => console.log(e)}
+                            ref={e => (formAssigned = e)}
+                        >
+                            <Card>
+                                <Title level={4}>New Assigned Post</Title>
+                                <Row>
+                                    <Col xs={24} md={8}>
+                                        <Form.Item name="id" className="hide">
+                                            <Input />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Select Client"
+                                            name="client_id"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        "Please Select Client"
+                                                }
+                                            ]}
+                                        >
+                                            <Select placeholder="Select Client">
+                                                {clientList.map(
+                                                    (client, key) => {
+                                                        return (
+                                                            <Select.Option
+                                                                key={key}
+                                                                value={
+                                                                    client.id
+                                                                }
+                                                            >
+                                                                {client.name} -{" "}
+                                                                {client.type}
+                                                            </Select.Option>
+                                                        );
+                                                    }
+                                                )}
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={24} md={6}>
+                                        <Form.Item
+                                            label="Date Start"
+                                            name="date_start"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message:
+                                                        "Please Pick Date Start"
+                                                }
+                                            ]}
+                                        >
+                                            <DatePicker
+                                                placeholder="Select Date Start"
+                                                style={{ width: "100%" }}
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={24} md={6}>
+                                        <Form.Item
+                                            label="Date End"
+                                            name="date_end"
+                                        >
+                                            <DatePicker
+                                                placeholder="Select Date End"
+                                                style={{ width: "100%" }}
+                                            />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={24} md={4}>
+                                        <Button
+                                            type="primary"
+                                            block
+                                            loading={formLoading}
+                                            htmlType="submit"
+                                        >
+                                            Save
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Card>
+                        </Form>
+                        <Divider />
+                    </>
+                )}
                 <Table
                     columns={columns}
                     dataSource={dataSource}

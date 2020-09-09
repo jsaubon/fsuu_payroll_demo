@@ -89,16 +89,22 @@ const TabContentClientEmployees = ({ client_id, history }) => {
         setShowModalDeductionsList(!showModalDeductionsList);
     };
 
+    let userdata = JSON.parse(localStorage.userdata);
+
     return (
         <>
             <Row className="mb-10">
                 <Col xs={24} md={18} className="px-0">
-                    <Button
-                        type="primary"
-                        onClick={e => toggleShowAddEditClientEmployeesModal()}
-                    >
-                        New
-                    </Button>
+                    {userdata.role != "Staff" && (
+                        <Button
+                            type="primary"
+                            onClick={e =>
+                                toggleShowAddEditClientEmployeesModal()
+                            }
+                        >
+                            New
+                        </Button>
+                    )}
                 </Col>
                 <Col xs={24} md={6} className="px-0">
                     <div style={{ display: "flex" }}>

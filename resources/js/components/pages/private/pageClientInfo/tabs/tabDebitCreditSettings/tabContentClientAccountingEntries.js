@@ -313,6 +313,8 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
         });
     };
 
+    let userdata = JSON.parse(localStorage.userdata);
+
     return (
         <>
             <Row>
@@ -324,14 +326,16 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
                         setAccountingEntries={setDebitList}
                     />
                     <div className="mt-10">
-                        <Button
-                            type="primary"
-                            block
-                            onClick={e => saveDebitSettings()}
-                            loading={saveDebitLoading}
-                        >
-                            Save Debit Settings
-                        </Button>
+                        {userdata.role != "Staff" && (
+                            <Button
+                                type="primary"
+                                block
+                                onClick={e => saveDebitSettings()}
+                                loading={saveDebitLoading}
+                            >
+                                Save Debit Settings
+                            </Button>
+                        )}
                     </div>
                 </Col>
                 <Col xs={24} md={12}>
@@ -342,14 +346,16 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
                         setAccountingEntries={setCreditList}
                     />
                     <div className="mt-10">
-                        <Button
-                            type="primary"
-                            block
-                            onClick={e => saveCreditSettings()}
-                            loading={saveCreditLoading}
-                        >
-                            Save Credit Settings
-                        </Button>
+                        {userdata.role != "Staff" && (
+                            <Button
+                                type="primary"
+                                block
+                                onClick={e => saveCreditSettings()}
+                                loading={saveCreditLoading}
+                            >
+                                Save Credit Settings
+                            </Button>
+                        )}
                     </div>
                 </Col>
             </Row>

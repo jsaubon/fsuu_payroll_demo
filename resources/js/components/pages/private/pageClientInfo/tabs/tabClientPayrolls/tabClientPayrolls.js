@@ -67,25 +67,27 @@ const TabClientPayrolls = ({ client_id }) => {
             key: "action",
             width: "1%",
             render: (text, record) => {
-                return (
-                    <Popconfirm
-                        title="Are you sure to delete this payroll?"
-                        okText="Yes"
-                        cancelText="No"
-                        onConfirm={e => {
-                            deletePayroll(record);
-                        }}
-                    >
-                        <Button
-                            danger
-                            size="small"
-                            type="primary"
-                            icon={<DeleteOutlined />}
+                if (userdata.role != "Staff") {
+                    return (
+                        <Popconfirm
+                            title="Are you sure to delete this payroll?"
+                            okText="Yes"
+                            cancelText="No"
+                            onConfirm={e => {
+                                deletePayroll(record);
+                            }}
                         >
-                            Delete
-                        </Button>
-                    </Popconfirm>
-                );
+                            <Button
+                                danger
+                                size="small"
+                                type="primary"
+                                icon={<DeleteOutlined />}
+                            >
+                                Delete
+                            </Button>
+                        </Popconfirm>
+                    );
+                }
             }
         }
     ];
@@ -117,6 +119,8 @@ const TabClientPayrolls = ({ client_id }) => {
     const toggleShowModalPayrollViewInfo = () => {
         setShowModalPayrollViewInfo(!showModalPayrollViewInfo);
     };
+
+    let userdata = JSON.parse(localStorage.userdata);
     return (
         <>
             <Table

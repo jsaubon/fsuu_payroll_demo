@@ -31,7 +31,7 @@ class PassportController extends Controller
 
         $token = $user->createToken('Commando-Payroll')->accessToken;
 
-        return response()->json(['token' => $token], 200);
+        return response()->json(['token' => $token,'data' => $user], 200);
     }
 
     /**
@@ -49,7 +49,7 @@ class PassportController extends Controller
 
         if (auth()->attempt($credentials)) {
             $token = auth()->user()->createToken('Commando-Payroll')->accessToken;
-            return response()->json(['token' => $token], 200);
+            return response()->json(['token' => $token,'data' => auth()->user()], 200);
         } else {
             return response()->json(['error' => 'Username or Password is Invalid', 'data' => $credentials], 401);
         }

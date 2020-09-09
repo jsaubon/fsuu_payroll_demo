@@ -25,6 +25,10 @@ const PageUsers = () => {
         setSelectedUser(record);
         setShowModalAddEditUser(!showModalAddEditUser);
     };
+
+    const userdata = JSON.parse(localStorage.userdata);
+    console.log(userdata);
+
     useEffect(() => {
         getUsers();
         return () => {};
@@ -101,21 +105,25 @@ const PageUsers = () => {
                             >
                                 Edit
                             </Button>
-                            <Button
-                                size="small"
-                                type="primary"
-                                danger
-                                icon={<DeleteOutlined />}
-                            >
-                                <Popconfirm
-                                    title="Are you sure delete this user?"
-                                    onConfirm={e => handleDeleteUser(record)}
-                                    okText="Yes"
-                                    cancelText="No"
+                            {userdata.role != "Staff" && (
+                                <Button
+                                    size="small"
+                                    type="primary"
+                                    danger
+                                    icon={<DeleteOutlined />}
                                 >
-                                    Delete
-                                </Popconfirm>
-                            </Button>
+                                    <Popconfirm
+                                        title="Are you sure delete this user?"
+                                        onConfirm={e =>
+                                            handleDeleteUser(record)
+                                        }
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        Delete
+                                    </Popconfirm>
+                                </Button>
+                            )}
                         </ButtonGroup>
                     </>
                 );
@@ -151,9 +159,14 @@ const PageUsers = () => {
     return (
         <div>
             <Title levle={4}>Users</Title>
-            <Button type="primary" onClick={e => toggleShowModalAddEditUser()}>
-                New
-            </Button>
+            {userdata.role != "Staff" && (
+                <Button
+                    type="primary"
+                    onClick={e => toggleShowModalAddEditUser()}
+                >
+                    New
+                </Button>
+            )}
 
             <Card className="mt-10">
                 <Table
@@ -228,46 +241,50 @@ const PageUsers = () => {
                             <Input name="password" type="password" />
                         </Form.Item>
 
-                        <Form.Item
-                            label="Role"
-                            name="role"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Select Role"
-                                }
-                            ]}
-                            className="mb-15"
-                        >
-                            <Select name="role">
-                                <Select.Option value="Admin">
-                                    Admin
-                                </Select.Option>
-                                <Select.Option value="Staff">
-                                    Staff
-                                </Select.Option>
-                            </Select>
-                        </Form.Item>
-                        <Form.Item
-                            label="Status"
-                            name="active"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Select Status"
-                                }
-                            ]}
-                            className="mb-15"
-                        >
-                            <Select name="active">
-                                <Select.Option value="Active">
-                                    Active
-                                </Select.Option>
-                                <Select.Option value="Inactive">
-                                    Inactive
-                                </Select.Option>
-                            </Select>
-                        </Form.Item>
+                        {userdata.role != "Staff" && (
+                            <>
+                                <Form.Item
+                                    label="Role"
+                                    name="role"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Select Role"
+                                        }
+                                    ]}
+                                    className="mb-15"
+                                >
+                                    <Select name="role">
+                                        <Select.Option value="Admin">
+                                            Admin
+                                        </Select.Option>
+                                        <Select.Option value="Staff">
+                                            Staff
+                                        </Select.Option>
+                                    </Select>
+                                </Form.Item>
+                                <Form.Item
+                                    label="Status"
+                                    name="active"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Select Status"
+                                        }
+                                    ]}
+                                    className="mb-15"
+                                >
+                                    <Select name="active">
+                                        <Select.Option value="Active">
+                                            Active
+                                        </Select.Option>
+                                        <Select.Option value="Inactive">
+                                            Inactive
+                                        </Select.Option>
+                                    </Select>
+                                </Form.Item>
+                            </>
+                        )}
                     </Form>
                 </Modal>
             )}

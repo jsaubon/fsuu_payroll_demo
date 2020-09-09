@@ -33,6 +33,8 @@ export const clientEmployeesTableColumns = (
         });
     };
 
+    let userdata = JSON.parse(localStorage.userdata);
+
     return [
         {
             title: "Name",
@@ -127,37 +129,40 @@ export const clientEmployeesTableColumns = (
             render: (text, record) => {
                 return (
                     <Space size="middle" key={record.id}>
-                        <ButtonGroup>
-                            <Button
-                                size="small"
-                                type="primary"
-                                icon={<EditOutlined />}
-                                onClick={e =>
-                                    toggleShowAddEditClientEmployeesModal(
-                                        record
-                                    )
-                                }
-                            >
-                                Edit
-                            </Button>
-                            <Popconfirm
-                                title="Are you sure to delete this employee?"
-                                okText="Yes"
-                                cancelText="No"
-                                onConfirm={e => {
-                                    deleteEmployee(record);
-                                }}
-                            >
+                        {userdata.role != "Staff" && (
+                            <ButtonGroup>
                                 <Button
                                     size="small"
                                     type="primary"
-                                    danger
-                                    icon={<DeleteOutlined />}
+                                    icon={<EditOutlined />}
+                                    onClick={e =>
+                                        toggleShowAddEditClientEmployeesModal(
+                                            record
+                                        )
+                                    }
                                 >
-                                    Delete
+                                    Edit
                                 </Button>
-                            </Popconfirm>
-                        </ButtonGroup>
+
+                                <Popconfirm
+                                    title="Are you sure to delete this employee?"
+                                    okText="Yes"
+                                    cancelText="No"
+                                    onConfirm={e => {
+                                        deleteEmployee(record);
+                                    }}
+                                >
+                                    <Button
+                                        size="small"
+                                        type="primary"
+                                        danger
+                                        icon={<DeleteOutlined />}
+                                    >
+                                        Delete
+                                    </Button>
+                                </Popconfirm>
+                            </ButtonGroup>
+                        )}
                     </Space>
                 );
             }

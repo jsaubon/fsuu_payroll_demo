@@ -25,6 +25,8 @@ const Login = () => {
             .then(res => {
                 setLoadingButtonLogin(false);
                 if (res.token) {
+                    // console.log();
+                    localStorage.userdata = JSON.stringify(res.data);
                     localStorage.token = res.token;
                     location.reload();
                 } else {
@@ -55,9 +57,7 @@ const Login = () => {
                                 background: "#fff"
                             }}
                         >
-                            <div
-                                className="login-logo" 
-                            ></div>
+                            <div className="login-logo"></div>
                             <div
                                 style={{
                                     maxWidth: 300,

@@ -37,6 +37,7 @@ const CardPayrollList = () => {
         debit: [],
         credit: []
     });
+    const [loadingStable, setLoadingStable] = useState(false);
 
     useEffect(() => {
         getPayrollList();
@@ -44,8 +45,10 @@ const CardPayrollList = () => {
     }, [pageFilters]);
 
     const getPayrollList = () => {
+        setLoadingStable(true);
         fetchData("GET", "api/payroll?year=" + pageFilters.year).then(res => {
             if (res.success) {
+                setLoadingStable(false);
                 setPayrollList([...res.data]);
             }
         });
@@ -155,28 +158,32 @@ const CardPayrollList = () => {
             key: "action",
             width: "1%",
             render: (text, record) => {
-                return (
-                    <Popconfirm
-                        title="Are you sure to delete this payroll?"
-                        okText="Yes"
-                        cancelText="No"
-                        onConfirm={e => {
-                            deletePayroll(record);
-                        }}
-                    >
-                        <Button
-                            danger
-                            size="small"
-                            type="primary"
-                            icon={<DeleteOutlined />}
+                if (userdata.role != "Staff") {
+                    return (
+                        <Popconfirm
+                            title="Are you sure to delete this payroll?"
+                            okText="Yes"
+                            cancelText="No"
+                            onConfirm={e => {
+                                deletePayroll(record);
+                            }}
                         >
-                            Delete
-                        </Button>
-                    </Popconfirm>
-                );
+                            <Button
+                                danger
+                                size="small"
+                                type="primary"
+                                icon={<DeleteOutlined />}
+                            >
+                                Delete
+                            </Button>
+                        </Popconfirm>
+                    );
+                }
             }
         }
     ];
+
+    let userdata = JSON.parse(localStorage.userdata);
 
     const toggleShowModalPayrollViewInfo = () => {
         setShowModalPayrollViewInfo(!showModalPayrollViewInfo);
@@ -218,6 +225,7 @@ const CardPayrollList = () => {
                     size="small"
                     pagination={false}
                     dataSource={payrollList}
+                    loading={loadingStable}
                 />
             </Card>
             {selectedPayroll && showModalPayrollViewInfo && (

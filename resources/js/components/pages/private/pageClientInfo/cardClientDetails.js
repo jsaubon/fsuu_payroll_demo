@@ -10,6 +10,7 @@ import {
 import moment from "moment";
 
 const CardClientDetails = ({ toggleShowModalAddEditClient, clientInfo }) => {
+    let userdata = JSON.parse(localStorage.userdata);
     return (
         <>
             <Card className="pb-10">
@@ -146,15 +147,17 @@ const CardClientDetails = ({ toggleShowModalAddEditClient, clientInfo }) => {
                             )}
                         </Text>
 
-                        <Button
-                            type="primary"
-                            block
-                            className="mt-15"
-                            onClick={e => toggleShowModalAddEditClient()}
-                        >
-                            {" "}
-                            Edit
-                        </Button>
+                        {userdata.role != "Staff" && (
+                            <Button
+                                type="primary"
+                                block
+                                className="mt-15"
+                                onClick={e => toggleShowModalAddEditClient()}
+                            >
+                                {" "}
+                                Edit
+                            </Button>
+                        )}
                     </Col>
                 </Row>
             </Card>
