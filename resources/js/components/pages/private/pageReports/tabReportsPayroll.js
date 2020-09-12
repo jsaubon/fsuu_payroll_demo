@@ -449,7 +449,7 @@ const TabReportsPayroll = () => {
                                 ? entry.amount
                                 : 0;
                         _entry.totalPhilHealth +=
-                            entry.client_accounting_entry.title == "Phil Health"
+                            entry.client_accounting_entry.title == "PhilHealth"
                                 ? entry.amount
                                 : 0;
                         _entry.totalPagIBIG +=
