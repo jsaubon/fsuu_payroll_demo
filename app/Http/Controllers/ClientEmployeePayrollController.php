@@ -14,7 +14,6 @@ class ClientEmployeePayrollController extends Controller
      */
     public function index(Request $request)
     {
-        
         $payrolls = ClientEmployeePayroll::select(['client_employee_payrolls.*'])
                                 ->with('client_employee')
                                 ->with('client_payroll')
@@ -23,10 +22,22 @@ class ClientEmployeePayrollController extends Controller
                                 ->with('client_employee_accountings.client_accounting_entry')
                                 ->join('client_payrolls','client_employee_payrolls.client_payroll_id','=','client_payrolls.id');
 
+        
         if(isset($request->payroll_date)) {
             $payrolls->whereRaw('? between client_payrolls.date_start and client_payrolls.date_end', [$request->payroll_date]);
+        } 
+
+        if(isset($request->payroll_month_start)) {
+            $payroll_month_start = explode('-',$request->payroll_month_start);
+            $start_year = $payroll_month_start[0];
+            $start_month = $payroll_month_start[1];
+            $payroll_month_end = explode('-',$request->payroll_month_end);
+            $end_year = $payroll_month_end[0];
+            $end_month = $payroll_month_end[1];
+
+            $payrolls->whereRaw('(YEAR(client_payrolls.date_start) = ? && YEAR(client_payrolls.date_end) = ?) && (MONTH(client_payrolls.date_start) >= ? && MONTH(client_payrolls.date_end) <= ?)', [$start_year, $end_year, $start_month, $end_month]);
         }
-       
+        \DB::connection()->enableQueryLog();
         $payrolls = $payrolls->get();
                         // ->sortBy('client_payroll.date_start')
                         // ->sortBy('client_payroll.client.name')
@@ -36,6 +47,8 @@ class ClientEmployeePayrollController extends Controller
         return response()->json([
             'success' => true,
             'data' => $payrolls,
+            'request' => $request->all(),
+            'query' => $query
         ]);
     }
 

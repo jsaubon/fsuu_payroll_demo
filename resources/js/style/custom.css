@@ -383,3 +383,11 @@ input,
     size: auto;
     margin: 20mm;
 }
+
+.select-no-border .ant-select-selector {
+    border: none !important;
+}
+
+.select-no-border .ant-select-arrow {
+    color: #fff;
+}

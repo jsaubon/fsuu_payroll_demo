@@ -10,7 +10,8 @@ import {
     InputNumber,
     DatePicker,
     Button,
-    notification
+    notification,
+    Divider
 } from "antd";
 import FormItem from "antd/lib/form/FormItem";
 import Text from "antd/lib/typography/Text";
@@ -27,6 +28,7 @@ import { fetchData } from "../../../../axios";
 import TblPayrollData from "./tblPayrollData";
 
 import { useReactToPrint } from "react-to-print";
+import TextArea from "antd/lib/input/TextArea";
 
 const CardNewPayroll = () => {
     const [clientsList, setClientsList] = useState([]);
@@ -92,6 +94,18 @@ const CardNewPayroll = () => {
     return (
         <>
             <Card className="mt-10">
+                {clientInfo && (
+                    <>
+                        <div>
+                            <TextArea
+                                style={{ border: "1px solid red" }}
+                                placeholder="Write your notes here"
+                                value={clientInfo.notes}
+                            />
+                        </div>
+                        <Divider />
+                    </>
+                )}
                 <div ref={componentRef}>
                     <div className="text-center">
                         <Title level={4} className="mb-0">
