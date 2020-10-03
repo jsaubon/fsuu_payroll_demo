@@ -28,17 +28,21 @@ class ClientEmployeeAssignedPostController extends Controller
                                             });
                                         }])
                                         ->orderBy('name','asc');
+            
             if(isset($request->employee)) {
                 $employees->where('id',$request->employee);
             }
+
+            \DB::connection()->enableQueryLog();
             $employees = $employees->get();
+            $queries = \DB::getQueryLog();
  
 
             return response()->json([
                 'success' => true,
                 'data' => $employees,
                 'employees' => $employees_list,
-                'test' => 'test'
+                'queries' => $queries
             ]);
         } else {
             $employee_assigned_posts = ClientEmployeeAssignedPost::with('client')->where('employee_id',$request->employee_id)->orderBy('date_start','asc')->get();

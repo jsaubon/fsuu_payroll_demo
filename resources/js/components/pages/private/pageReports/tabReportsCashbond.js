@@ -36,6 +36,7 @@ const TabReportsCashbond = () => {
                 res.data.map((data, key) => {
                     data.client_employee_accountings.map((entry, k) => {
                         _subTotal += entry.amount;
+                        // console.log(_subTotal, entry.amount, data.name);
                     });
 
                     let exist = _clientFilter.find(
@@ -127,7 +128,9 @@ const TabReportsCashbond = () => {
                 filters: [...filterClients]
             }
         ];
+
         for (let year = filterYear.from; year <= filterYear.to; year++) {
+            // let _subTotal_ = 0;
             _columns.push({
                 title: year,
                 dataIndex: year,
@@ -143,7 +146,12 @@ const TabReportsCashbond = () => {
                             ) == year
                     );
 
+                    // console.log(_payroll);
+
                     if (_payroll.length > 0) {
+                        // _subTotal_ += arrSum(arrayColumn(_payroll, "amount"));
+                        // console.log("_subTotal_", _subTotal_);
+                        // console.log(arrSum(arrayColumn(_payroll, "amount")));
                         return formatNumber(
                             arrSum(arrayColumn(_payroll, "amount"))
                         );
@@ -162,6 +170,7 @@ const TabReportsCashbond = () => {
         extra.currentDataSource.map((record, key) => {
             record.client_employee_accountings.map((entry, k) => {
                 _subTotal += entry.amount;
+                console.log(_subTotal, entry.amount);
             });
         });
         setSubTotal(_subTotal);
