@@ -636,11 +636,16 @@ const TabReportsPayroll = () => {
                         Payroll Report
                         <br />
                         {payrollMonthFilter
-                            ? `${payrollMonthFilter.monthStart.format(
-                                  "MMMM YYYY"
-                              )} - ${payrollMonthFilter.monthEnd.format(
-                                  "MMMM YYYY"
-                              )}`
+                            ? payrollMonthFilter.monthStart.format("YYYY-MM") !=
+                              payrollMonthFilter.monthEnd.format("YYYY-MM")
+                                ? `${payrollMonthFilter.monthStart.format(
+                                      "MMMM YYYY"
+                                  )} - ${payrollMonthFilter.monthEnd.format(
+                                      "MMMM YYYY"
+                                  )}`
+                                : payrollMonthFilter.monthStart.format(
+                                      "MMMM YYYY"
+                                  )
                             : ""}
                     </Title>
                 </div>
