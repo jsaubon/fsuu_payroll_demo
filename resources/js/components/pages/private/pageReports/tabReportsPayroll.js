@@ -481,6 +481,11 @@ const TabReportsPayroll = () => {
                             "LOANS Pag-IBIG"
                                 ? entry.amount
                                 : 0;
+                        _entry.totalBond +=
+                            entry.client_accounting_entry.title ==
+                            "Bond"
+                                ? entry.amount
+                                : 0;
                         _entry.totalLOANNorthStar +=
                             entry.client_accounting_entry.title ==
                             "LOANS NorthStar"
