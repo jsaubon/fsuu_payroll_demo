@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Card, Row, Col, DatePicker, Table, Button } from "antd";
+import { Card, Row, Col, DatePicker, Table, Button, Select } from "antd";
 import Title from "antd/lib/typography/Title";
 import moment from "moment";
 import { fetchData } from "../../../../axios";
 import { Print } from "react-easy-print";
 import { currencyFormat } from "../../../currencyFormat";
 import { useReactToPrint } from "react-to-print";
+import Text from "antd/lib/typography/Text";
 
 const TabReportsDebitCredit = () => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [payrollDate, setPayrollDate] = useState();
+    const [payrollMonthFilter, setPayrollMonthFilter] = useState();
     const [employeeAccountingReports, setEmployeeAccountingReports] = useState(
         []
     );
@@ -21,12 +23,18 @@ const TabReportsDebitCredit = () => {
     const [tableLoading, setTableLoading] = useState(false);
 
     useEffect(() => {
-        if (payrollDate) {
+        if (payrollDate || payrollMonthFilter) {
             setTableLoading(true);
-            fetchData(
-                "GET",
-                "api/employee_accounting?payroll_date=" + payrollDate
-            ).then(res => {
+
+            let url = "api/employee_accounting";
+            url += payrollDate
+                ? "?payroll_date=" + payrollDate
+                : "?payroll_month_start=" +
+                  payrollMonthFilter.monthStart.format("YYYY-MM") +
+                  "&payroll_month_end=" +
+                  payrollMonthFilter.monthEnd.format("YYYY-MM");
+
+            fetchData("GET", url).then(res => {
                 if (res.success) {
                     let _data = [];
                     Object.values(res.data).map((entry, key) => {
@@ -125,8 +133,10 @@ const TabReportsDebitCredit = () => {
             onFilter: (value, record) =>
                 record.client_accounting_entry &&
                 record.client_accounting_entry.client.name.indexOf(value) === 0,
-            // sorter: (a, b) => a.client.name.length - b.client.name.length,
-            // sortDirections: ["descend", "ascend"],
+            sorter: (a, b) =>
+                a.client_accounting_entry.client.name.length -
+                b.client_accounting_entry.client.name.length,
+            sortDirections: ["descend", "ascend"],
             filters: [...tableFilters.clients]
         },
 
@@ -231,19 +241,93 @@ const TabReportsDebitCredit = () => {
 
     return (
         <Card>
-            <Title level={4}>Debit/Credit</Title>
-            <Row className="mb-10">
-                <Col xs={0} md={19}></Col>
-                <Col xs={24} md={5}>
-                    <DatePicker
-                        style={{ width: "100%" }}
-                        placeholder="Pick a Payroll Date"
-                        onChange={e => setPayrollDate(e.format("YYYY-MM-DD"))}
-                        className="text-center"
-                    />
-                </Col>
-            </Row>
+            <Title level={4}>
+                Debit/Credit{" "}
+                <DatePicker
+                    style={{ width: "200px" }}
+                    placeholder="Pick a Payroll Date"
+                    value={payrollDate ? moment(payrollDate) : ""}
+                    onChange={e => {
+                        setPayrollMonthFilter(null);
+                        setPayrollDate(e.format("YYYY-MM-DD"));
+                    }}
+                    className="pull-right"
+                />{" "}
+                <span
+                    className="pull-right"
+                    style={{ margin: "0 10px", fontSize: 12, lineHeight: 2.5 }}
+                >
+                    or
+                </span>
+                <DatePicker.RangePicker
+                    picker="month"
+                    className="pull-right"
+                    placeholder={["Month Start", "Month End"]}
+                    value={
+                        payrollMonthFilter
+                            ? [
+                                  moment(payrollMonthFilter.monthStart),
+                                  moment(payrollMonthFilter.monthEnd)
+                              ]
+                            : ""
+                    }
+                    onChange={e => {
+                        setPayrollDate(null);
+                        setPayrollMonthFilter({
+                            monthStart: e[0],
+                            monthEnd: e[1]
+                        });
+                    }}
+                />
+            </Title>
             <div ref={componentRef}>
+                <div className="text-center">
+                    <Text>
+                        <Select
+                            style={{
+                                width: "100%",
+                                textAlign: "center",
+                                fontSize: 20,
+                                fontStyle: "italic",
+                                border: "none"
+                            }}
+                            className="select-no-border"
+                            defaultValue="COMMANDO SECURITY SERVICE AGENCY, INC.
+                            (COMMANDO)"
+                        >
+                            <Select.Option
+                                value="COMMANDO SECURITY SERVICE AGENCY, INC.
+                                (COMMANDO)"
+                            >
+                                COMMANDO SECURITY SERVICE AGENCY, INC.
+                                (COMMANDO)
+                            </Select.Option>
+                            <Select.Option value="FIRST COMMANDO MANPOWER SERVICES">
+                                FIRST COMMANDO MANPOWER SERVICES
+                            </Select.Option>
+                        </Select>
+                        <br></br>
+                        <i>
+                            BUTUAN MAIN OFFICE
+                            <br />
+                            126 T. Calo Ext., 8600 Butuan City
+                            <br />
+                            Tel. No. (085) 342-8283 and (085) 341-3214
+                        </i>
+                    </Text>
+                    <Title level={4} className="mb-0">
+                        Debit/Credit Report
+                        <br />
+                        {payrollMonthFilter
+                            ? `${payrollMonthFilter.monthStart.format(
+                                  "MMMM YYYY"
+                              )} - ${payrollMonthFilter.monthEnd.format(
+                                  "MMMM YYYY"
+                              )}`
+                            : ""}
+                    </Title>
+                </div>
+                <br />
                 <Table
                     columns={columns}
                     dataSource={employeeAccountingReports}
@@ -254,7 +338,7 @@ const TabReportsDebitCredit = () => {
                 />
                 <div className="text-right mt-10">
                     <Title level={4}>
-                        Total: {currencyFormat(totalAmount)}
+                        Total: {currencyFormat(Math.abs(totalAmount))}
                     </Title>
                 </div>
             </div>

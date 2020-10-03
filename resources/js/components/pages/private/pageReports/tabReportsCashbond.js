@@ -6,6 +6,7 @@ import { Print } from "react-easy-print";
 import moment from "moment";
 import { useReactToPrint } from "react-to-print";
 import { currencyFormat } from "../../../currencyFormat";
+import Text from "antd/lib/typography/Text";
 
 const TabReportsCashbond = () => {
     const [cashbonds, setCashbonds] = useState([]);
@@ -196,11 +197,52 @@ const TabReportsCashbond = () => {
                 </Col>
             </Row>
             <div ref={componentRef}>
+                <div className="text-center">
+                    <Text>
+                        <Select
+                            style={{
+                                width: "100%",
+                                textAlign: "center",
+                                fontSize: 20,
+                                fontStyle: "italic",
+                                border: "none"
+                            }}
+                            className="select-no-border"
+                            defaultValue="COMMANDO SECURITY SERVICE AGENCY, INC.
+                            (COMMANDO)"
+                        >
+                            <Select.Option
+                                value="COMMANDO SECURITY SERVICE AGENCY, INC.
+                                (COMMANDO)"
+                            >
+                                COMMANDO SECURITY SERVICE AGENCY, INC.
+                                (COMMANDO)
+                            </Select.Option>
+                            <Select.Option value="FIRST COMMANDO MANPOWER SERVICES">
+                                FIRST COMMANDO MANPOWER SERVICES
+                            </Select.Option>
+                        </Select>
+                        <br></br>
+                        <i>
+                            BUTUAN MAIN OFFICE
+                            <br />
+                            126 T. Calo Ext., 8600 Butuan City
+                            <br />
+                            Tel. No. (085) 342-8283 and (085) 341-3214
+                        </i>
+                    </Text>
+
+                    <Title level={4} className="mb-0">
+                        Cashbond Report
+                    </Title>
+                </div>
+                <br />
                 <Table
                     columns={tableColumns}
                     dataSource={cashbonds}
                     onChange={onChangeTable}
                     pagination={false}
+                    size="small"
                 />
                 <div className="text-right">
                     <Title level={3}>Total: {currencyFormat(subTotal)}</Title>

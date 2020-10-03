@@ -595,10 +595,6 @@ const TabReportsPayroll = () => {
                     }}
                 />
             </Title>
-            <Row className="mb-10">
-                <Col xs={0} md={19}></Col>
-                <Col xs={24} md={5}></Col>
-            </Row>
             <Divider />
             <div style={{ overflowX: "auto" }} ref={componentRef}>
                 <div className="text-center">

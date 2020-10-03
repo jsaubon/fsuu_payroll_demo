@@ -26,6 +26,16 @@ class ClientEmployeeAccountingController extends Controller
         if($request->payroll_date) {
             $employee_accounting_entry->whereRaw('? between client_payrolls.date_start and client_payrolls.date_end', [$request->payroll_date]);
         }
+        if(isset($request->payroll_month_start)) {
+            $payroll_month_start = explode('-',$request->payroll_month_start);
+            $start_year = $payroll_month_start[0];
+            $start_month = $payroll_month_start[1];
+            $payroll_month_end = explode('-',$request->payroll_month_end);
+            $end_year = $payroll_month_end[0];
+            $end_month = $payroll_month_end[1];
+            $employee_accounting_entry->where('client_employee_accountings.amount','<>',0);
+            $employee_accounting_entry->whereRaw('(YEAR(client_payrolls.date_start) = ? && YEAR(client_payrolls.date_end) = ?) && (MONTH(client_payrolls.date_start) >= ? && MONTH(client_payrolls.date_end) <= ?)', [$start_year, $end_year, $start_month, $end_month]);
+        }
         if($request->employee) {
             $employee_accounting_entry->where('client_employee_accountings.employee_id', $request->employee);
             $employee_accounting_entry->where('client_accounting_entries.title', 'Bond');
