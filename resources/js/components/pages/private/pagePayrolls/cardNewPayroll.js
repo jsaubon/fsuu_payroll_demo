@@ -91,6 +91,17 @@ const CardNewPayroll = () => {
         content: () => componentRef.current
     });
 
+    const handleChangeNotes = e => {
+        setClientInfo({ ...clientInfo, notes: e.target.value });
+
+        let data = {
+            notes: e.target.value
+        };
+        fetchData("UPDATE", "api/client/" + clientInfo.id, data).then(res => {
+            // console.log(res);
+        });
+    };
+
     return (
         <>
             <Card className="mt-10">
@@ -101,6 +112,7 @@ const CardNewPayroll = () => {
                                 style={{ border: "1px solid red" }}
                                 placeholder="Write your notes here"
                                 value={clientInfo.notes}
+                                onChange={e => handleChangeNotes(e)}
                             />
                         </div>
                         <Divider />

@@ -287,7 +287,7 @@ const TblPayrollData = ({
                                             p => p.title == "Basic Pay"
                                         );
 
-                                        console.log(_debit_basic_pay);
+                                        // console.log(_debit_basic_pay);
 
                                         if (
                                             _debit_basic_pay &&
