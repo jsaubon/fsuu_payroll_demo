@@ -122,6 +122,8 @@ const TabReportsCashbond = () => {
                 },
                 onFilter: (value, record) =>
                     record.client.name.indexOf(value) === 0,
+                sorter: (a, b) => a.client.name.length - b.client.name.length,
+                sortDirections: ["descend", "ascend"],
                 filters: [...filterClients]
             }
         ];
