@@ -38,7 +38,10 @@ const TabReportsDebitCredit = () => {
                 if (res.success) {
                     let _data = [];
                     Object.values(res.data).map((entry, key) => {
-                        _data.push(entry);
+                        // if(entry.amount != 0) {
+                            _data.push(entry);
+                        // }
+                        
                     });
 
                     setEmployeeAccountingReports(_data);
@@ -185,8 +188,8 @@ const TabReportsDebitCredit = () => {
                     : "";
             },
             onFilter: (value, record) =>
-                record.client_accounting_entry &&
-                record.client_accounting_entry.title.indexOf(value) === 0,
+                (record.client_accounting_entry &&
+                record.client_accounting_entry.title.indexOf(value) === 0) && record.amount != 0,
             filters: [...tableFilters.entries]
         },
         {

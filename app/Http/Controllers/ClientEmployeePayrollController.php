@@ -22,6 +22,7 @@ class ClientEmployeePayrollController extends Controller
                                 ->with('client_employee_accountings.client_accounting_entry')
                                 ->join('client_payrolls','client_employee_payrolls.client_payroll_id','=','client_payrolls.id');
 
+        // $payrolls->where('client_employee_payrolls.amount','!=',0);
         
         if(isset($request->payroll_date)) {
             $payrolls->whereRaw('? between client_payrolls.date_start and client_payrolls.date_end', [$request->payroll_date]);
