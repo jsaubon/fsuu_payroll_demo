@@ -37,21 +37,9 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::get('testing', function() {
-    $employees = \App\ClientEmployee::with('client')
-                                    
-                                    ->with('client_employee_accountings.client_accounting_entry')
-                                    ->with('client_employee_accountings.client_employee_payroll')
-                                    ->with('client_employee_accountings.client_employee_payroll.client_payroll')
-                                    ->with(['client_employee_accountings' => function($query) {
-                                        $query->join('client_accounting_entries', function($join) {
-                                            $join->on('client_employee_accountings.client_accounting_entry_id','=','client_accounting_entries.id')
-                                                    ->where('client_accounting_entries.title','Bond');
-                                        });
-                                    }])
-                                    // ->join('client_employee_accountings','client_employees.id','=','client_employee_accountings.employee_id')
-                                    // ->join('client_accounting_entries','client_accounting_entries.id','=','client_employee_accountings.client_accounting_entry_id')
-                                    // ->where('client_accounting_entries.title','Bond')
-                                    ->orderBy('name','asc');
+    $employees = \App\ClientEmployee::where('id',3)
+            ->with(['bonds','client'])
+            ->get()->toArray();
 
-    dd($employees->get());
+    dd($employees);
 });

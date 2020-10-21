@@ -29,13 +29,14 @@ const TabReportsCashbond = () => {
             }`
         ).then(res => {
             if (res.success) {
+                console.log(res);
                 setCashbonds(res.data);
                 let _employeeFilter = [];
                 let _subTotal = 0;
                 let _clientFilter = [];
                 res.data.map((data, key) => {
-                    data.client_employee_accountings.map((entry, k) => {
-                        _subTotal += entry.amount;
+                    data.bonds.map((entry, k) => {
+                        _subTotal += entry.total;
                         // console.log(_subTotal, entry.amount, data.name);
                     });
 
@@ -136,14 +137,10 @@ const TabReportsCashbond = () => {
                 dataIndex: year,
                 key: year,
                 render: (text, record) => {
-                    let _payroll = record.client_employee_accountings.filter(
+                    let _payroll = record.bonds.filter(
                         p =>
-                            parseInt(
-                                moment(
-                                    p.client_employee_payroll.client_payroll
-                                        .date_start
-                                ).format("YYYY")
-                            ) == year
+                            parseInt(moment(p.date_start).format("YYYY")) ==
+                            year
                     );
 
                     // console.log(_payroll);
@@ -153,7 +150,9 @@ const TabReportsCashbond = () => {
                         // console.log("_subTotal_", _subTotal_);
                         // console.log(arrSum(arrayColumn(_payroll, "amount")));
                         return formatNumber(
-                            arrSum(arrayColumn(_payroll, "amount"))
+                            arrSum(arrayColumn(_payroll, "total")) == 0
+                                ? ""
+                                : arrSum(arrayColumn(_payroll, "total"))
                         );
                     }
                 }
@@ -168,9 +167,9 @@ const TabReportsCashbond = () => {
     function onChangeTable(pagination, filters, sorter, extra) {
         let _subTotal = 0;
         extra.currentDataSource.map((record, key) => {
-            record.client_employee_accountings.map((entry, k) => {
-                _subTotal += entry.amount;
-                console.log(_subTotal, entry.amount);
+            record.bonds.map((entry, k) => {
+                _subTotal += entry.total;
+                console.log(_subTotal, entry.total);
             });
         });
         setSubTotal(_subTotal);

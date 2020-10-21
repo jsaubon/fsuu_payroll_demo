@@ -12,6 +12,10 @@ class ClientAccountingEntry extends Model
         return $this->hasMany('App\ClientAccountingEntry','client_accounting_entry_id');
     }
 
+    public function client_employee_accountings() {
+        return $this->hasMany('App\ClientEmployeeAccounting','client_accounting_entry_id');
+    }
+
     public function client() {
         return $this->belongsTo('App\Client','client_id');
     }

@@ -33,5 +33,15 @@ class ClientEmployee extends Model
         return $this->hasMany('App\ClientEmployeeAssignedPost','employee_id');
     }
 
+    public function bonds() {
+        return $this->hasMany('App\ClientEmployeeAccounting', 'employee_id')->
+                selectRaw('client_employee_accountings.employee_id,client_employee_accountings.amount as total,client_payrolls.date_start')
+                ->join('client_accounting_entries','client_accounting_entries.id','=','client_employee_accountings.client_accounting_entry_id')
+                ->where('client_accounting_entries.title','Bond')
+                ->leftJoin('client_employee_payrolls','client_employee_payrolls.id','=','client_employee_accountings.client_employee_payroll_id')
+                ->leftJoin('client_payrolls','client_payrolls.id','=','client_employee_payrolls.client_payroll_id');
+                // ->groupBy(['client_employee_accountings.employee_id',\DB::raw('YEAR(client_payrolls.date_start)')]);
+    }
+
     
 }
