@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Card, Table, Row, Col, Select, Button } from "antd";
+import { Card, Table, Row, Col, Select, Button, DatePicker } from "antd";
 import Title from "antd/lib/typography/Title";
 import { fetchData } from "../../../../axios";
 import { Print } from "react-easy-print";
@@ -15,29 +15,80 @@ const TabReportsCashbond = () => {
     const [filterEmployee, setFilterEmployee] = useState();
     const [tableColumns, setTableColumns] = useState([]);
     const [filterClients, setFilterClients] = useState([]);
-
-    useEffect(() => {
-        getCashbond();
-        return () => {};
-    }, []);
+    const [yearRange, setYearRange] = useState({
+        year_start: "",
+        year_end: ""
+    });
+    const [monthRange, setMonthRange] = useState({
+        month_start: "",
+        year_start: ""
+    });
 
     const getCashbond = () => {
-        fetchData(
-            "GET",
-            `api/employee_assigned_post?report=1${
-                filterEmployee ? "&employee=" + filterEmployee : ""
-            }`
-        ).then(res => {
+        let url = "api/employee_assigned_post?report=1";
+        if (filterEmployee) {
+            url += "&employee=" + filterEmployee;
+        }
+        if (yearRange.year_start != "") {
+            url += "&year_start=" + yearRange.year_start.format("YYYY");
+            url += "&year_end=" + yearRange.year_end.format("YYYY");
+        }
+        if (monthRange.month_start != "") {
+            url += "&month_start=" + monthRange.month_start.format("MM");
+            url += "&month_end=" + monthRange.month_end.format("MM");
+            url += "&year_start=" + monthRange.month_start.format("YYYY");
+            url += "&year_end=" + monthRange.month_end.format("YYYY");
+        }
+        fetchData("GET", url).then(res => {
             if (res.success) {
-                console.log(res);
+                // console.log(res);
                 setCashbonds(res.data);
                 let _employeeFilter = [];
                 let _subTotal = 0;
                 let _clientFilter = [];
                 res.data.map((data, key) => {
                     data.bonds.map((entry, k) => {
-                        _subTotal += entry.total;
-                        // console.log(_subTotal, entry.amount, data.name);
+                        if (yearRange.year_start != "") {
+                            for (
+                                let year = parseInt(
+                                    moment(yearRange.year_start).format("YYYY")
+                                );
+                                year <=
+                                parseInt(
+                                    moment(yearRange.year_end).format("YYYY")
+                                );
+                                year++
+                            ) {
+                                if (
+                                    parseInt(
+                                        moment(entry.date_start).format("YYYY")
+                                    ) == year
+                                ) {
+                                    _subTotal += entry.total;
+                                }
+                            }
+                        } else if (monthRange.month_start != "") {
+                            for (
+                                let month = parseInt(
+                                    moment(monthRange.month_start).format("MM")
+                                );
+                                month <=
+                                parseInt(
+                                    moment(monthRange.month_end).format("MM")
+                                );
+                                month++
+                            ) {
+                                if (
+                                    parseInt(
+                                        moment(entry.date_start).format("MM")
+                                    ) == month
+                                ) {
+                                    _subTotal += entry.total;
+                                }
+                            }
+                        } else {
+                            _subTotal += entry.total;
+                        }
                     });
 
                     let exist = _clientFilter.find(
@@ -58,20 +109,30 @@ const TabReportsCashbond = () => {
     };
 
     useEffect(() => {
-        getCashbond();
+        // getCashbond();
         return () => {};
     }, [filterEmployee]);
-
-    const [filterYear, setFilterYear] = useState({
-        from: 2018,
-        to: parseInt(moment().format("YYYY"))
-    });
 
     const arrayColumn = (arr, n) => arr.map(x => x[n]);
     const arrSum = arr => arr.reduce((a, b) => a + b, 0);
     function formatNumber(num) {
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
     }
+
+    let monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sept",
+        "Oct",
+        "Nov",
+        "Dec"
+    ];
 
     useEffect(() => {
         let _columns = [
@@ -130,46 +191,171 @@ const TabReportsCashbond = () => {
             }
         ];
 
-        for (let year = filterYear.from; year <= filterYear.to; year++) {
-            // let _subTotal_ = 0;
-            _columns.push({
-                title: year,
-                dataIndex: year,
-                key: year,
-                render: (text, record) => {
-                    let _payroll = record.bonds.filter(
-                        p =>
-                            parseInt(moment(p.date_start).format("YYYY")) ==
-                            year
-                    );
-
-                    // console.log(_payroll);
-
-                    if (_payroll.length > 0) {
-                        // _subTotal_ += arrSum(arrayColumn(_payroll, "amount"));
-                        // console.log("_subTotal_", _subTotal_);
-                        // console.log(arrSum(arrayColumn(_payroll, "amount")));
-                        return formatNumber(
-                            arrSum(arrayColumn(_payroll, "total")) == 0
-                                ? ""
-                                : arrSum(arrayColumn(_payroll, "total"))
+        if (yearRange.year_start != "") {
+            for (
+                let year = parseInt(
+                    moment(yearRange.year_start).format("YYYY")
+                );
+                year <= parseInt(moment(yearRange.year_end).format("YYYY"));
+                year++
+            ) {
+                // let _subTotal_ = 0;
+                _columns.push({
+                    title: year,
+                    dataIndex: year,
+                    key: year,
+                    render: (text, record) => {
+                        let _payroll = record.bonds.filter(
+                            p =>
+                                parseInt(moment(p.date_start).format("YYYY")) ==
+                                year
                         );
+
+                        // console.log(_payroll);
+
+                        if (_payroll.length > 0) {
+                            // _subTotal_ += arrSum(arrayColumn(_payroll, "amount"));
+                            // console.log("_subTotal_", _subTotal_);
+                            // console.log(arrSum(arrayColumn(_payroll, "amount")));
+                            // setSubTotal(
+                            //     e => e + arrSum(arrayColumn(_payroll, "total"))
+                            // );
+                            return formatNumber(
+                                arrSum(arrayColumn(_payroll, "total")) == 0
+                                    ? ""
+                                    : arrSum(arrayColumn(_payroll, "total"))
+                            );
+                        }
                     }
-                }
-            });
+                });
+            }
+        }
+
+        if (monthRange.month_start != "") {
+            // let _subTotal_ = 0;
+            for (
+                let month = parseInt(
+                    moment(monthRange.month_start).format("MM")
+                );
+                month <= parseInt(moment(monthRange.month_end).format("MM"));
+                month++
+            ) {
+                let monthYear =
+                    monthRange.month_start.format("YYYY") + "-" + month + "-01";
+                let days = {
+                    first_kensena: [1, 15],
+                    second_kensena: [16, moment(monthYear).daysInMonth()]
+                };
+                Object.values(days).map((kensina, index) => {
+                    _columns.push({
+                        title:
+                            monthNames[month - 1] +
+                            " " +
+                            kensina[0] +
+                            "-" +
+                            kensina[1],
+                        dataIndex: month,
+                        key: month,
+                        render: (text, record) => {
+                            let _payroll = record.bonds.filter(
+                                p =>
+                                    parseInt(
+                                        moment(p.date_start).format("MM")
+                                    ) == month &&
+                                    parseInt(
+                                        moment(p.date_start).format("DD")
+                                    ) >= kensina[0] &&
+                                    parseInt(
+                                        moment(p.date_start).format("DD")
+                                    ) <= kensina[1]
+                            );
+
+                            // console.log(_payroll);
+
+                            if (_payroll.length > 0) {
+                                // _subTotal_ += arrSum(
+                                //     arrayColumn(_payroll, "amount")
+                                // );
+                                // console.log("_subTotal_", _subTotal_);
+                                // console.log(arrSum(arrayColumn(_payroll, "amount")));
+                                // setSubTotal(
+                                //     e =>
+                                //         e +
+                                //         arrSum(arrayColumn(_payroll, "total"))
+                                // );
+                                return formatNumber(
+                                    arrSum(arrayColumn(_payroll, "total")) == 0
+                                        ? ""
+                                        : arrSum(arrayColumn(_payroll, "total"))
+                                );
+                            }
+                        }
+                    });
+                });
+            }
+            // console.log(_subTotal_);
         }
 
         setTableColumns(_columns);
 
         return () => {};
-    }, [filterYear, filterClients]);
+    }, [yearRange, filterClients]);
+    useEffect(() => {
+        if (yearRange.year_start != "") {
+            getCashbond();
+        }
+
+        return () => {};
+    }, [yearRange]);
+    useEffect(() => {
+        if (monthRange.month_start != "") {
+            getCashbond();
+        }
+
+        return () => {};
+    }, [monthRange]);
 
     function onChangeTable(pagination, filters, sorter, extra) {
         let _subTotal = 0;
         extra.currentDataSource.map((record, key) => {
             record.bonds.map((entry, k) => {
-                _subTotal += entry.total;
-                console.log(_subTotal, entry.total);
+                // _subTotal += entry.total;
+                // console.log(_subTotal, entry.total);
+                if (yearRange.year_start != "") {
+                    for (
+                        let year = parseInt(
+                            moment(yearRange.year_start).format("YYYY")
+                        );
+                        year <=
+                        parseInt(moment(yearRange.year_end).format("YYYY"));
+                        year++
+                    ) {
+                        if (
+                            parseInt(moment(entry.date_start).format("YYYY")) ==
+                            year
+                        ) {
+                            _subTotal += entry.total;
+                        }
+                    }
+                } else if (monthRange.month_start != "") {
+                    for (
+                        let month = parseInt(
+                            moment(monthRange.month_start).format("MM")
+                        );
+                        month <=
+                        parseInt(moment(monthRange.month_end).format("MM"));
+                        month++
+                    ) {
+                        if (
+                            parseInt(moment(entry.date_start).format("MM")) ==
+                            month
+                        ) {
+                            _subTotal += entry.total;
+                        }
+                    }
+                } else {
+                    _subTotal += entry.total;
+                }
             });
         });
         setSubTotal(_subTotal);
@@ -184,8 +370,8 @@ const TabReportsCashbond = () => {
         <Card>
             <Title level={4}>Cashbond</Title>
             <Row className="mb-10">
-                <Col xs={0} md={20}></Col>
-                <Col xs={0} md={4}>
+                <Col xs={0} md={16}></Col>
+                <Col xs={0} md={8}>
                     <Select
                         style={{ width: "100%" }}
                         placeholder="Select Employee"
@@ -204,6 +390,33 @@ const TabReportsCashbond = () => {
                                 );
                             })}
                     </Select>
+                    <DatePicker.RangePicker
+                        picker="year"
+                        style={{ width: "100%" }}
+                        onChange={e => {
+                            setYearRange({ year_start: e[0], year_end: e[1] });
+                            setMonthRange({
+                                month_start: "",
+                                month_end: "",
+                                year_start: "",
+                                year_end: ""
+                            });
+                        }}
+                    />
+                    <DatePicker.RangePicker
+                        picker="month"
+                        style={{ width: "100%" }}
+                        onChange={e => {
+                            setMonthRange({
+                                month_start: e[0],
+                                month_end: e[1]
+                            });
+                            setYearRange({
+                                year_start: "",
+                                year_end: ""
+                            });
+                        }}
+                    />
                 </Col>
             </Row>
             <div ref={componentRef}>

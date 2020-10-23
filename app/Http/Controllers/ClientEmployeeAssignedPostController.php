@@ -17,27 +17,18 @@ class ClientEmployeeAssignedPostController extends Controller
         if(isset($request->report)) {
 
             $employees_list = \App\ClientEmployee::orderBy('name','asc')->get();
-            // $employees = \App\ClientEmployee::with('client')
-            //                             ->with('client_employee_accountings.client_accounting_entry')
-            //                             ->with('client_employee_accountings.client_employee_payroll')
-            //                             ->with('client_employee_accountings.client_employee_payroll.client_payroll')
-            //                             ->with(['client_employee_accountings' => function($query) {
-            //                                 $query->join('client_accounting_entries', function($join) {
-            //                                     $join->on('client_employee_accountings.client_accounting_entry_id','=','client_accounting_entries.id')
-            //                                             ->where('client_accounting_entries.title','Bond');
-            //                                 });
-            //                             }])
-            //                             ->orderBy('name','asc');
-            $employees = \App\ClientEmployee::with(['bonds','client']);
-            // $employees = \App\ClientAccountingEntry::
-            //         with(['client_employee_accountings' => function($q) {
-            //             $q->with(['client_employee','client_employee_payroll' => function($q1) {
-            //                 $q1->with('client_payroll');
-            //             }]);
-            //         }])
-            //         ->with('client')
-            //         ->where('title','Bond');
             
+            $employees = \App\ClientEmployee::with(['bonds' => function($q) {
+                if(isset($request->year_start))  {
+                    $q->whereRaw('YEAR(date_start) BETWEEN ? AND ?',[$request->year_start, $request->year_end]);
+                }
+                if(isset($request->month_start))  {
+                    $q->whereRaw('MONTH(date_start) BETWEEN ? AND ?',[$request->month_start, $request->month_end]);
+                    $q->whereRaw('YEAR(date_start) BETWEEN ? AND ?',[$request->year_start, $request->year_end]);
+                }
+                
+            },'client']);
+            // client_payrolls.date_start
             if(isset($request->employee)) {
                 $employees->where('id',$request->employee);
             }
