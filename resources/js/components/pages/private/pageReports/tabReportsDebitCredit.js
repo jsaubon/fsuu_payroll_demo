@@ -37,11 +37,19 @@ const TabReportsDebitCredit = () => {
             fetchData("GET", url).then(res => {
                 if (res.success) {
                     let _data = [];
+                    let _all_data = [];
                     Object.values(res.data).map((entry, key) => {
                         // if(entry.amount != 0) {
+                        _all_data.push(entry);
+
+                        if (
+                            entry.client_accounting_entry.title ==
+                                "13th-Month Pay" &&
+                            entry.client_accounting_entry.visible == 1
+                        ) {
+                        } else {
                             _data.push(entry);
-                        // }
-                        
+                        }
                     });
 
                     setEmployeeAccountingReports(_data);
@@ -49,7 +57,7 @@ const TabReportsDebitCredit = () => {
                     let client_filter = [];
                     let entry_filter = [];
                     let _totalAmount = 0;
-                    _data.map((accounting, key) => {
+                    _all_data.map((accounting, key) => {
                         let emp_temp = employee_filter.find(
                             p => p.text == accounting.client_employee.name
                         );
@@ -188,8 +196,9 @@ const TabReportsDebitCredit = () => {
                     : "";
             },
             onFilter: (value, record) =>
-                (record.client_accounting_entry &&
-                record.client_accounting_entry.title.indexOf(value) === 0) && record.amount != 0,
+                record.client_accounting_entry &&
+                record.client_accounting_entry.title.indexOf(value) === 0 &&
+                record.amount != 0,
             filters: [...tableFilters.entries]
         },
         {
