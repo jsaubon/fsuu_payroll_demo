@@ -112,6 +112,14 @@ const TabContentClientAccountingEntries = ({ client_id }) => {
             fixed_amount: 0,
             visible: true,
             fixed: false
+        },
+        {
+            order: 29,
+            title: "Insurance",
+            amount: 0,
+            fixed_amount: 0,
+            visible: false,
+            fixed: false
         }
     ]);
     const [debitList, setDebitList] = useState([

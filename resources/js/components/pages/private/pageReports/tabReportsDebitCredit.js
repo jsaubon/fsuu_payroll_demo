@@ -462,8 +462,11 @@ const TabReportsDebitCredit = () => {
                         <Select.Option value="Overtime Pay">
                             Overtime Pay
                         </Select.Option>
-                        <Select.Option value="OTHERS Misc">
+                        <Select.Option value="OTHERS Misc.">
                             OTHERS Misc.
+                        </Select.Option>
+                        <Select.Option value="Insurance">
+                            Insurance
                         </Select.Option>
                         <Select.Option value="License">License</Select.Option>
                         <Select.Option value="Separation Pay">

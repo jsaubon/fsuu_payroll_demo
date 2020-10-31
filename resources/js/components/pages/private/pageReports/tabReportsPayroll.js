@@ -367,6 +367,24 @@ const TabReportsPayroll = () => {
                     return <b>{currencyFormat(record.totalOTHERSMisc)}</b>;
                 }
             }
+        },
+        {
+            title: "Insurance",
+            dataIndex: "insurance",
+            key: "insurance",
+            className: "fz-10 text-center",
+            render: (text, record) => {
+                if (record.id) {
+                    let rec = record.client_employee_accountings.find(
+                        p =>
+                            p.client_accounting_entry != null &&
+                            p.client_accounting_entry.title == "Insurance"
+                    );
+                    return currencyFormat(rec.amount);
+                } else {
+                    return <b>{currencyFormat(record.totalInsurance)}</b>;
+                }
+            }
         }
     ];
 
@@ -404,7 +422,8 @@ const TabReportsPayroll = () => {
                     totalOTHERSCA: 0,
                     totalOTHERSCanteen: 0,
                     totalOTHERSAmmosAccessories: 0,
-                    totalOTHERSMisc: 0
+                    totalOTHERSMisc: 0,
+                    totalInsurance: 0
                 };
                 let _data = res.data;
                 _data.map((payroll, key) => {
@@ -437,7 +456,9 @@ const TabReportsPayroll = () => {
                                 p.client_accounting_entry.title ==
                                     "OTHERS Ammos & Accessories" ||
                                 p.client_accounting_entry.title ==
-                                    "OTHERS Misc.")
+                                    "OTHERS Misc." ||
+                                p.client_accounting_entry.title ==
+                                    "Insurance")
                     );
 
                     recs.map((entry, key) => {
@@ -508,6 +529,11 @@ const TabReportsPayroll = () => {
                         _entry.totalOTHERSMisc +=
                             entry.client_accounting_entry.title ==
                             "OTHERS Misc."
+                                ? entry.amount
+                                : 0;
+                        _entry.totalInsurance +=
+                            entry.client_accounting_entry.title ==
+                            "Insurance"
                                 ? entry.amount
                                 : 0;
                     });
