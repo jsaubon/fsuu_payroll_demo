@@ -129,106 +129,206 @@ const TabReportsDebitCredit = () => {
         return () => {};
     }, [payrollDate]);
 
+    useEffect(() => {
+        console.log(tableFilters);
+        return () => {};
+    }, [tableFilters]);
     const capitalize = s => {
         if (typeof s !== "string") return "";
         return s.charAt(0).toUpperCase() + s.slice(1);
     };
-
     const [columns, setColumns] = useState([
-        {
-            title: "Client",
-            dataIndex: "client",
-            key: "client",
-            render: (text, record) => {
-                return record.client_accounting_entry
-                    ? record.client_accounting_entry.client.name
-                    : "";
-            },
-            onFilter: (value, record) =>
-                record.client_accounting_entry &&
-                record.client_accounting_entry.client.name.indexOf(value) === 0,
-            sorter: (a, b) =>
-                a.client_accounting_entry.client.name.length -
-                b.client_accounting_entry.client.name.length,
-            sortDirections: ["descend", "ascend"],
-            filters: [...tableFilters.clients]
-        },
-
-        {
-            title: "Employee",
-            dataIndex: "client_employee",
-            key: "client_employee",
-            render: (text, record) => {
-                return record.client_employee.name;
-            },
-            onFilter: (value, record) =>
-                record.client_employee.name.indexOf(value) === 0,
-            filters: [...tableFilters.employees]
-        },
-
-        {
-            title: "Type",
-            dataIndex: "type",
-            key: "type",
-            render: (text, record) => {
-                return record.client_accounting_entry
-                    ? capitalize(record.client_accounting_entry.type)
-                    : "";
-            },
-            onFilter: (value, record) =>
-                record.client_accounting_entry &&
-                record.client_accounting_entry.type.indexOf(value) === 0,
-            filters: [
-                {
-                    text: "Debit",
-                    value: "debit"
+            {
+                title: "Client",
+                dataIndex: "client",
+                key: "client",
+                render: (text, record) => {
+                    return record.client_accounting_entry
+                        ? record.client_accounting_entry.client.name
+                        : "";
                 },
-                {
-                    text: "Credit",
-                    value: "credit"
-                }
-            ]
-        },
-        {
-            title: "Entry",
-            dataIndex: "entry",
-            key: "entry",
-            render: (text, record) => {
-                return record.client_accounting_entry
-                    ? record.client_accounting_entry.title
-                    : "";
+                onFilter: (value, record) =>
+                    record.client_accounting_entry &&
+                    record.client_accounting_entry.client.name.indexOf(value) === 0,
+                sorter: (a, b) =>
+                    a.client_accounting_entry.client.name.length -
+                    b.client_accounting_entry.client.name.length,
+                sortDirections: ["descend", "ascend"],
+                filters: [...tableFilters.clients]
             },
-            onFilter: (value, record) =>
-                record.client_accounting_entry &&
-                record.client_accounting_entry.title.indexOf(value) === 0 &&
-                record.amount != 0,
-            filters: [...tableFilters.entries]
-        },
-        {
-            title: "Amount",
-            dataIndex: "amount",
-            key: "amount",
-            render: (text, record) => {
-                return currencyFormat(record.amount);
+
+            {
+                title: "Employee",
+                dataIndex: "client_employee",
+                key: "client_employee",
+                render: (text, record) => {
+                    return record.client_employee.name;
+                },
+                onFilter: (value, record) =>
+                    record.client_employee.name.indexOf(value) === 0,
+                filters: [...tableFilters.employees]
+            },
+
+            {
+                title: "Type",
+                dataIndex: "type",
+                key: "type",
+                render: (text, record) => {
+                    return record.client_accounting_entry
+                        ? capitalize(record.client_accounting_entry.type)
+                        : "";
+                },
+                onFilter: (value, record) =>
+                    record.client_accounting_entry &&
+                    record.client_accounting_entry.type.indexOf(value) === 0,
+                filters: [
+                    {
+                        text: "Debit",
+                        value: "debit"
+                    },
+                    {
+                        text: "Credit",
+                        value: "credit"
+                    }
+                ]
+            },
+            {
+                title: "Entry",
+                dataIndex: "entry",
+                key: "entry",
+                render: (text, record) => {
+                    return record.client_accounting_entry
+                        ? record.client_accounting_entry.title
+                        : "";
+                },
+                onFilter: (value, record) =>
+                    record.client_accounting_entry &&
+                    record.client_accounting_entry.title.indexOf(value) === 0 &&
+                    record.amount != 0,
+                filters: [...tableFilters.entries]
+            },
+            {
+                title: "Amount",
+                dataIndex: "amount",
+                key: "amount",
+                render: (text, record) => {
+                    return currencyFormat(record.amount);
+                }
+            },
+            {
+                title: "Payroll Date",
+                dataIndex: "client_employee_payroll",
+                key: "client_employee_payroll",
+                render: (text, record) => {
+                    return (
+                        moment(
+                            record.client_employee_payroll.client_payroll.date_start
+                        ).format("YYYY-MM-DD") +
+                        " to " +
+                        moment(
+                            record.client_employee_payroll.client_payroll.date_end
+                        ).format("YYYY-MM-DD")
+                    );
+                }
             }
-        },
-        {
-            title: "Payroll Date",
-            dataIndex: "client_employee_payroll",
-            key: "client_employee_payroll",
-            render: (text, record) => {
-                return (
-                    moment(
-                        record.client_employee_payroll.client_payroll.date_start
-                    ).format("YYYY-MM-DD") +
-                    " to " +
-                    moment(
-                        record.client_employee_payroll.client_payroll.date_end
-                    ).format("YYYY-MM-DD")
-                );
+        ]);
+    useEffect(() => {
+        setColumns([
+            {
+                title: "Client",
+                dataIndex: "client",
+                key: "client",
+                render: (text, record) => {
+                    return record.client_accounting_entry
+                        ? record.client_accounting_entry.client.name
+                        : "";
+                },
+                onFilter: (value, record) =>
+                    record.client_accounting_entry &&
+                    record.client_accounting_entry.client.name.indexOf(value) === 0,
+                sorter: (a, b) =>
+                    a.client_accounting_entry.client.name.length -
+                    b.client_accounting_entry.client.name.length,
+                sortDirections: ["descend", "ascend"],
+                filters: [...tableFilters.clients]
+            },
+
+            {
+                title: "Employee",
+                dataIndex: "client_employee",
+                key: "client_employee",
+                render: (text, record) => {
+                    return record.client_employee.name;
+                },
+                onFilter: (value, record) =>
+                    record.client_employee.name.indexOf(value) === 0,
+                filters: [...tableFilters.employees]
+            },
+
+            {
+                title: "Type",
+                dataIndex: "type",
+                key: "type",
+                render: (text, record) => {
+                    return record.client_accounting_entry
+                        ? capitalize(record.client_accounting_entry.type)
+                        : "";
+                },
+                onFilter: (value, record) =>
+                    record.client_accounting_entry &&
+                    record.client_accounting_entry.type.indexOf(value) === 0,
+                filters: [
+                    {
+                        text: "Debit",
+                        value: "debit"
+                    },
+                    {
+                        text: "Credit",
+                        value: "credit"
+                    }
+                ]
+            },
+            {
+                title: "Entry",
+                dataIndex: "entry",
+                key: "entry",
+                render: (text, record) => {
+                    return record.client_accounting_entry
+                        ? record.client_accounting_entry.title
+                        : "";
+                },
+                onFilter: (value, record) =>
+                    record.client_accounting_entry &&
+                    record.client_accounting_entry.title.indexOf(value) === 0 &&
+                    record.amount != 0,
+                filters: [...tableFilters.entries]
+            },
+            {
+                title: "Amount",
+                dataIndex: "amount",
+                key: "amount",
+                render: (text, record) => {
+                    return currencyFormat(record.amount);
+                }
+            },
+            {
+                title: "Payroll Date",
+                dataIndex: "client_employee_payroll",
+                key: "client_employee_payroll",
+                render: (text, record) => {
+                    return (
+                        moment(
+                            record.client_employee_payroll.client_payroll.date_start
+                        ).format("YYYY-MM-DD") +
+                        " to " +
+                        moment(
+                            record.client_employee_payroll.client_payroll.date_end
+                        ).format("YYYY-MM-DD")
+                    );
+                }
             }
-        }
-    ]);
+        ]);
+    },[tableFilters]);
 
     function onChange(pagination, filters, sorter, extra) {
         let _totalAmount = 0;
@@ -268,11 +368,11 @@ const TabReportsDebitCredit = () => {
                     //         ? record.client_accounting_entry.client.name
                     //         : "";
                     // },
-                    // onFilter: (value, record) =>
-                    //     record.client_accounting_entry &&
-                    //     record.client_accounting_entry.client.name.indexOf(
-                    //         value
-                    //     ) === 0,
+                    onFilter: (value, record) =>
+                        record.client_accounting_entry &&
+                        record.client_accounting_entry.client.name.indexOf(
+                            value
+                        ) === 0,
                     // sorter: (a, b) =>
                     //     a.client_accounting_entry.client.name.length -
                     //     b.client_accounting_entry.client.name.length,
