@@ -41,8 +41,37 @@ const TabReportsCashbond = () => {
         }
         fetchData("GET", url).then(res => {
             if (res.success) {
-                // console.log(res);
-                setCashbonds(res.data);
+                console.log(res);
+                let _bonds = [];
+                let _subTotal_ = 0;
+                res.data.map((_data, key) => {
+
+                    if(_data.bonds.length > 0) {
+                        let _temp_total = 0;
+                        _data.bonds.map((bond, index) => {
+                            if (yearRange.year_start != "") { 
+                                if(moment(bond.date_start).format('YYYY') >= yearRange.year_start.format("YYYY") && 
+                                    moment(bond.date_start).format('YYYY') <= yearRange.year_end.format("YYYY")) {
+                                    _temp_total += bond.total;
+                                }
+                            }
+
+                            if(monthRange.month_start != "") {
+                                if((moment(bond.date_start).format('YYYY') >= monthRange.month_start.format("YYYY") && 
+                                    moment(bond.date_start).format('YYYY') <= monthRange.month_end.format("YYYY")) && 
+                                    (moment(bond.date_start).format('MM') >= monthRange.month_start.format("MM") && 
+                                    moment(bond.date_start).format('MM') <= monthRange.month_end.format("MM"))) {
+                                    _temp_total += bond.total;
+                                }
+                            }
+                        })
+                        if(_temp_total > 0) {
+                            _bonds.push(_data);
+                            _subTotal_ += _temp_total;
+                        }
+                    }
+                });
+                setCashbonds(_bonds);
                 let _employeeFilter = [];
                 let _subTotal = 0;
                 let _clientFilter = [];
