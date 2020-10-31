@@ -380,7 +380,7 @@ const TabReportsPayroll = () => {
                             p.client_accounting_entry != null &&
                             p.client_accounting_entry.title == "Insurance"
                     );
-                    return currencyFormat(rec.amount);
+                    return rec ? currencyFormat(rec.amount) : 0;
                 } else {
                     return <b>{currencyFormat(record.totalInsurance)}</b>;
                 }
