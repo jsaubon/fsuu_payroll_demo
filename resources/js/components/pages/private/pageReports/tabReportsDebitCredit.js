@@ -38,17 +38,27 @@ const TabReportsDebitCredit = () => {
                 if (res.success) {
                     let _data = [];
                     let _all_data = [];
+                    let _totalAmount = 0;
                     Object.values(res.data).map((entry, key) => {
                         // if(entry.amount != 0) {
                         _all_data.push(entry);
 
                         if (
-                            entry.client_accounting_entry.title ==
-                                "13th-Month Pay" &&
-                            entry.client_accounting_entry.visible == 1
+                            (entry.client_accounting_entry.type ==
+                                "debit" &&
+                            entry.client_accounting_entry.visible == 1)
                         ) {
                         } else {
                             _data.push(entry);
+
+                            if (
+                                entry.client_accounting_entry.type ==
+                                "debit" 
+                            ) {
+                                _totalAmount += parseFloat(entry.amount);
+                            } else {
+                                _totalAmount -= parseFloat(entry.amount);
+                            }
                         }
                     });
 
@@ -58,7 +68,6 @@ const TabReportsDebitCredit = () => {
                     let employee_filter = [];
                     let client_filter = [];
                     let entry_filter = [];
-                    let _totalAmount = 0;
                     _all_data.map((accounting, key) => {
                         let emp_temp = employee_filter.find(
                             p => p.text == accounting.client_employee.name
@@ -103,14 +112,7 @@ const TabReportsDebitCredit = () => {
                                 });
                             }
 
-                            if (
-                                accounting.client_accounting_entry.type ==
-                                "debit"
-                            ) {
-                                _totalAmount += parseFloat(accounting.amount);
-                            } else {
-                                _totalAmount -= parseFloat(accounting.amount);
-                            }
+                            
                         }
                     });
                     console.log(entry_filter);
@@ -392,6 +394,7 @@ const TabReportsDebitCredit = () => {
                     filters: [...tableFilters.employees]
                 }
             ];
+
             filterColumns.forEach((title, key) => {
                 if (title != "All") {
                     _columns.push({
@@ -399,9 +402,16 @@ const TabReportsDebitCredit = () => {
                         dataIndex: title.replace(/ /g, "_"),
                         key: title.replace(/ /g, "_"),
                         render: (text, record) => {
-                            return currencyFormat(
-                                record[title.replace(/ /g, "_")]
-                            );
+                            if(record.client_employee == 'Total') {
+                                return <b>{currencyFormat(
+                                    record[title.replace(/ /g, "_")]
+                                )}</b>;
+                            } else {
+                                return currencyFormat(
+                                    record[title.replace(/ /g, "_")]
+                                );
+                            }
+                            
                         }
                     });
                 }
@@ -430,6 +440,12 @@ const TabReportsDebitCredit = () => {
 
             let _data = [];
             let _totalAmount = 0;
+
+            let columnTotals = {};
+            filterColumns.forEach((filter,key) => {
+                columnTotals[filter] = 0;
+            });
+            //console.log(columnTotals);
             filterColumns.forEach((filter, key) => {
                 let _filter = filter.replace(/ /g, "_");
                 rawData.forEach((entry, index) => {
@@ -444,7 +460,6 @@ const TabReportsDebitCredit = () => {
                         );
                         if (employee_index !== -1) {
                             // NAA NA
-
                             if (_data[employee_index][_filter]) {
                                 _data[employee_index][_filter] =
                                     _data[employee_index][_filter] +
@@ -454,10 +469,16 @@ const TabReportsDebitCredit = () => {
                                     entry.client_accounting_entry.type ==
                                     "debit"
                                 ) {
+                                    columnTotals[entry.client_accounting_entry.title] += entry.amount
+                                        ? entry.amount
+                                        : 0;
                                     _totalAmount += entry.amount
                                         ? entry.amount
                                         : 0;
                                 } else {
+                                    columnTotals[entry.client_accounting_entry.title] += entry.amount
+                                        ? entry.amount
+                                        : 0;
                                     _totalAmount -= entry.amount
                                         ? entry.amount
                                         : 0;
@@ -469,10 +490,16 @@ const TabReportsDebitCredit = () => {
                                     entry.client_accounting_entry.type ==
                                     "debit"
                                 ) {
+                                    columnTotals[entry.client_accounting_entry.title] += entry.amount
+                                        ? entry.amount
+                                        : 0;
                                     _totalAmount += entry.amount
                                         ? entry.amount
                                         : 0;
                                 } else {
+                                    columnTotals[entry.client_accounting_entry.title] += entry.amount
+                                        ? entry.amount
+                                        : 0;
                                     _totalAmount -= entry.amount
                                         ? entry.amount
                                         : 0;
@@ -496,8 +523,16 @@ const TabReportsDebitCredit = () => {
                                 [_filter]: entry.amount ? entry.amount : 0
                             };
                             if (entry.client_accounting_entry.type == "debit") {
+
+                                columnTotals[entry.client_accounting_entry.title] += entry.amount
+                                        ? entry.amount
+                                        : 0;
                                 _totalAmount += entry.amount ? entry.amount : 0;
                             } else {
+
+                                columnTotals[entry.client_accounting_entry.title] += entry.amount
+                                        ? entry.amount
+                                        : 0;
                                 _totalAmount -= entry.amount ? entry.amount : 0;
                             }
 
@@ -506,7 +541,38 @@ const TabReportsDebitCredit = () => {
                     }
                 });
             });
-            setEmployeeAccountingReports(_data);
+
+           // console.log('filtered',_data);
+            let report_data = [];
+            _data.forEach((row, index) => {
+                let invalid_fields = ['client','client_employee','client_employee_payroll'];
+                let subTotal = 0;
+                Object.keys(row).forEach((field, key ) => {
+                    if(!invalid_fields.includes(field)) {
+                        subTotal += row[field];
+                    }
+                });
+                if(subTotal > 0) {
+                    report_data.push(row);
+                }
+            });
+            // console.log('report_data',report_data);
+            
+            //console.log('_data[_data.length-1]',_data[_data.length-1]);
+            if(report_data[report_data.length-1].client_employee != 'Total') {
+                let totalRow = {
+                    client: '',
+                    client_employee: 'Total',
+                    client_employee_payroll: ''
+                };
+                filterColumns.forEach((column, key) => {
+                    totalRow[column.replace(/ /g, "_")] = columnTotals[column];
+                });
+                report_data.push(totalRow);
+            }
+
+            // ;
+            setEmployeeAccountingReports(report_data);
             setTotalAmount(_totalAmount);
         }
         return () => {};
@@ -700,11 +766,7 @@ const TabReportsDebitCredit = () => {
                     size="small"
                     loading={tableLoading}
                 />
-                <div className="text-right mt-10">
-                    <Title level={4}>
-                        Total: {currencyFormat(Math.abs(totalAmount))}
-                    </Title>
-                </div>
+                
             </div>
 
             <div className="text-right mt-10">
