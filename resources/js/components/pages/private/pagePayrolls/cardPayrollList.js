@@ -25,7 +25,9 @@ import ModalPayslip from "./modalPayslip";
 
 const CardPayrollList = () => {
     const [pageFilters, setPageFilters] = useState({
-        year: parseInt(moment().format("YYYY"))
+        year: parseInt(moment().format("YYYY")),
+        page: 1,
+        search: ""
     });
     const [showModalPayrollViewInfo, setShowModalPayrollViewInfo] = useState(
         false
@@ -46,10 +48,18 @@ const CardPayrollList = () => {
 
     const getPayrollList = () => {
         setLoadingStable(true);
-        fetchData("GET", "api/payroll?year=" + pageFilters.year).then(res => {
+        fetchData(
+            "GET",
+            "api/payroll?year=" +
+                pageFilters.year +
+                "&page=" +
+                pageFilters.page +
+                "&search=" +
+                pageFilters.search
+        ).then(res => {
             if (res.success) {
                 setLoadingStable(false);
-                setPayrollList([...res.data]);
+                setPayrollList(res.data);
             }
         });
     };
@@ -223,9 +233,22 @@ const CardPayrollList = () => {
                 <Table
                     columns={columns}
                     size="small"
-                    pagination={false}
-                    dataSource={payrollList}
+                    pagination={{
+                        pageSize: 100,
+                        total: payrollList.total,
+                        showLessItems: false,
+                        showQuickJumper: false,
+                        showSizeChanger: false
+                    }}
+                    dataSource={payrollList.data}
                     loading={loadingStable}
+                    onChange={pagination => {
+                        // console.log(pagination);
+                        setPageFilters({
+                            ...pageFilters,
+                            page: pagination.current
+                        });
+                    }}
                 />
             </Card>
             {selectedPayroll && showModalPayrollViewInfo && (

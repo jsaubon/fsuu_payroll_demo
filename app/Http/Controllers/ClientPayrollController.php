@@ -24,7 +24,12 @@ class ClientPayrollController extends Controller
         if($request->year) {
             $payrolls->whereYear('date_start',$request->year)->whereYear('date_end',$request->year);
         }
-        $payrolls = $payrolls->get();
+        if($request->page) {
+            $payrolls = $payrolls->paginate(100);
+        } else {
+            $payrolls = $payrolls->get();
+        }
+        
 
         return response()->json([
             'success' => true,
