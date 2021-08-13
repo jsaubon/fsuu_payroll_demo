@@ -205,7 +205,7 @@ const CardPayrollList = () => {
         <>
             <Card className="mt-10">
                 <Row>
-                    <Col xs={24} md={21}>
+                    <Col xs={24} md={18}>
                         <Title level={4}>Payroll List</Title>
                     </Col>
                     <Col xs={24} md={3}>
@@ -223,6 +223,26 @@ const CardPayrollList = () => {
                                     setPageFilters({
                                         ...pageFilters,
                                         year: parseInt(e)
+                                    })
+                                }
+                            />
+                        </div>
+                    </Col>
+                    <Col xs={24} md={3}>
+                        <div style={{ display: "flex" }}>
+                            <Text
+                                style={{ lineHeight: "2.2", paddingRight: 10 }}
+                            >
+                                Search
+                            </Text>
+
+                            <Input
+                                style={{ width: "100%" }}
+                                value={pageFilters.search}
+                                onChange={e =>
+                                    setPageFilters({
+                                        ...pageFilters,
+                                        search: (e.target.value)
                                     })
                                 }
                             />
