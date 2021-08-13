@@ -164,13 +164,13 @@ const ModalPayslip = ({
                                                                 {moment(
                                                                     selectedPayroll.date_start
                                                                 ).format(
-                                                                    "MM.DD"
+                                                                    "MM.DD.YYYY"
                                                                 )}
                                                                 -
                                                                 {moment(
                                                                     selectedPayroll.date_end
                                                                 ).format(
-                                                                    "MM.DD"
+                                                                    "MM.DD.YYYY"
                                                                 )}
                                                             </Text>
                                                         </Col>
