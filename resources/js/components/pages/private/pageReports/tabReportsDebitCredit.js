@@ -44,17 +44,13 @@ const TabReportsDebitCredit = () => {
                         _all_data.push(entry);
 
                         if (
-                            (entry.client_accounting_entry.type ==
-                                "debit" &&
-                            entry.client_accounting_entry.visible == 1)
+                            entry.client_accounting_entry.type == "debit" &&
+                            entry.client_accounting_entry.visible == 1
                         ) {
                         } else {
                             _data.push(entry);
 
-                            if (
-                                entry.client_accounting_entry.type ==
-                                "debit" 
-                            ) {
+                            if (entry.client_accounting_entry.type == "debit") {
                                 _totalAmount += parseFloat(entry.amount);
                             } else {
                                 _totalAmount -= parseFloat(entry.amount);
@@ -111,8 +107,6 @@ const TabReportsDebitCredit = () => {
                                         accounting.client_accounting_entry.title
                                 });
                             }
-
-                            
                         }
                     });
                     console.log(entry_filter);
@@ -140,100 +134,165 @@ const TabReportsDebitCredit = () => {
         return s.charAt(0).toUpperCase() + s.slice(1);
     };
     const [columns, setColumns] = useState([
-            {
-                title: "Client",
-                dataIndex: "client",
-                key: "client",
-                render: (text, record) => {
-                    return record.client_accounting_entry
-                        ? record.client_accounting_entry.client.name
-                        : "";
-                },
-                onFilter: (value, record) =>
-                    record.client_accounting_entry &&
-                    record.client_accounting_entry.client.name.indexOf(value) === 0,
-                sorter: (a, b) =>
-                    a.client_accounting_entry.client.name.length -
-                    b.client_accounting_entry.client.name.length,
-                sortDirections: ["descend", "ascend"],
-                filters: [...tableFilters.clients]
+        {
+            title: "Client",
+            dataIndex: "client",
+            key: "client",
+            render: (text, record) => {
+                return record.client_accounting_entry
+                    ? record.client_accounting_entry.client.name
+                    : "";
             },
+            onFilter: (value, record) =>
+                record.client_accounting_entry &&
+                record.client_accounting_entry.client.name.indexOf(value) === 0,
+            sorter: (a, b) =>
+                a.client_accounting_entry.client.name.length -
+                b.client_accounting_entry.client.name.length,
+            sortDirections: ["descend", "ascend"],
+            filters: [...tableFilters.clients]
+        },
 
-            {
-                title: "Employee",
-                dataIndex: "client_employee",
-                key: "client_employee",
-                render: (text, record) => {
-                    return record.client_employee.name;
-                },
-                onFilter: (value, record) =>
-                    record.client_employee.name.indexOf(value) === 0,
-                filters: [...tableFilters.employees]
+        {
+            title: "Employee",
+            dataIndex: "client_employee",
+            key: "client_employee",
+            render: (text, record) => {
+                return record.client_employee.name;
             },
+            onFilter: (value, record) =>
+                record.client_employee.name.indexOf(value) === 0,
+            filters: [...tableFilters.employees]
+        },
 
-            {
-                title: "Type",
-                dataIndex: "type",
-                key: "type",
-                render: (text, record) => {
-                    return record.client_accounting_entry
-                        ? capitalize(record.client_accounting_entry.type)
-                        : "";
+        {
+            title: "Type",
+            dataIndex: "type",
+            key: "type",
+            render: (text, record) => {
+                return record.client_accounting_entry
+                    ? capitalize(record.client_accounting_entry.type)
+                    : "";
+            },
+            onFilter: (value, record) =>
+                record.client_accounting_entry &&
+                record.client_accounting_entry.type.indexOf(value) === 0,
+            filters: [
+                {
+                    text: "Debit",
+                    value: "debit"
                 },
-                onFilter: (value, record) =>
-                    record.client_accounting_entry &&
-                    record.client_accounting_entry.type.indexOf(value) === 0,
-                filters: [
-                    {
-                        text: "Debit",
-                        value: "debit"
-                    },
-                    {
-                        text: "Credit",
-                        value: "credit"
-                    }
-                ]
-            },
-            {
-                title: "Entry",
-                dataIndex: "entry",
-                key: "entry",
-                render: (text, record) => {
-                    return record.client_accounting_entry
-                        ? record.client_accounting_entry.title
-                        : "";
-                },
-                onFilter: (value, record) =>
-                    record.client_accounting_entry &&
-                    record.client_accounting_entry.title.indexOf(value) === 0 &&
-                    record.amount != 0,
-                filters: [...tableFilters.entries]
-            },
-            {
-                title: "Amount",
-                dataIndex: "amount",
-                key: "amount",
-                render: (text, record) => {
-                    return currencyFormat(record.amount);
+                {
+                    text: "Credit",
+                    value: "credit"
                 }
+            ]
+        },
+        {
+            title: "Entry",
+            dataIndex: "entry",
+            key: "entry",
+            render: (text, record) => {
+                return record.client_accounting_entry
+                    ? record.client_accounting_entry.title
+                    : "";
             },
-            {
-                title: "Payroll Date",
-                dataIndex: "client_employee_payroll",
-                key: "client_employee_payroll",
-                render: (text, record) => {
-                    return (
-                        moment(
-                            record.client_employee_payroll.client_payroll.date_start
-                        ).format("YYYY-MM-DD") +
-                        " to " +
-                        moment(
-                            record.client_employee_payroll.client_payroll.date_end
-                        ).format("YYYY-MM-DD")
-                    );
-                }
+            onFilter: (value, record) =>
+                record.client_accounting_entry &&
+                record.client_accounting_entry.title.indexOf(value) === 0 &&
+                record.amount != 0,
+            filters: [...tableFilters.entries]
+        },
+        {
+            title: "Amount",
+            dataIndex: "amount",
+            key: "amount",
+            render: (text, record) => {
+                return currencyFormat(record.amount);
             }
-        ]);
+        },
+        {
+            title: "Payroll Date",
+            dataIndex: "client_employee_payroll",
+            key: "client_employee_payroll",
+            render: (text, record) => {
+                return (
+                    moment(
+                        record.client_employee_payroll.client_payroll.date_start
+                    ).format("YYYY-MM-DD") +
+                    " to " +
+                    moment(
+                        record.client_employee_payroll.client_payroll.date_end
+                    ).format("YYYY-MM-DD")
+                );
+            }
+        }
+    ]);
+
+    const [columns13thMonth, setColumns13thMonth] = useState([
+        {
+            title: "Client",
+            dataIndex: "client",
+            key: "client",
+            render: (text, record) => {
+                return record.client_accounting_entry
+                    ? record.client_accounting_entry.client.name
+                    : "";
+            },
+            sorter: (a, b) =>
+                a.client_accounting_entry.client.name.length -
+                b.client_accounting_entry.client.name.length,
+            sortDirections: ["descend", "ascend"]
+        },
+
+        {
+            title: "Employee",
+            dataIndex: "client_employee",
+            key: "client_employee",
+            render: (text, record) => {
+                return record.client_employee.name;
+            }
+        },
+
+        {
+            title: "Type",
+            dataIndex: "type",
+            key: "type",
+            render: (text, record) => {
+                return record.client_accounting_entry
+                    ? capitalize(record.client_accounting_entry.type)
+                    : "";
+            }
+        },
+        {
+            title: "Entry",
+            dataIndex: "entry",
+            key: "entry",
+            render: (text, record) => {
+                return record.client_accounting_entry
+                    ? record.client_accounting_entry.title
+                    : "";
+            }
+        },
+        {
+            title: "Amount",
+            dataIndex: "amount",
+            key: "amount",
+            render: (text, record) => {
+                return currencyFormat(record.amount);
+            }
+        },
+        {
+            title: "Payroll Date",
+            dataIndex: "client_employee_payroll",
+            key: "client_employee_payroll",
+            render: (text, record) => {
+                return moment(
+                    record.client_employee_payroll.client_payroll.date_start
+                ).format("MMM YYYY");
+            }
+        }
+    ]);
     useEffect(() => {
         setColumns([
             {
@@ -247,7 +306,9 @@ const TabReportsDebitCredit = () => {
                 },
                 onFilter: (value, record) =>
                     record.client_accounting_entry &&
-                    record.client_accounting_entry.client.name.indexOf(value) === 0,
+                    record.client_accounting_entry.client.name.indexOf(
+                        value
+                    ) === 0,
                 sorter: (a, b) =>
                     a.client_accounting_entry.client.name.length -
                     b.client_accounting_entry.client.name.length,
@@ -320,17 +381,25 @@ const TabReportsDebitCredit = () => {
                 render: (text, record) => {
                     return (
                         moment(
-                            record.client_employee_payroll.client_payroll.date_start
+                            record.client_employee_payroll.client_payroll
+                                .date_start
                         ).format("YYYY-MM-DD") +
                         " to " +
                         moment(
-                            record.client_employee_payroll.client_payroll.date_end
+                            record.client_employee_payroll.client_payroll
+                                .date_end
                         ).format("YYYY-MM-DD")
                     );
                 }
             }
         ]);
-    },[tableFilters]);
+    }, [tableFilters]);
+
+    const [monthly13tHMonth, setMonthly13tHMonth] = useState([]);
+    useEffect(() => {
+        // console.log("monthly13tHMonth", monthly13tHMonth);
+        return () => {};
+    }, [monthly13tHMonth]);
 
     function onChange(pagination, filters, sorter, extra) {
         let _totalAmount = 0;
@@ -347,7 +416,42 @@ const TabReportsDebitCredit = () => {
             //     _totalAmount
             // );
         });
+
+        // console.log("filters", filters);
         setTotalAmount(_totalAmount);
+
+        if (
+            filters.entry &&
+            filters.entry.length == 1 &&
+            filters.entry.find(p => p == "13th-Month Pay")
+        ) {
+            let monthly = [];
+            // console.log("extra.currentDataSource", extra.currentDataSource);
+            extra.currentDataSource.map((record, key) => {
+                let exist_key = monthly.findIndex(
+                    p =>
+                        moment(
+                            p.client_employee_payroll.client_payroll.date_start
+                        ).format("YYYY-MM") ==
+                            moment(
+                                record.client_employee_payroll.client_payroll
+                                    .date_start
+                            ).format("YYYY-MM") &&
+                        p.client_accounting_entry.client.name ==
+                            record.client_accounting_entry.client.name
+                );
+
+                if (exist_key !== -1) {
+                    monthly[exist_key].amount += record.amount;
+                } else {
+                    monthly.push(record);
+                }
+            });
+
+            setMonthly13tHMonth([...monthly]);
+        } else {
+            setMonthly13tHMonth([]);
+        }
     }
 
     const componentRef = useRef();
@@ -402,16 +506,19 @@ const TabReportsDebitCredit = () => {
                         dataIndex: title.replace(/ /g, "_"),
                         key: title.replace(/ /g, "_"),
                         render: (text, record) => {
-                            if(record.client_employee == 'Total') {
-                                return <b>{currencyFormat(
-                                    record[title.replace(/ /g, "_")]
-                                )}</b>;
+                            if (record.client_employee == "Total") {
+                                return (
+                                    <b>
+                                        {currencyFormat(
+                                            record[title.replace(/ /g, "_")]
+                                        )}
+                                    </b>
+                                );
                             } else {
                                 return currencyFormat(
                                     record[title.replace(/ /g, "_")]
                                 );
                             }
-                            
                         }
                     });
                 }
@@ -442,7 +549,7 @@ const TabReportsDebitCredit = () => {
             let _totalAmount = 0;
 
             let columnTotals = {};
-            filterColumns.forEach((filter,key) => {
+            filterColumns.forEach((filter, key) => {
                 columnTotals[filter] = 0;
             });
             //console.log(columnTotals);
@@ -469,16 +576,16 @@ const TabReportsDebitCredit = () => {
                                     entry.client_accounting_entry.type ==
                                     "debit"
                                 ) {
-                                    columnTotals[entry.client_accounting_entry.title] += entry.amount
-                                        ? entry.amount
-                                        : 0;
+                                    columnTotals[
+                                        entry.client_accounting_entry.title
+                                    ] += entry.amount ? entry.amount : 0;
                                     _totalAmount += entry.amount
                                         ? entry.amount
                                         : 0;
                                 } else {
-                                    columnTotals[entry.client_accounting_entry.title] += entry.amount
-                                        ? entry.amount
-                                        : 0;
+                                    columnTotals[
+                                        entry.client_accounting_entry.title
+                                    ] += entry.amount ? entry.amount : 0;
                                     _totalAmount -= entry.amount
                                         ? entry.amount
                                         : 0;
@@ -490,16 +597,16 @@ const TabReportsDebitCredit = () => {
                                     entry.client_accounting_entry.type ==
                                     "debit"
                                 ) {
-                                    columnTotals[entry.client_accounting_entry.title] += entry.amount
-                                        ? entry.amount
-                                        : 0;
+                                    columnTotals[
+                                        entry.client_accounting_entry.title
+                                    ] += entry.amount ? entry.amount : 0;
                                     _totalAmount += entry.amount
                                         ? entry.amount
                                         : 0;
                                 } else {
-                                    columnTotals[entry.client_accounting_entry.title] += entry.amount
-                                        ? entry.amount
-                                        : 0;
+                                    columnTotals[
+                                        entry.client_accounting_entry.title
+                                    ] += entry.amount ? entry.amount : 0;
                                     _totalAmount -= entry.amount
                                         ? entry.amount
                                         : 0;
@@ -523,16 +630,14 @@ const TabReportsDebitCredit = () => {
                                 [_filter]: entry.amount ? entry.amount : 0
                             };
                             if (entry.client_accounting_entry.type == "debit") {
-
-                                columnTotals[entry.client_accounting_entry.title] += entry.amount
-                                        ? entry.amount
-                                        : 0;
+                                columnTotals[
+                                    entry.client_accounting_entry.title
+                                ] += entry.amount ? entry.amount : 0;
                                 _totalAmount += entry.amount ? entry.amount : 0;
                             } else {
-
-                                columnTotals[entry.client_accounting_entry.title] += entry.amount
-                                        ? entry.amount
-                                        : 0;
+                                columnTotals[
+                                    entry.client_accounting_entry.title
+                                ] += entry.amount ? entry.amount : 0;
                                 _totalAmount -= entry.amount ? entry.amount : 0;
                             }
 
@@ -542,28 +647,34 @@ const TabReportsDebitCredit = () => {
                 });
             });
 
-           // console.log('filtered',_data);
+            // console.log('filtered',_data);
             let report_data = [];
             _data.forEach((row, index) => {
-                let invalid_fields = ['client','client_employee','client_employee_payroll'];
+                let invalid_fields = [
+                    "client",
+                    "client_employee",
+                    "client_employee_payroll"
+                ];
                 let subTotal = 0;
-                Object.keys(row).forEach((field, key ) => {
-                    if(!invalid_fields.includes(field)) {
+                Object.keys(row).forEach((field, key) => {
+                    if (!invalid_fields.includes(field)) {
                         subTotal += row[field];
                     }
                 });
-                if(subTotal > 0) {
+                if (subTotal > 0) {
                     report_data.push(row);
                 }
             });
             // console.log('report_data',report_data);
-            
+
             //console.log('_data[_data.length-1]',_data[_data.length-1]);
-            if(report_data[report_data.length-1].client_employee != 'Total') {
+            if (
+                report_data[report_data.length - 1].client_employee != "Total"
+            ) {
                 let totalRow = {
-                    client: '',
-                    client_employee: 'Total',
-                    client_employee_payroll: ''
+                    client: "",
+                    client_employee: "Total",
+                    client_employee_payroll: ""
                 };
                 filterColumns.forEach((column, key) => {
                     totalRow[column.replace(/ /g, "_")] = columnTotals[column];
@@ -758,15 +869,26 @@ const TabReportsDebitCredit = () => {
                     </Title>
                 </div>
                 <br />
-                <Table
-                    columns={columns}
-                    dataSource={employeeAccountingReports}
-                    onChange={onChange}
-                    pagination={false}
-                    size="small"
-                    loading={tableLoading}
-                />
-                
+                {monthly13tHMonth.length == 0 && (
+                    <Table
+                        columns={columns}
+                        dataSource={employeeAccountingReports}
+                        onChange={onChange}
+                        pagination={false}
+                        size="small"
+                        loading={tableLoading}
+                    />
+                )}
+                {monthly13tHMonth.length > 0 && (
+                    <Table
+                        columns={columns13thMonth}
+                        dataSource={monthly13tHMonth}
+                        // onChange={onChange}
+                        pagination={false}
+                        size="small"
+                        // loading={tableLoading}
+                    />
+                )}
             </div>
 
             <div className="text-right mt-10">
