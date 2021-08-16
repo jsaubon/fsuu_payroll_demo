@@ -66,12 +66,12 @@ const TabReportsDebitCredit = () => {
                     let entry_filter = [];
                     _all_data.map((accounting, key) => {
                         let emp_temp = employee_filter.find(
-                            p => p.text == accounting.client_employee.name
+                            p => p.text == accounting.client_employee_payroll ? accounting.client_employee.name : ''
                         );
                         if (!emp_temp) {
                             employee_filter.push({
-                                text: accounting.client_employee.name,
-                                value: accounting.client_employee.name
+                                text: accounting.client_employee ? accounting.client_employee.name : '',
+                                value: accounting.client_employee ? accounting.client_employee.name : ''
                             });
                         }
 
@@ -158,10 +158,10 @@ const TabReportsDebitCredit = () => {
             dataIndex: "client_employee",
             key: "client_employee",
             render: (text, record) => {
-                return record.client_employee.name;
+                return record.client_employee ? record.client_employee.name : '';
             },
             onFilter: (value, record) =>
-                record.client_employee.name.indexOf(value) === 0,
+                record.client_employee_payroll ? record.client_employee.name.indexOf(value) === 0 : false,
             filters: [...tableFilters.employees]
         },
 
@@ -250,7 +250,7 @@ const TabReportsDebitCredit = () => {
             dataIndex: "client_employee",
             key: "client_employee",
             render: (text, record) => {
-                return record.client_employee.name;
+                return record.client_employee ? record.client_employee.name : '';
             }
         },
 
@@ -321,10 +321,10 @@ const TabReportsDebitCredit = () => {
                 dataIndex: "client_employee",
                 key: "client_employee",
                 render: (text, record) => {
-                    return record.client_employee.name;
+                    return record.client_employee ? record.client_employee.name : '';
                 },
                 onFilter: (value, record) =>
-                    record.client_employee.name.indexOf(value) === 0,
+                    record.client_employee ? record.client_employee.name.indexOf(value) === 0 : false,
                 filters: [...tableFilters.employees]
             },
 

@@ -53,13 +53,13 @@ const TabReportsPayroll = () => {
             key: "employee",
             className: "fz-10  w-nowrap",
             render: (text, record) => {
-                return record.id ? record.client_employee.name : "";
+                return record.id ? record.client_employee ? record.client_employee.name : '' : "";
             },
             // filterMultiple: false,
             onFilter: (value, record) =>
-                record.client_employee.name.indexOf(value) === 0,
+                record.client_employee ? record.client_employee.name.indexOf(value) === 0 : false,
             sorter: (a, b) =>
-                a.client_employee.name.length - b.client_employee.name.length,
+                a.client_employee ? a.client_employee.name.length - b.client_employee.name.length : false,
             sortDirections: ["descend", "ascend"],
             filters: [...tableFilters.employees]
         },
@@ -553,12 +553,12 @@ const TabReportsPayroll = () => {
                     }
 
                     let temp_employee = _employees.find(
-                        p => p.text == payroll.client_employee.name
+                        p => p.text == payroll.client_employee ? payroll.client_employee.name : ''
                     );
                     if (temp_employee == undefined) {
                         _employees.push({
-                            text: payroll.client_employee.name,
-                            value: payroll.client_employee.name
+                            text: payroll.client_employee ? payroll.client_employee.name : '',
+                            value: payroll.client_employee ? payroll.client_employee.name : ''
                         });
                     }
                 });
