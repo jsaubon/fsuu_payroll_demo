@@ -176,7 +176,7 @@ const ModalPayslip = ({
                                                         </Col>
                                                     </Row>
 
-                                                    {/* DEBIT/CREDIT CONETNT */}
+                                                    {/* DEBIT/CREDIT CONTENT */}
                                                     <div>
                                                         {payroll.client_employee_accountings
                                                             .filter(
@@ -413,7 +413,7 @@ const ModalPayslip = ({
                                                                             employee_accounting
                                                                                 .client_accounting_entry
                                                                                 .title;
-
+                                                                        console.log('title',title);
                                                                         netPay +=
                                                                             employee_accounting.amount;
 
