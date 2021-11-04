@@ -164,19 +164,19 @@ const ModalPayslip = ({
                                                                 {moment(
                                                                     selectedPayroll.date_start
                                                                 ).format(
-                                                                    "MM.DD"
+                                                                    "MM.DD.YYYY"
                                                                 )}
                                                                 -
                                                                 {moment(
                                                                     selectedPayroll.date_end
                                                                 ).format(
-                                                                    "MM.DD"
+                                                                    "MM.DD.YYYY"
                                                                 )}
                                                             </Text>
                                                         </Col>
                                                     </Row>
 
-                                                    {/* DEBIT/CREDIT CONETNT */}
+                                                    {/* DEBIT/CREDIT CONTENT */}
                                                     <div>
                                                         {payroll.client_employee_accountings
                                                             .filter(
@@ -413,7 +413,7 @@ const ModalPayslip = ({
                                                                             employee_accounting
                                                                                 .client_accounting_entry
                                                                                 .title;
-
+                                                                        console.log('title',title);
                                                                         netPay +=
                                                                             employee_accounting.amount;
 

@@ -4,17 +4,20 @@ import { fetchData } from "../../../../../../axios";
 import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
 import moment from "moment";
 import ModalPayrollViewInfo from "../../../pagePayrolls/modalPayrollViewInfo";
+import ModalPayslip from "../../../pagePayrolls/modalPayslip";
 
 const TabClientPayrolls = ({ client_id }) => {
     const [showModalPayrollViewInfo, setShowModalPayrollViewInfo] = useState(
         false
     );
     const [selectedPayroll, setSelectedPayroll] = useState();
+    const [showModalPayslip, setShowModalPayslip] = useState(false);
     const [payrollList, setPayrollList] = useState([]);
     const [accountingEntries, setAccountingEntries] = useState({
         debit: [],
         credit: []
     });
+
     useEffect(() => {
         getPayrollList();
         return () => {};
@@ -45,6 +48,23 @@ const TabClientPayrolls = ({ client_id }) => {
             }
         },
 
+        {
+            title: "Payslip",
+            key: "payslip",
+            width: "1%",
+            render: (text, record) => {
+                return (
+                    <Button
+                        type="primary"
+                        size="small"
+                        icon={<EyeOutlined />}
+                        onClick={e => handleViewPayslip(record)}
+                    >
+                        View Payslip
+                    </Button>
+                );
+            }
+        },
         {
             title: "View",
             key: "view",
@@ -121,6 +141,27 @@ const TabClientPayrolls = ({ client_id }) => {
     };
 
     let userdata = JSON.parse(localStorage.userdata);
+
+
+    const toggleShowModalPayslip = () => {
+        setShowModalPayslip(!showModalPayslip);
+    };
+
+    const handleViewPayslip = record => {
+        setSelectedPayroll(record);
+        let debit = record.client.client_accounting_entries.filter(
+            p => p.type == "debit"
+        );
+        let credit = record.client.client_accounting_entries.filter(
+            p => p.type == "credit"
+        );
+        setAccountingEntries({
+            ...accountingEntries,
+            debit: debit,
+            credit: credit
+        });
+        toggleShowModalPayslip();
+    };
     return (
         <>
             <Table
@@ -136,6 +177,15 @@ const TabClientPayrolls = ({ client_id }) => {
                     toggleShowModalPayrollViewInfo={
                         toggleShowModalPayrollViewInfo
                     }
+                    accountingEntries={accountingEntries}
+                />
+            )}
+
+             {selectedPayroll && showModalPayslip && (
+                <ModalPayslip
+                    selectedPayroll={selectedPayroll}
+                    showModalPayslip={showModalPayslip}
+                    toggleShowModalPayslip={toggleShowModalPayslip}
                     accountingEntries={accountingEntries}
                 />
             )}
