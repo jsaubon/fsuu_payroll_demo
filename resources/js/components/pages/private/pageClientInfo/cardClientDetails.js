@@ -15,7 +15,7 @@ const CardClientDetails = ({ toggleShowModalAddEditClient, clientInfo }) => {
         <>
             <Card className="pb-10">
                 <Title level={3} className="text-center">
-                    Client Information
+                    Department Information
                 </Title>
 
                 <Row>

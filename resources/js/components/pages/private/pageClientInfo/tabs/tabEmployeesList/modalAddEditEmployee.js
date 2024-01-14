@@ -77,6 +77,10 @@ const ModalAddEditEmployee = ({
                 ..._employeeInformation
             });
             setOtherInfos(_employeeInformation.other_infos);
+            formAddEditEmployee.setFieldsValue({
+                ...employeeInformation,
+                ..._employeeInformation
+            });
         }
         return () => {};
     }, [_employeeInformation]);

@@ -6,32 +6,30 @@ const FormClientBasicInfo = () => {
     return (
         <>
             <Text>Basic Information</Text>
-            <Form.Item
-                label="Client Type"
+            {/* <Form.Item
+                label="Department Type"
                 name="type"
                 rules={[
                     {
                         required: true,
-                        message: "Select Client Type"
+                        message: "Select Department Type"
                     }
                 ]}
                 className="mb-15"
             >
                 <Select name="type">
-                    <Select.Option value="Commando">Commando</Select.Option>
-                    <Select.Option value="First Commando">
-                        First Commando
-                    </Select.Option>
+                    <Select.Option value="Fulltime">Fulltime</Select.Option>
+                    <Select.Option value="Part Time">Part Time</Select.Option>
                 </Select>
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item
-                label="Client Name"
+                label="Department Name"
                 name="name"
                 rules={[
                     {
                         required: true,
                         min: 3,
-                        message: "Client Name must be at least 3 characters"
+                        message: "Department Name must be at least 3 characters"
                     }
                 ]}
                 className="mb-15"
@@ -48,13 +46,13 @@ const FormClientBasicInfo = () => {
             >
                 <Input name="contact_number" />
             </Form.Item>
-            <Form.Item
+            {/* <Form.Item
                 label="Client Since"
                 name="client_since"
                 className="mb-15"
             >
                 <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
-            </Form.Item>
+            </Form.Item> */}
         </>
     );
 };

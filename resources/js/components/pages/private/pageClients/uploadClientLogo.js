@@ -56,7 +56,7 @@ const UploadClientLogo = ({ setClientInformation, imageUrl, setImageUrl }) => {
 
     return (
         <>
-            <Text>Client Logo</Text>
+            <Text>Department Logo</Text>
 
             <Upload
                 name="photo"

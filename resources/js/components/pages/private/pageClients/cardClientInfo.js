@@ -8,7 +8,7 @@ import Paragraph from "antd/lib/typography/Paragraph";
 
 const CardClientInfo = ({ history, client }) => {
     const goToClient = id => {
-        history.push("/clients/" + id);
+        history.push("/employees/" + id);
     };
     return (
         <>

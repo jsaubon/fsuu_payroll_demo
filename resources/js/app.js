@@ -12,7 +12,9 @@ import ClientsContext from "./contexts/clientsContext";
 import AppContext from "./contexts/appContext";
 import ClientsReducer from "./reducers/clientsReducer";
 import AppReducer from "./reducers/appReducer";
+import { QueryClient, QueryClientProvider } from "react-query";
 
+const queryClient = new QueryClient();
 const App = () => {
     let isLogged = localStorage.getItem("token");
 
@@ -26,23 +28,27 @@ const App = () => {
     );
     return (
         <AppContext.Provider value={{ stateApp, dispatchApp }}>
-            <ClientsContext.Provider value={{ stateClients, dispatchClients }}>
-                <Router>
-                    <Switch>
-                        <Route
-                            path="/"
-                            name="Home"
-                            component={isLogged ? LayoutContent : Login}
-                        />
-                        <Route
-                            exact
-                            path="/login"
-                            name="Login Page"
-                            render={props => <Login {...props} />}
-                        />
-                    </Switch>
-                </Router>
-            </ClientsContext.Provider>
+            <QueryClientProvider client={queryClient}>
+                <ClientsContext.Provider
+                    value={{ stateClients, dispatchClients }}
+                >
+                    <Router>
+                        <Switch>
+                            <Route
+                                path="/"
+                                name="Home"
+                                component={isLogged ? LayoutContent : Login}
+                            />
+                            <Route
+                                exact
+                                path="/login"
+                                name="Login Page"
+                                render={props => <Login {...props} />}
+                            />
+                        </Switch>
+                    </Router>
+                </ClientsContext.Provider>
+            </QueryClientProvider>
         </AppContext.Provider>
     );
 };

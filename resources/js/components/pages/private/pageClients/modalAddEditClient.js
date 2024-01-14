@@ -74,7 +74,7 @@ const ModalAddEditClient = ({
 
     return (
         <Modal
-            title="Client Information"
+            title="Department Information"
             visible={showModalAddEditClient}
             onOk={e => formAddEditClient.submit()}
             onCancel={toggleShowModalAddEditClient}

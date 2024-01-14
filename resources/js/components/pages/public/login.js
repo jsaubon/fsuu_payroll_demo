@@ -65,7 +65,7 @@ const Login = () => {
                                     marginTop: "20px"
                                 }}
                             >
-                                <Title level={3}>Commando Payroll System</Title>
+                                <Title level={3}>Fsuu Payroll System</Title>
                                 <Text type="secondary">
                                     Sign In to your account
                                 </Text>

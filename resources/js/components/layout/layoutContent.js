@@ -24,7 +24,11 @@ const LayoutContent = () => {
                     style={{ padding: 24, minHeight: 380 }}
                 >
                     <Switch>
-                        <Route exact path="/clients" component={PageClients} />
+                        <Route
+                            exact
+                            path="/employees"
+                            component={PageClients}
+                        />
                         <Route
                             exact
                             path="/payrolls"
@@ -34,11 +38,11 @@ const LayoutContent = () => {
                         <Route exact path="/users" component={PageUsers} />
                         <Route
                             exact
-                            path="/clients/:id"
+                            path="/employees/:id"
                             component={PageClientInfo}
                         />
                         <Route path="/" exact>
-                            <Redirect to="/clients" />
+                            <Redirect to="/employees" />
                         </Route>
                     </Switch>
                 </div>

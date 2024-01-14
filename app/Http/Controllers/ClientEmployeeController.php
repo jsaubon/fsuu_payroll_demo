@@ -14,8 +14,15 @@ class ClientEmployeeController extends Controller
      */
     public function index(Request $request)
     {
-        $client_employees = ClientEmployee::where('client_id',$request->client_id);
-        $client = \App\Client::find($request->client_id);
+        $client = null;
+        if(isset($request->client_id)) {
+            $client = \App\Client::find($request->client_id);
+            $client_employees = ClientEmployee::where('client_id',$request->client_id);
+        } else {
+            $client_employees = new ClientEmployee();;
+        }
+        
+        
 
         if(isset($request->order)) {
             $client_employees = $client_employees->where(function($query) use ($request) {
@@ -23,14 +30,20 @@ class ClientEmployeeController extends Controller
                 ->orWhere('email_address','like',isset($request->search) ? '%'.$request->search.'%' : '%%')
                 ->orWhere('contact_number','like',isset($request->search) ? '%'.$request->search.'%' : '%%');
             })
+            
             ->orderBy($request->order,$request->sort)
             ->limit($request->size)
             ->offset($request->size * ($request->page -1))
+            ->with('client')
             ->with('other_infos');
         } else {
-            $client_employees = $client_employees->where('status','Active')->with(['client_employee_deductions' => function($query) use ($request) {
-                $query->where('date_applied','>=',$request->date_start)->where('date_applied','<=',$request->date_end);
-            }])->orderBy('name','asc');   
+
+            if(isset($request->client_id)) {
+                $client_employees = $client_employees->where('status','Active')->with(['client_employee_deductions' => function($query) use ($request) {
+                    $query->where('date_applied','>=',$request->date_start)->where('date_applied','<=',$request->date_end);
+                }])->orderBy('name','asc');   
+            }
+            
         }
                                     
         $client_employees = $client_employees->get();

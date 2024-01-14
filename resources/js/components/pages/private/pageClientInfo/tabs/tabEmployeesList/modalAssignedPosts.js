@@ -114,7 +114,7 @@ const ModalAssignedPosts = ({
                 setFormLoadingReassign(false);
                 getEmployeeAssignedPosts();
                 setResetFormFields(true);
-                history.push("/clients/" + e.client_id);
+                history.push("/employees/" + e.client_id);
                 location.reload();
             }
         });
